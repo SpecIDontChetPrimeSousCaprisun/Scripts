@@ -1,7 +1,8 @@
 local PLR = game:GetService("Players").LocalPlayer
 local Char = PLR.Character or PLR.CharacterAdded:Wait()
 local UIS = game:GetService("UserInputService")
-local Ver = "2.0"
+local TW = game.TweenService
+local Ver = "3.0"
 local Key = Enum.KeyCode.H
 local BindingKey = nil
 local VineBoom = Instance.new("Sound")
@@ -26,9 +27,10 @@ local Tabs = {
 	Home = {},
 	Movement = {},
 	Aimbot = {},
-	Other = {}
+	Other = {},
+	None = {}
 }
-local CurrentTab = "Home"
+local CurrentTab = "None"
 
 VineBoom.SoundId = "rbxassetid://5178876770"
 VineBoom.Parent = game.SoundService
@@ -192,7 +194,7 @@ NameLabel.Name = "NameLabel"
 NameLabel.Size = UDim2.new(1,0,0.1,0)
 NameLabel.Position = UDim2.new(0,0,0,0)
 NameLabel.BackgroundColor3 = Color3.fromRGB(45,45,45)
-NameLabel.Text = "GH Universal V" ..Ver
+NameLabel.Text = "GH"
 NameLabel.TextColor3 = Color3.new(1,1,1)
 NameLabel.Font = Enum.Font.Michroma
 NameLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -335,12 +337,29 @@ NewTab("Other", 9999, 0)
 
 -- Frames
 
+local LoadingFrame = Instance.new("CanvasGroup", NameLabel)
+local LoadingBar = Instance.new("Frame", LoadingFrame)
+local LoadingFrameCorner = Instance.new("UICorner", LoadingFrame)
+
+LoadingFrameCorner.CornerRadius = UDim.new(1,0)
+
+LoadingFrame.Name = "LoadingFrame"
+LoadingFrame.AnchorPoint = Vector2.new(0.5,0.5)
+LoadingFrame.Size = UDim2.new(0.75,0,0.25,0)
+LoadingFrame.Position = UDim2.new(0.5,0,0.5,0)
+LoadingFrame.BackgroundColor3 = Color3.new(1,1,1)
+LoadingFrame.ZIndex = 10
+LoadingBar.Size = UDim2.new(0,0,1,0)
+LoadingBar.BackgroundColor3 = Color3.fromRGB(0,150,255)
+LoadingBar.ZIndex = 20
+
 local FlyName = NameLabel:Clone()
 
 FlyCorner.CornerRadius = UDim.new(0.1,0)
 FlyOptionLayout.Padding = UDim.new(0.025)
 FlyOptionLayout.SortOrder = Enum.SortOrder.LayoutOrder
 FlyOptionLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+FlyName.LoadingFrame:Destroy()
 FlyName.Parent = FlyFrame
 FlyName.Text = "Fly"
 FlyName.Name = "NameLabel"
@@ -549,11 +568,8 @@ if Channel then
 	
 end
 
-for i,v in Tabs[CurrentTab] do
-
-	v.Visible = true
-
-end
+TabsFrame.Visible = nil
+MenuFrame.BackgroundTransparency = 1
 
 for i,v in MenuUI:GetDescendants() do
 	
@@ -589,6 +605,15 @@ ExitButton.MouseButton1Down:Connect(function()
 	MenuUI.Enabled = not MenuUI.Enabled
 	
 end)
+
+local TotalToLoad = 0
+local Loaded = 0
+
+for i,v in Tabs do
+	
+	TotalToLoad += 1
+	
+end
 
 -- Home
 
@@ -803,6 +828,12 @@ WhitelistButton.MouseButton1Down:Connect(function(PosX, PosY)
 	
 end)
 
+Loaded += 1
+
+local TWL = TW:Create(LoadingBar, TweenInfo.new(0.25), {Size = UDim2.new(Loaded / TotalToLoad,0,1,0)})
+
+TWL:Play()
+TWL.Completed:Wait()
 -- Mtn la chaise gaming OP
 
 --Fly
@@ -1184,6 +1215,13 @@ PTPPlayerBox.FocusLost:Connect(function(EP)
 
 end)
 
+Loaded += 1
+
+TWL:Cancel()
+TWL = TW:Create(LoadingBar, TweenInfo.new(0.25), {Size = UDim2.new(Loaded / TotalToLoad,0,1,0)})
+TWL:Play()
+TWL.Completed:Wait()
+
 --Aimbot
 
 --CLock
@@ -1515,6 +1553,13 @@ TeamCheckButton.MouseButton1Down:Connect(function()
 	end
 
 end)
+
+Loaded += 1
+
+TWL:Cancel()
+TWL = TW:Create(LoadingBar, TweenInfo.new(0.25), {Size = UDim2.new(Loaded / TotalToLoad,0,1,0)})
+TWL:Play()
+TWL.Completed:Wait()
 
 --ESP
 
@@ -2002,6 +2047,13 @@ TTKeybindButton.MouseButton1Down:Connect(function()
 
 end)
 
+Loaded += 1
+
+TWL:Cancel()
+TWL = TW:Create(LoadingBar, TweenInfo.new(0.25), {Size = UDim2.new(Loaded / TotalToLoad,0,1,0)})
+TWL:Play()
+TWL.Completed:Wait()
+
 --Inputs
 
 UIS.InputBegan:Connect(function(Inp, GPE)
@@ -2086,6 +2138,27 @@ game.StarterGui:SetCore("SendNotification", {
 	Title = "Goat Hub",
 	Text = "Done"
 })
+
+local TWLF = TW:Create(LoadingBar, TweenInfo.new(0.5), {BackgroundTransparency = 1})
+local TWMF = TW:Create(MenuFrame, TweenInfo.new(0.5), {BackgroundTransparency = 0.25})
+
+LoadingFrame.BackgroundTransparency = 1
+TWLF:Play()
+TWLF.Completed:Wait()
+LoadingFrame:Destroy()
+NameLabel.Text = "GH Universal V" ..Ver
+TWMF:Play()
+TWMF.Completed:Wait()
+
+TabsFrame.Visible = true
+CurrentTab = "Home"
+
+for i,v in Tabs[CurrentTab] do
+
+	v.Visible = true
+
+end
+
 
 while task.wait() do
 	
