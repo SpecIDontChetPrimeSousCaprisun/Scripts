@@ -594,6 +594,27 @@ for i,v in MenuUI:GetDescendants() do
 			
 		end)
 		
+	elseif v:IsA("ImageButton") then
+		
+		v.MouseEnter:Connect(function()
+
+			HoverSound:Play()
+			v.ImageColor3 = Color3.fromRGB(255, 0, 0)
+
+		end)
+
+		v.MouseLeave:Connect(function()
+
+			v.ImageColor3 = Color3.new(1,1,1)
+
+		end)
+
+		v.MouseButton1Down:Connect(function()
+
+			ClickSound:Play()
+
+		end)
+		
 	end
 	
 end
