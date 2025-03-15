@@ -79,6 +79,8 @@ local FlySpeed = 0
 local NoclipEnabled = false
 local OldWS
 local DefaultGrav = workspace.Gravity
+local InfJumpEnabled = false
+local InfJumpKey = Enum.KeyCode.M
 
 local SpeedEnabled = false
 local SpeedKey = Enum.KeyCode.G
@@ -352,6 +354,7 @@ LoadingFrame.ZIndex = 10
 LoadingBar.Size = UDim2.new(0,0,1,0)
 LoadingBar.BackgroundColor3 = Color3.fromRGB(0,150,255)
 LoadingBar.ZIndex = 20
+LoadingFrameCorner:Clone().Parent = LoadingBar
 
 local FlyName = NameLabel:Clone()
 
@@ -484,6 +487,9 @@ FlyEnabledButton = NewButton("Enabled", FlyFrame, "Enabled = false", 1)
 local FlyKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = F", 2)
 local FlySpeedBox = NewBox("Speed", FlyFrame, "Speed = 0", 3)
 local NoclipEnabledButton = NewButton("NoclipEnabled", FlyFrame, "Noclip = false", 4)
+local InfJumpLabel = NewButton("Label", FlyFrame, "-- Inf jump --",5)
+local InfJumpEnabledButton = NewButton("Enabled", FlyFrame, "Enabled = false", 6)
+local InfJumpKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = M", 7)
 
 local SpeedEnabledButton = NewButton("Enabled", SpeedFrame, "Enabled = false", 1)
 local SpeedKeybindButton = NewButton("Keybind", SpeedFrame, "Keybind = G", 2)
@@ -498,6 +504,7 @@ local PTPEnabledButton = NewButton("Enabled", TPFrame, "TP", 5)
 local PTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = L", 6)
 local PTPPlayerBox = NewBox("Player", TPFrame, "Player = " ..PlayerToTP.DisplayName, 7)
 
+InfJumpLabel.Interactable = nil
 CTPLabel.Interactable = nil
 PTPLabel.Interactable = nil
 
@@ -1021,6 +1028,67 @@ NoclipEnabledButton.MouseButton1Down:Connect(function()
 		NoclipEnabledButton.Text = "Noclip = false"
 		
 	end
+	
+end)
+
+--Math.Huge jump
+
+local function InfJumpEnable()
+	
+	InfJumpEnabled = not InfJumpEnabled
+
+	if InfJumpEnabled then
+
+		InfJumpEnabledButton.Text = "Enabled = true"
+		local JumpLoop = UIS.JumpRequest:Connect(function()
+			
+			Char.Humanoid:ChangeState("Jumping")
+			
+		end)
+		
+		while InfJumpEnabled do
+			
+			task.wait()
+			
+		end
+
+		JumpLoop:Disconnect()
+
+	else
+
+		InfJumpEnabledButton.Text = "Enabled = false"
+
+	end
+	
+end
+
+InfJumpEnabledButton.MouseButton1Down:Connect(InfJumpEnable)
+
+InfJumpKeybindButton.MouseButton1Down:Connect(function()
+	
+	if BindingKey then return end
+
+	BindingKey = true
+	InfJumpKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			InfJumpKey = Inp.KeyCode
+			InfJumpKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until InfJumpKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
 	
 end)
 
@@ -2103,6 +2171,10 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 	if Inp.KeyCode == FlyKey then
 		
 		FlyActivate()
+		
+	elseif Inp.KeyCode == InfJumpKey then
+		
+		InfJumpEnable()
 		
 	elseif Inp.KeyCode == SpeedKey then
 		
