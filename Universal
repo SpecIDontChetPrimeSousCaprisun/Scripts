@@ -14,7 +14,7 @@ local ClickSound = Instance.new("Sound")
 
 if game:GetService("TextChatService"):FindFirstChild("TextChannels") then
 	
-	Channel = game:GetService("TextChatService"):WaitForChild("TextChannels"):WaitForChild("RBXGeneral")
+	Channel = game:GetService("TextChatService"):WaitForChild("TextChannels"):FindFirstChild("RBXGeneral")
 	
 end
 
