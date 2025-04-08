@@ -1537,45 +1537,48 @@ local function AimbotEnable()
 			
 		end)
 
-		while AimbotEnabled do
-
+		game["Run Service"]:BindToRenderStep("ABATACAM", 999999999999999, function()
+			
 			task.wait()
 
-			if not Target.Character then continue end
-			if not Target.Character:FindFirstChild("Humanoid") then continue end
+			if not Target.Character then return end
+			if not Target.Character:FindFirstChild("Humanoid") then return end
 
 			if KOCheck then
 
-				if Target.Character.Humanoid.Health <= 0 then AimbotEnabled = nil continue end
+				if Target.Character.Humanoid.Health <= 0 then AimbotEnabled = nil return end
 
 			end
 
 			Cam.CameraType = Enum.CameraType.Scriptable
 
 			if Target.Character:FindFirstChild("Head") then
-				
+
 				local A = PLR.Character.Head.Position
 				local B = Target.Character.Head.Position
 				local Offset = Vector3.new(-5,0,0)
-				
+
 				--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
-				
+
 				Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
-				
+
 			else
-				
-				local A = Target.Character.Head.Position
-				local B = PLR.Character.Head.Position
-				local Offset = (Cam.CFrame.Position - PLR.Character.Head.Position).Magnitude
+
+				local A = PLR.Character.HumanoidRootPart.Position
+				local B = Target.Character.HumanoidRootPart.Position
+				local Offset = Vector3.new(-5,0,0)
 
 				--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
 
-				Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + -4))
-				
+				Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+
 			end
+			
+		end)
 
-		end
+		repeat wait() until not AimbotEnabled
 
+		game["Run Service"]:UnbindFromRenderStep("ABATACAM")
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 		Cam.CameraType = Enum.CameraType.Custom
 		Cam.CameraSubject = Char.Humanoid
