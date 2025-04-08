@@ -14,7 +14,7 @@ local ClickSound = Instance.new("Sound")
 
 if game:GetService("TextChatService"):FindFirstChild("TextChannels") then
 	
-	Channel = game:GetService("TextChatService"):WaitForChild("TextChannels"):FindFirstChild("RBXGeneral")
+	Channel = game:GetService("TextChatService"):WaitForChild("TextChannels"):WaitForChild("RBXGeneral")
 	
 end
 
@@ -1522,6 +1522,20 @@ local function AimbotEnable()
 
 		AimbotEnabledButton.Text = "Enabled = true"
 		UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
+		
+		local Extra = (Cam.CFrame.Position - PLR.Character.Head.Position).Magnitude
+
+		UIS.InputChanged:Connect(function(Inp, GPE)
+			
+			if GPE then return end
+			
+			if Inp.UserInputType == Enum.UserInputType.MouseWheel then
+				
+				Extra += Inp.Position.Z
+				
+			end
+			
+		end)
 
 		while AimbotEnabled do
 
@@ -1538,13 +1552,25 @@ local function AimbotEnable()
 
 			Cam.CameraType = Enum.CameraType.Scriptable
 
-			if not Target:FindFirstChild("Head") then
+			if Target.Character:FindFirstChild("Head") then
 				
-				Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+				local A = PLR.Character.Head.Position
+				local B = Target.Character.Head.Position
+				local Offset = Vector3.new(-5,0,0)
+				
+				--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+				
+				Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
 				
 			else
 				
-				Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.Head.Position)
+				local A = Target.Character.Head.Position
+				local B = PLR.Character.Head.Position
+				local Offset = (Cam.CFrame.Position - PLR.Character.Head.Position).Magnitude
+
+				--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+
+				Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + -4))
 				
 			end
 
