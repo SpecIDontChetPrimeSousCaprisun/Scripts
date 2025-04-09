@@ -115,9 +115,13 @@ local ESPColorEnabled = false
 local ESPKey = Enum.KeyCode.N
 local ESPGui = Instance.new("ScreenGui", PLR.PlayerGui)
 local ESPColor = Color3.fromRGB(255,255,0)
+local ESPOutlineType = "None"
+local ESPTypeNum = 1
 ESPGui.ResetOnSpawn = nil
 ESPGui.Name = "EspGui"
 ESPGui.IgnoreGuiInset = true
+
+local ESPOutlineTypes = {[1] = "None", [2] = "Highlight", [3] = "Box"}
 
 local BangEnabled = false
 local BangKey = Enum.KeyCode.B
@@ -282,13 +286,20 @@ local function NewTab(Tab, LayoutOrder, Img)
 		
 	end)
 	
+	return Button
+	
 end
 
 NewTab("Home", 1, 109306454828475)
 
-local function NewButton(Name, Parent, Text, LayoutOrder)
+local function NewButton(Name, Parent, Text, LayoutOrder, Button)
 	
-	local Button = Instance.new("TextButton", Parent)
+	if not Button then
+		
+		Button = Instance.new("TextButton", Parent)	
+		
+	end
+	
 	local ButtonCorner = Instance.new("UICorner", Button)
 	
 	Button.Name = Name
@@ -409,6 +420,12 @@ ESPFrame.Name = "ESP"
 ESPFrame.NameLabel.Text = "ESP"
 ESPFrame.LayoutOrder = 1
 ESPFrame.Parent = Options
+
+local AdvancedESP1 = FlyFrame:Clone()
+AdvancedESP1.Name = "AdvancedESP1"
+AdvancedESP1.NameLabel.Text = "1"
+AdvancedESP1.LayoutOrder = 1
+AdvancedESP1.Parent = Options
 
 local BangFrame = FlyFrame:Clone()
 BangFrame.Name = "Bang"
@@ -547,10 +564,13 @@ Tabs.Aimbot = {
 local ESPEnabledButton = NewButton("Enabled", ESPFrame, "Enabled = false", 1)
 local ESPKeybindButton = NewButton("Keybind", ESPFrame, "Keybind = N", 2)
 local ESPNameEnabledButton = NewButton("NameEnabled", ESPFrame, "Names = false", 3)
-local ESPColorEnabledButton = NewButton("ColorEnabled", ESPFrame, "ColorTargeted aimbot player = false", 3)
-local ESPColorBox = NewBox("Color", ESPFrame, "Color = 255,255,0", 3)
+local ESPColorEnabledButton = NewButton("ColorEnabled", ESPFrame, "ColorTargeted aimbot player = false", 4)
+local ESPColorBox = NewBox("Color", ESPFrame, "Color = 255,255,0", 5)
+local ESPAdvancedButton = NewButton("Advanced", ESPFrame, "Advanced options", 6)
+local ESPOutlineTypeButton = NewButton("Boxes", AdvancedESP1, "Outline type = none", 1)
 
 ESPColorBox.Visible = nil
+Tabs["AdvancedESP"] = {AdvancedESP1}
 
 local BangEnabledButton = NewButton("Enabled", BangFrame, "Enabled = false", 1)
 local BangKeybindButton = NewButton("Keybind", BangFrame, "Keybind = B", 2)
@@ -1550,29 +1570,35 @@ local function AimbotEnable()
 
 			end
 
-			Cam.CameraType = Enum.CameraType.Scriptable
+			if Cam.CameraType == Enum.CameraType.Custom then
+				
+				if Target.Character:FindFirstChild("Head") then
 
-			if Target.Character:FindFirstChild("Head") then
+					local A = PLR.Character.Head.Position
+					local B = Target.Character.Head.Position
+					local Offset = Vector3.new(0,0,0)
 
-				local A = PLR.Character.Head.Position
-				local B = Target.Character.Head.Position
-				local Offset = Vector3.new(-5,0,0)
+					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
 
-				--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+					Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
 
-				Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+				else
 
-			else
+					local A = PLR.Character.HumanoidRootPart.Position
+					local B = Target.Character.HumanoidRootPart.Position
+					local Offset = Vector3.new(0,0,0)
 
-				local A = PLR.Character.HumanoidRootPart.Position
-				local B = Target.Character.HumanoidRootPart.Position
-				local Offset = Vector3.new(-5,0,0)
+					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
 
-				--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+					Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
 
-				Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
-
-			end
+				end
+				
+			elseif Cam.CameraType == Enum.CameraType.Scriptable then
+				
+				Cam.CFrame = CFrame.new(Cam.CFrame.Position, Target.Character.HumanoidRootPart.Postion)
+				
+			end			
 			
 		end)
 
@@ -1607,7 +1633,7 @@ AimbotKeybindButton.MouseButton1Down:Connect(function()
 
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
-			CLockKey = Inp.KeyCode
+			AimbotKey = Inp.KeyCode
 			AimbotKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
@@ -1696,7 +1722,19 @@ local function ESPEnable()
 			if v == PLR then return end
 
 			local Highlight = Instance.new("Highlight", v.Character)
+			local Box = Instance.new("Frame", ESPGui)
+			local BoxOutline = Instance.new("UIStroke", Box)
+			local Box3d = Instance.new("Part", workspace)
+			local AttLeft = Instance.new("Attachment", Box3d)
+			local AttRight = Instance.new("Attachment", Box3d)
+			local AttUp = Instance.new("Attachment", Box3d)
+			local AttDown = Instance.new("Attachment", Box3d)
 
+			Box3d.Anchored = true
+			Box3d.CanCollide = nil
+			Box3d.Transparency = 1
+			Box.BackgroundTransparency = 1
+			Box.AnchorPoint = Vector2.new(0.5,0)
 			Highlight.FillTransparency = 1
 
 			task.spawn(function()
@@ -1706,6 +1744,67 @@ local function ESPEnable()
 				while ESPEnabled do
 
 					task.wait()
+					
+					if ESPOutlineType ~= "Highlight" then
+
+						Highlight.Enabled = nil
+
+					else
+
+						Highlight.Enabled = true
+
+					end
+					
+					if ESPOutlineType ~= "Box" then
+
+						Box.Visible = nil
+
+					else
+
+						Box.Visible = true
+
+					end
+					
+					if v.Character then
+						
+						local Pos, IsOnScreen = Cam:WorldToScreenPoint(v.Character:GetPivot().Position)
+						local Size
+						local Char3DSize = v.Character:GetExtentsSize()
+						
+						Box3d.CFrame = v.Character:GetPivot()
+						Box3d.Size = Char3DSize
+						
+						AttLeft.Position = Vector3.new(-Char3DSize.X / 2,0,0)
+						AttRight.Position = Vector3.new(Char3DSize.X / 2,0,0)
+						AttUp.Position = Vector3.new(0,Char3DSize.Y / 2,0)
+						AttDown.Position = Vector3.new(0,-Char3DSize.Y / 2,0)
+						
+						local PosLeft, _ = Cam:WorldToScreenPoint(AttLeft.WorldPosition)
+						local PosRight, _ = Cam:WorldToScreenPoint(AttRight.WorldPosition)
+						local PosUp, _ = Cam:WorldToScreenPoint(AttUp.WorldPosition)
+						local PosDown, _ = Cam:WorldToScreenPoint(AttDown.WorldPosition)
+						
+						local Size = UDim2.new(0, (PosLeft - PosRight).Magnitude, 0, (PosUp - PosDown).Magnitude)
+						
+						if Target == v then
+
+							BoxOutline.Color = ESPColor
+
+						else
+
+							BoxOutline.Color = Color3.fromRGB(255, 255, 255)
+
+						end
+						
+						Box.Size = Size
+						Box.Position = UDim2.new(0,Pos.X,0,Pos.Y)
+						
+						
+					else
+						
+						Box.Visible = nil
+						
+					end
 					
 					if ESPColorEnabled then
 
@@ -1890,6 +1989,50 @@ ESPColorBox.FocusLost:Connect(function(EP)
 	
 	ESPColor = Color3.fromRGB(R,G,B)
 	ESPColorBox.Text = "Color = " ..tostring(R).. "," ..tostring(G).. "," ..tostring(B)
+	
+end)
+
+local Tralalelotralala = Instance.new("Frame", TabsFrame)
+
+Tralalelotralala.Visible = nil
+Tralalelotralala.Name = "AdvancedESP"
+
+ESPAdvancedButton.MouseButton1Down:Connect(function()
+
+	if CurrentTab == "AdvancedESP" then return end
+
+	TabsFrame[CurrentTab].BackgroundColor3 = Color3.fromRGB(70,70,70)
+
+	for i,v in Tabs[CurrentTab] do
+
+		v.Visible = nil
+
+	end
+
+	for i,v in Tabs["AdvancedESP"] do
+
+		v.Visible = true
+
+	end
+
+	CurrentTab = "AdvancedESP"
+
+end)
+
+
+ESPOutlineTypeButton.MouseButton1Down:Connect(function()
+	
+	ESPTypeNum += 1
+	
+	if ESPTypeNum > #ESPOutlineTypes then
+		
+		ESPTypeNum = 1
+		
+	end
+	
+	ESPOutlineType = ESPOutlineTypes[ESPTypeNum]
+	
+	ESPOutlineTypeButton.Text = "Outline type = " ..ESPOutlineType
 	
 end)
 
