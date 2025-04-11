@@ -303,14 +303,9 @@ end
 
 NewTab("Home", 1, 109306454828475)
 
-local function NewButton(Name, Parent, Text, LayoutOrder, Button, NoCheck)
+local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 
-	if not Button then
-
-		Button = Instance.new("TextButton", Parent)	
-
-	end
-
+	local Button = Instance.new("TextButton", Parent)
 	local ButtonStroke = Instance.new("UIStroke", Button)
 	local CheckFrame = Instance.new("Frame", Button)
 	local GreenFrame = Instance.new("Frame", CheckFrame)
