@@ -482,9 +482,15 @@ ChatFrame.Parent = Options
 
 local CLockFrame = FlyFrame:Clone()
 CLockFrame.Name = "CLock"
-CLockFrame.NameLabel.Text = "Aimbots"
+CLockFrame.NameLabel.Text = "CLock"
 CLockFrame.LayoutOrder = 1
 CLockFrame.Parent = Options
+
+local AimbotFrame = FlyFrame:Clone()
+AimbotFrame.Name = "Aimbot"
+AimbotFrame.NameLabel.Text = "Aimbot"
+AimbotFrame.LayoutOrder = 2
+AimbotFrame.Parent = Options
 
 local CLockChecksFrame = FlyFrame:Clone()
 CLockChecksFrame.Name = "CLockChecks"
@@ -580,11 +586,12 @@ FovFrame.Visible = nil
 CLockFovVisibleButton.Visible = nil
 CLockFovSizeBox.Visible = nil
 
-local AimbotEnabledButton = NewButton("Enabled", CLockFrame, "Aimbot", 3)
-local AimbotKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = C", 4, true)
+local AimbotEnabledButton = NewButton("Enabled", AimbotFrame, "Aimbot", 3)
+local AimbotKeybindButton = NewButton("Keybind", AimbotFrame, "Keybind = C", 4, true)
 
 Tabs.Aimbot = {
 	CLockFrame,
+	AimbotFrame,
 	CLockChecksFrame
 }
 -- Other
