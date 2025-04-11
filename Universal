@@ -1927,10 +1927,12 @@ local function ESPEnable()
 
 						if ESPTeamColor and v.Team then
 							
-							Highlight.OutlineColor = v.TeamColor.Color
-							UI.TextColor3 = v.TeamColor.Color
-							LineOutline.Color = v.TeamColor.Color
-							BoxOutline.Color = v.TeamColor.Color
+							local Color = v.TeamColor.Color
+							
+							Highlight.OutlineColor = Color
+							UI.TextColor3 = Color
+							LineOutline.Color = Color
+							BoxOutline.Color = Color
 							
 						end
 
