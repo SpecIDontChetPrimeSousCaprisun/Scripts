@@ -113,6 +113,7 @@ local ESPNameEnabled = false
 local ESPColorEnabled = false
 local ESPRainbowEnabled = false
 local ESPLinesEnabled = false
+local ESPTeamColor = false
 local ESPKey = Enum.KeyCode.N
 local ESPGui = Instance.new("ScreenGui", PLR.PlayerGui)
 local ESPColor = Color3.fromRGB(255,255,0)
@@ -589,6 +590,7 @@ local ESPAdvancedButton = NewButton("Advanced", ESPFrame, "Advanced options", 6)
 local ESPOutlineTypeButton = NewButton("Boxes", AdvancedESP1, "Outline type = none", 1)
 local ESPLinesButton = NewButton("Lines", AdvancedESP1, "Lines = false", 2)
 local NotTargetedESPColorBox = NewBox("Color", AdvancedESP2, "Color = 255,255,255", 1)
+local ESPTeamColorButton = NewButton("TeamColor", AdvancedESP2, "Adjust colors for teams = false", 2)
 local ESPRainbowButton = NewButton("Rainbow", AdvancedESP2, "LGBTQ+ = false", 6)
 
 ESPColorBox.Visible = nil
@@ -1923,6 +1925,15 @@ local function ESPEnable()
 
 						end
 
+						if ESPTeamColor and v.Team then
+							
+							Highlight.OutlineColor = v.TeamColor
+							UI.TextColor3 = v.TeamColor
+							LineOutline.Color = v.TeamColor
+							BoxOutline.Color = v.TeamColor
+							
+						end
+
 						if v.Character:FindFirstChild("HumanoidRootPart") then
 							
 							Box.Size = Size
@@ -1956,6 +1967,7 @@ local function ESPEnable()
 						UI.Text = v.DisplayName
 						UI.Font = Enum.Font.FredokaOne
 						if not ESPColorEnabled then UI.TextColor3 = NotTargettedESPColor end
+						
 						UI.Position = UDim2.fromOffset(Vec2Pos.X, Vec2Pos.Y)
 
 					else
@@ -2109,6 +2121,12 @@ end)
 
 ESPEnabledButton.MouseButton1Down:Connect(ESPEnable)
 ESPRainbowButton.MouseButton1Down:Connect(ESPRainbowEnable)
+ESPTeamColorButton.MouseButton1Down:Connect(function()
+	
+	ESPTeamColor = not ESPTeamColor
+	ESPTeamColorButton.Text = "Adjust colors for teams = " ..tostring(ESPTeamColor)
+	
+end)
 
 ESPNameEnabledButton.MouseButton1Down:Connect(function()
 
