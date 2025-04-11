@@ -2,14 +2,13 @@ local PLR = game:GetService("Players").LocalPlayer
 local Char = PLR.Character or PLR.CharacterAdded:Wait()
 local UIS = game:GetService("UserInputService")
 local TW = game.TweenService
-local Ver = "3.0"
 local Key = Enum.KeyCode.H
 local BindingKey = nil
-local VineBoom = Instance.new("Sound")
 local Cam = game.Workspace.CurrentCamera
 local Channel
 local MouseBehavior = Enum.MouseBehavior.Default
 local MouseVisible = true
+local CustomCursor = false
 local HoverSound = Instance.new("Sound")
 local ClickSound = Instance.new("Sound")
 
@@ -19,6 +18,10 @@ if game:GetService("TextChatService"):FindFirstChild("TextChannels") then
 
 end
 
+local VineBoom = Instance.new("Sound")
+
+VineBoom.SoundId = "rbxassetid://5178876770"
+VineBoom.Parent = game.SoundService
 HoverSound.Parent = game.SoundService
 HoverSound.SoundId = "rbxassetid://92876108656319"
 ClickSound.Parent = game.SoundService
@@ -33,12 +36,7 @@ local Tabs = {
 }
 local CurrentTab = "None"
 
-VineBoom.SoundId = "rbxassetid://5178876770"
-VineBoom.Parent = game.SoundService
-
 if PLR:HasTag("GoatUHubed") then
-
-	print(game.GameId)
 
 	local MenuUI = Instance.new("ScreenGui")
 	local ImgLabel = Instance.new("ImageLabel")
@@ -62,7 +60,7 @@ end
 
 game.StarterGui:SetCore("SendNotification", {
 	Title = "Goat Hub",
-	Text = "SucessFully ran goat hub universal " ..Ver.. " please wait..."
+	Text = "SucessFully ran goat hub universal please wait..."
 })
 
 --if PLR:HasTag("GoatHubed") then error("You aldready have an instance of goat hub running if you want to change versions then rejoin the game beafore injecting it again") end
@@ -115,16 +113,13 @@ local ESPNameEnabled = false
 local ESPColorEnabled = false
 local ESPRainbowEnabled = false
 local ESPLinesEnabled = false
-local ESPStickmanEnabled = false
 local ESPKey = Enum.KeyCode.N
 local ESPGui = Instance.new("ScreenGui", PLR.PlayerGui)
-local StickmansFolder = Instance.new("Folder", ESPGui)
 local ESPColor = Color3.fromRGB(255,255,0)
 local ESPOutlineType = "None"
 local ESPTypeNum = 1
 local NotTargettedESPColor = Color3.new(1,1,1)
 local NoEffectESPColor = Color3.new(1,1,1)
-StickmansFolder.Name = "Stickmans"
 ESPGui.ResetOnSpawn = nil
 ESPGui.Name = "EspGui"
 ESPGui.IgnoreGuiInset = true
@@ -159,6 +154,7 @@ local TTMessages = {
 -- Creation du hub
 
 local MenuUI = Instance.new("ScreenGui")
+local Cursor = Instance.new("ImageLabel", MenuUI)
 local AlwaysEnabled = Instance.new("ScreenGui", PLR.PlayerGui)
 local MenuFrame = Instance.new("Frame", MenuUI)
 local NameLabel = Instance.new("TextLabel", MenuFrame)
@@ -187,7 +183,13 @@ local FlyOptionLayout = Instance.new("UIListLayout", FlyFrame)
 local FlyEnabledButton
 
 MenuUI.ResetOnSpawn = nil
-MenuUI.Name = "GoatHub" ..Ver
+MenuUI.Name = "GoatHub UNIVERSAL"
+Cursor.Size = UDim2.fromScale(0.05, 0.05)
+Cursor.AnchorPoint = Vector2.new(0,1)
+Cursor.BackgroundTransparency = 1
+Cursor.Image = "rbxassetid://70823320771207"
+Cursor.ZIndex = 2147483647
+Instance.new("UIAspectRatioConstraint", Cursor)
 
 AlwaysEnabled.Name = "GoatHub Always Enabled"
 
@@ -506,6 +508,7 @@ local KeybindsToggleButton = NewButton("KeybindsToggle", QOLFrame, "Disable keyb
 local WhitelistButton = NewButton("Whitelist", QOLFrame, "Whitelist", 2)
 local MouseBehaviorButton = NewButton("Mouse", QOLFrame, "Mouse behavior = Free mouse", 3)
 local MouseVisibleButton = NewButton("Mouse", QOLFrame, "Mouse visible = true", 4)
+local CustomCursorButton = NewButton("Cursor", QOLFrame, "Custom cursor = false", 5)
 
 WhitelistButton.Visible = nil
 
@@ -585,7 +588,6 @@ local ESPColorBox = NewBox("Color", ESPFrame, "Color = 255,255,0", 5)
 local ESPAdvancedButton = NewButton("Advanced", ESPFrame, "Advanced options", 6)
 local ESPOutlineTypeButton = NewButton("Boxes", AdvancedESP1, "Outline type = none", 1)
 local ESPLinesButton = NewButton("Lines", AdvancedESP1, "Lines = false", 2)
-local ESPStickmanButton = NewButton("Stickman", nil, "Stickmans = false", 3)
 local NotTargetedESPColorBox = NewBox("Color", AdvancedESP2, "Color = 255,255,255", 1)
 local ESPRainbowButton = NewButton("Rainbow", AdvancedESP2, "LGBTQ+ = false", 6)
 
@@ -659,6 +661,46 @@ for i,v in MenuUI:GetDescendants() do
 		v.MouseButton1Down:Connect(function()
 
 			ClickSound:Play()
+
+		end)
+
+	end
+
+	if v.Name == "Keybind" then
+
+		local Name = v.Parent.Name
+		local Button = NewButton(Name, WhitelistFrame, Name, i)
+		local Connection
+
+		Button.Size = UDim2.new(0.9, 0, 0.025, 0)
+
+		Button.MouseButton1Down:Connect(function()
+
+			if table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)) then
+
+				table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)))
+				Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
+				v.Visible = nil
+				Connection:Disconnect()
+
+			else
+
+				local OldKey = string.sub(v.Text, #v.Text, #v.Text)
+
+				table.insert(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text))
+				Button.BackgroundColor3 = Color3.fromRGB(38, 255, 14)
+				v.Visible = true
+
+				Connection = v:GetPropertyChangedSignal("Text"):Connect(function()
+
+					if string.sub(v.Text, #v.Text, #v.Text) == "." then return end
+
+					table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, OldKey))
+					table.insert(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text))
+
+				end)
+
+			end
 
 		end)
 
@@ -776,52 +818,6 @@ end)
 
 --Keybinds
 
-for i,v in MenuUI:GetDescendants() do
-
-	task.wait()
-
-	if v.Name == "Keybind" then
-
-		local Name = v.Parent.Name
-		local Button = NewButton(Name, WhitelistFrame, Name, i)
-		local Connection
-
-		Button.Size = UDim2.new(0.9, 0, 0.025, 0)
-
-		Button.MouseButton1Down:Connect(function()
-
-			if table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)) then
-
-				table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)))
-				Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
-				v.Visible = nil
-				Connection:Disconnect()
-
-			else
-
-				local OldKey = string.sub(v.Text, #v.Text, #v.Text)
-
-				table.insert(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text))
-				Button.BackgroundColor3 = Color3.fromRGB(38, 255, 14)
-				v.Visible = true
-
-				Connection = v:GetPropertyChangedSignal("Text"):Connect(function()
-
-					if string.sub(v.Text, #v.Text, #v.Text) == "." then return end
-
-					table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, OldKey))
-					table.insert(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text))
-
-				end)
-
-			end
-
-		end)
-
-	end
-
-end
-
 local function KeyBindsToggle()
 
 	if KDB then return end
@@ -929,6 +925,12 @@ MouseVisibleButton.MouseButton1Down:Connect(function()
 	
 	MouseVisible = not MouseVisible
 	MouseVisibleButton.Text = "Mouse visible = " ..tostring(MouseVisible)
+	
+end)
+
+CustomCursorButton.MouseButton1Down:Connect(function()
+	
+	CustomCursor = not CustomCursor
 	
 end)
 
@@ -1787,9 +1789,7 @@ local function ESPEnable()
 			local AttRight = Instance.new("Attachment", Box3d)
 			local AttUp = Instance.new("Attachment", Box3d)
 			local AttDown = Instance.new("Attachment", Box3d)
-			local SticksFolder = Instance.new("Folder", StickmansFolder)
 
-			SticksFolder.Name = v.DisplayName
 			Box3d.Anchored = true
 			Box3d.CanCollide = nil
 			Box3d.Transparency = 1
@@ -1901,45 +1901,6 @@ local function ESPEnable()
 							LineOutline.Color = NotTargettedESPColor
 							BoxOutline.Color = NotTargettedESPColor
 
-						end
-
-						SticksFolder:ClearAllChildren()
-
-						if ESPStickmanEnabled then
-							
-							for i,v in v.Character:GetChildren() do
-								
-								if v:IsA("BasePart") then
-									
-									local Stick = Instance.new("Frame", SticksFolder)
-									local StickOutline = Instance.new("UIStroke", Stick)
-									local PosYDown = WorldToScreen(Vector3.new(v.Position.X,v.Position.Y + (v.Size.Y / 2),v.Position.Z))
-									local PosYUp = WorldToScreen(Vector3.new(v.Position.X,v.Position.Y - (v.Size.Y / 2),v.Position.Z))
-									local Vec2Pos = WorldToScreen(v.Position)
-									local StickDiff = PosYUp - PosYDown
-									
-									Stick.Size = UDim2.new(0,0,0,0)
-									Stick.AnchorPoint = Vector2.new(0.5,0.5)
-									StickOutline.Color = Color3.new(1,1,1)
-									
-									Stick.Position = UDim2.fromOffset(Vec2Pos.X, Vec2Pos.Y)
-									Stick.Size = UDim2.fromOffset(0,(PosYUp - PosYDown).Magnitude)
-									Stick.Rotation = math.deg(math.atan2(StickDiff.Y, StickDiff.X)) - 90
-									
-									if Target == v then
-
-										Stick.BackgroundColor3 = ESPColor
-
-									else
-
-										Stick.BackgroundColor3 = NotTargettedESPColor
-										
-									end
-									
-								end
-								
-							end
-							
 						end
 
 						if ESPColorEnabled then
@@ -2251,13 +2212,6 @@ ESPLinesButton.MouseButton1Down:Connect(function()
 
 	ESPLinesEnabled = not ESPLinesEnabled
 	ESPLinesButton.Text = "Lines = " ..tostring(ESPLinesEnabled)
-
-end)
-
-ESPStickmanButton.MouseButton1Down:Connect(function()
-
-	ESPStickmanEnabled = not ESPStickmanEnabled
-	ESPStickmanButton.Text = "Stickmans = " ..tostring(ESPStickmanEnabled)
 
 end)
 
@@ -2664,7 +2618,7 @@ LoadingFrame.BackgroundTransparency = 1
 TWLF:Play()
 TWLF.Completed:Wait()
 LoadingFrame:Destroy()
-NameLabel.Text = "GH Universal V" ..Ver
+NameLabel.Text = "GH Universal"
 TWMF:Play()
 TWMF.Completed:Wait()
 
@@ -2707,7 +2661,9 @@ while task.wait() do
 		
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 		UIS.MouseIconEnabled = true
-		
+		Cursor.Visible = CustomCursor
+		Cursor.Position = UDim2.fromOffset(UIS:GetMouseLocation().X, UIS:GetMouseLocation().Y)
+
 	end
 
 end
