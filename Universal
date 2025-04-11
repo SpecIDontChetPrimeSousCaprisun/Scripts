@@ -1893,6 +1893,18 @@ local function ESPEnable()
 
 						local Size = UDim2.new(0, (PosLeft - PosRight).Magnitude, 0, (PosUp - PosDown).Magnitude)
 
+
+						if ESPTeamColor and v.Team then
+
+							local Color = v.TeamColor.Color
+
+							Highlight.OutlineColor = Color
+							UI.TextColor3 = Color
+							LineOutline.Color = Color
+							BoxOutline.Color = Color
+
+						end
+
 						if Target == v and ESPColorEnabled then
 
 							LineOutline.Color = ESPColor
@@ -1923,17 +1935,6 @@ local function ESPEnable()
 							Highlight.OutlineColor = NotTargettedESPColor
 							UI.TextColor3 = NotTargettedESPColor
 
-						end
-
-						if ESPTeamColor and v.Team then
-							
-							local Color = v.TeamColor.Color
-							
-							Highlight.OutlineColor = Color
-							UI.TextColor3 = Color
-							LineOutline.Color = Color
-							BoxOutline.Color = Color
-							
 						end
 
 						if v.Character:FindFirstChild("HumanoidRootPart") then
