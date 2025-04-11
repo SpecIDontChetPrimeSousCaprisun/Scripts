@@ -640,7 +640,7 @@ MenuFrame.BackgroundTransparency = 1
 
 for i,v in MenuUI:GetDescendants() do
 
-	if v:IsA("TextButton") then
+	if v:IsA("TextButton") and v:FindFirstChild("TextLabel") then
 
 		v.MouseEnter:Connect(function()
 
@@ -835,6 +835,8 @@ end)
 --QOL
 
 --Keybinds
+
+KeybindsToggleButton.Frame.Frame.Visible = true
 
 local function KeyBindsToggle()
 
