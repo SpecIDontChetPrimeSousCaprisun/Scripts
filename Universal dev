@@ -354,7 +354,7 @@ end
 local function NewBox(Name, Parent, Text, LayoutOrder)
 
 	local Button = Instance.new("TextBox", Parent)
-	local ButtonCorner = Instance.new("UICorner", Button)
+	local ButtonStroke = Instance.new("UIStroke", Button)
 
 	Button.Name = Name
 	Button.Size = UDim2.new(0.9, 0,0.1, 0)
@@ -365,7 +365,8 @@ local function NewBox(Name, Parent, Text, LayoutOrder)
 	Button.Font = Enum.Font.FredokaOne
 	Button.Text = Text
 	Button.LayoutOrder = LayoutOrder
-	ButtonCorner.CornerRadius = UDim.new(1,0)
+	ButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	ButtonStroke.Thickness = 3
 
 	return Button
 
@@ -481,15 +482,9 @@ ChatFrame.Parent = Options
 
 local CLockFrame = FlyFrame:Clone()
 CLockFrame.Name = "CLock"
-CLockFrame.NameLabel.Text = "CLock"
+CLockFrame.NameLabel.Text = "Aimbots"
 CLockFrame.LayoutOrder = 1
 CLockFrame.Parent = Options
-
-local AimbotFrame = FlyFrame:Clone()
-AimbotFrame.Name = "Aimbot"
-AimbotFrame.NameLabel.Text = "Aimbot"
-AimbotFrame.LayoutOrder = 2
-AimbotFrame.Parent = Options
 
 local CLockChecksFrame = FlyFrame:Clone()
 CLockChecksFrame.Name = "CLockChecks"
@@ -569,12 +564,11 @@ Tabs.Movement = {
 
 -- Aimbot
 
-local CLockEnabledButton = NewButton("Enabled", CLockFrame, "Enabled = false", 1)
-local CLockKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = V", 2)
-local CLockFovLabel = NewButton("Fov", CLockChecksFrame, "-- Fov --", 4)
-local CLockFovEnableButton = NewButton("Fov", CLockChecksFrame, "Fov = false", 4)
-local CLockFovVisibleButton = NewButton("FovVisible", CLockChecksFrame, "Fov visible = false", 5)
-local CLockFovSizeBox = NewBox("Checks", CLockChecksFrame, "Fov size = 100", 6)
+local CLockEnabledButton = NewButton("Enabled", CLockFrame, "CLock", 1)
+local CLockKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = V", 2, true)
+local CLockFovEnableButton = NewButton("Fov", CLockChecksFrame, "Fov", 4)
+local CLockFovVisibleButton = NewButton("FovVisible", CLockChecksFrame, "Fov visible", 5)
+local CLockFovSizeBox = NewBox("Checks", CLockChecksFrame, "Fov size = 100", 6, true)
 local FovFrame = Instance.new("Frame", AlwaysEnabled)
 local FovFrameCorner = Instance.new("UICorner", FovFrame)
 local FovFrameBorder = Instance.new("UIStroke", FovFrame)
@@ -582,17 +576,15 @@ local FovFrameBorder = Instance.new("UIStroke", FovFrame)
 FovFrame.BackgroundTransparency = 1
 FovFrameCorner.CornerRadius = UDim.new(1,0)
 FovFrame.Visible = nil
-CLockFovLabel.Interactable = nil
 
 CLockFovVisibleButton.Visible = nil
 CLockFovSizeBox.Visible = nil
 
-local AimbotEnabledButton = NewButton("Enabled", AimbotFrame, "Enabled = false", 1)
-local AimbotKeybindButton = NewButton("Keybind", AimbotFrame, "Keybind = C", 2)
+local AimbotEnabledButton = NewButton("Enabled", CLockFrame, "Aimbot", 3)
+local AimbotKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = C", 4, true)
 
 Tabs.Aimbot = {
 	CLockFrame,
-	AimbotFrame,
 	CLockChecksFrame
 }
 -- Other
@@ -1466,6 +1458,7 @@ end
 local function CLockEnable()
 
 	CLockEnabled = not CLockEnabled
+	CLockEnabledButton.Frame.Frame.Visible = CLockEnabled
 
 	if CLockEnabled then
 
@@ -1475,7 +1468,6 @@ local function CLockEnable()
 
 		if not Target then CLockEnabled = nil return end
 
-		CLockEnabledButton.Text = "Enabled = true"
 		UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
 
 		while CLockEnabled do
@@ -1500,8 +1492,7 @@ local function CLockEnable()
 		Cam.CameraSubject = Char.Humanoid
 
 	else
-
-		CLockEnabledButton.Text = "Enabled = false"
+		
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 
 	end
@@ -1515,7 +1506,7 @@ CLockKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	CLockKeybindButton.Text = "..."
+	CLockKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1524,14 +1515,14 @@ CLockKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			CLockKey = Inp.KeyCode
-			CLockKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			CLockKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until CLockKeybindButton.Text ~= "..."
+	repeat wait() until CLockKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1541,36 +1532,16 @@ end)
 CLockFovEnableButton.MouseButton1Down:Connect(function()
 
 	CLockFovEnabled = not CLockFovEnabled
-
-	if CLockFovEnabled then
-
-		CLockFovEnableButton.Text = "Fov = true"
-		CLockFovVisibleButton.Visible = true
-		CLockFovSizeBox.Visible = true
-
-	else
-
-		CLockFovEnableButton.Text = "Fov = false"
-		CLockFovVisibleButton.Visible = nil
-		CLockFovSizeBox.Visible = nil
-
-	end
+	CLockFovEnableButton.Frame.Frame.Visible = CLockFovEnabled
+	CLockFovVisibleButton.Visible = CLockFovEnabled
+	CLockFovSizeBox.Visible = CLockFovEnabled
 
 end)
 
 CLockFovVisibleButton.MouseButton1Down:Connect(function()
 
 	FovVisible = not FovVisible
-
-	if FovVisible then
-
-		CLockFovVisibleButton.Text = "Fov visible = true"
-
-	else
-
-		CLockFovVisibleButton.Text = "Fov visible = false"
-
-	end
+	CLockFovVisibleButton.Frame.Frame.Visible = FovVisible
 
 end)
 
@@ -1589,6 +1560,7 @@ end)
 local function AimbotEnable()
 
 	AimbotEnabled = not AimbotEnabled
+	AimbotEnabledButton.Frame.Frame.Visible = AimbotEnabled
 
 	if AimbotEnabled then
 
@@ -1598,7 +1570,6 @@ local function AimbotEnable()
 
 		if not Target then AimbotEnabled = nil return end
 
-		AimbotEnabledButton.Text = "Enabled = true"
 		UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
 
 		local Extra = (Cam.CFrame.Position - PLR.Character.Head.Position).Magnitude
@@ -1668,8 +1639,7 @@ local function AimbotEnable()
 		Cam.CameraSubject = Char.Humanoid
 
 	else
-
-		CLockEnabledButton.Text = "Enabled = false"
+		
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 
 	end
@@ -1683,7 +1653,7 @@ AimbotKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	AimbotKeybindButton.Text = "..."
+	AimbotKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1692,14 +1662,14 @@ AimbotKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			AimbotKey = Inp.KeyCode
-			AimbotKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			AimbotKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until AimbotKeybindButton.Text ~= "..."
+	repeat wait() until AimbotKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
