@@ -8,7 +8,8 @@ local BindingKey = nil
 local VineBoom = Instance.new("Sound")
 local Cam = game.Workspace.CurrentCamera
 local Channel
-local OldMouse
+local MouseBehavior = Enum.MouseBehavior.Default
+local MouseVisible = true
 local HoverSound = Instance.new("Sound")
 local ClickSound = Instance.new("Sound")
 
@@ -503,6 +504,8 @@ local TeamCheckButton = NewButton("Team", CLockChecksFrame, "Team", 4)
 
 local KeybindsToggleButton = NewButton("KeybindsToggle", QOLFrame, "Disable keybinds", 1)
 local WhitelistButton = NewButton("Whitelist", QOLFrame, "Whitelist", 2)
+local MouseBehaviorButton = NewButton("Mouse", QOLFrame, "Mouse behavior = Free mouse", 3)
+local MouseVisibleButton = NewButton("Mouse", QOLFrame, "Mouse visible = true", 4)
 
 WhitelistButton.Visible = nil
 
@@ -583,7 +586,7 @@ local ESPAdvancedButton = NewButton("Advanced", ESPFrame, "Advanced options", 6)
 local ESPOutlineTypeButton = NewButton("Boxes", AdvancedESP1, "Outline type = none", 1)
 local ESPLinesButton = NewButton("Lines", AdvancedESP1, "Lines = false", 2)
 local ESPStickmanButton = NewButton("Stickman", nil, "Stickmans = false", 3)
-local NotTargetedESPColorBox = NewBox("Color", AdvancedESP2, "Color = 255,255,0", 1)
+local NotTargetedESPColorBox = NewBox("Color", AdvancedESP2, "Color = 255,255,255", 1)
 local ESPRainbowButton = NewButton("Rainbow", AdvancedESP2, "LGBTQ+ = false", 6)
 
 ESPColorBox.Visible = nil
@@ -668,6 +671,8 @@ MenuUI.Parent = PLR.PlayerGui
 ExitButton.MouseButton1Down:Connect(function()
 
 	MenuUI.Enabled = not MenuUI.Enabled
+	UIS.MouseBehavior = MouseBehavior
+	UIS.MouseIconEnabled = MouseVisible
 
 end)
 
@@ -891,6 +896,40 @@ WhitelistButton.MouseButton1Down:Connect(function(PosX, PosY)
 	WhitelistFrame.Position = UDim2.new(0,PosX,0,PosY)
 	WhitelistFrame.Visible = not WhitelistFrame.Visible
 
+end)
+
+-- Mouse
+
+task.spawn(function()
+	
+	local MouseBehaviors = {
+		Enum.MouseBehavior.LockCenter,
+		Enum.MouseBehavior.LockCurrentPosition,
+		Enum.MouseBehavior.Default
+	}
+	
+	while task.wait() do
+		
+		for i,v in MouseBehaviors do
+			
+			if v == MouseBehavior then continue end
+			
+			MouseBehaviorButton.MouseButton1Down:Wait()
+			
+			MouseBehavior = v
+			MouseBehaviorButton.Text = "Mouse behavior = " ..string.split(tostring(v), ".")[3]
+			
+		end
+		
+	end
+	
+end)
+
+MouseVisibleButton.MouseButton1Down:Connect(function()
+	
+	MouseVisible = not MouseVisible
+	MouseVisibleButton.Text = "Mouse visible = " ..tostring(MouseVisible)
+	
 end)
 
 Loaded += 1
@@ -2545,12 +2584,8 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 
 		if not MenuUI.Enabled then
 
-			UIS.MouseBehavior = OldMouse
-
-		else
-
-			OldMouse = UIS.MouseBehavior
-			UIS.MouseBehavior = Enum.MouseBehavior.Default
+			UIS.MouseBehavior = MouseBehavior
+			UIS.MouseIconEnabled = MouseVisible
 
 		end
 
@@ -2666,6 +2701,13 @@ while task.wait() do
 
 		FovFrame.Visible = nil
 
+	end
+
+	if MenuUI.Enabled then
+		
+		UIS.MouseBehavior = Enum.MouseBehavior.Default
+		UIS.MouseIconEnabled = true
+		
 	end
 
 end
