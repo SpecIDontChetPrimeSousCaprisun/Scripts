@@ -303,7 +303,7 @@ end
 
 NewTab("Home", 1, 109306454828475)
 
-local function NewButton(Name, Parent, Text, LayoutOrder, Button)
+local function NewButton(Name, Parent, Text, LayoutOrder, Button, NoCheck)
 
 	if not Button then
 
@@ -324,15 +324,27 @@ local function NewButton(Name, Parent, Text, LayoutOrder, Button)
 	Button.Text = ""
 	ButtonStroke.Thickness = 3
 	ButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	CheckFrame.Size = UDim2.fromScale(1,1)
-	CheckFrame.BackgroundColor3 = Color3.new(1,0,0)
-	ButtonStroke:Clone().Parent = CheckFrame
-	GreenFrame.Visible = nil
-	GreenFrame.Size = UDim2.fromScale(1,1)
-	GreenFrame.BackgroundColor3 = Color3.new(0,1,0)
-	Label.AnchorPoint = Vector2.new(1,0)
-	Label.Position = UDim2.fromScale(1,0)
-	Label.Size = UDim2.fromScale(0.866,1)
+	
+	if NoCheck then
+		
+		CheckFrame:Destroy()
+		Label.Position = UDim2.fromScale(0,0)
+		Label.Size = UDim2.fromScale(1,1)
+		
+	else
+		
+		CheckFrame.Size = UDim2.fromScale(1,1)
+		CheckFrame.BackgroundColor3 = Color3.new(1,0,0)
+		ButtonStroke:Clone().Parent = CheckFrame
+		GreenFrame.Visible = nil
+		GreenFrame.Size = UDim2.fromScale(1,1)
+		GreenFrame.BackgroundColor3 = Color3.new(0,1,0)
+		Label.AnchorPoint = Vector2.new(1,0)
+		Label.Position = UDim2.fromScale(1,0)
+		Label.Size = UDim2.fromScale(0.866,1)
+
+	end
+	
 	Label.BackgroundTransparency = 1
 	Label.TextColor3 = Color3.new(1,1,1)
 	Label.TextScaled = true
@@ -492,8 +504,8 @@ CLockChecksFrame.Parent = Options
 
 -- Home
 
-local InterfaceKeybindButton = NewButton("Kebind", InterfaceFrame, "Keybind = H", 1)
-local InterfaceSizeButton = NewButton("Size", InterfaceFrame, "Size = Medium", 2)
+local InterfaceKeybindButton = NewButton("Kebind", InterfaceFrame, "Keybind = H", 1, true)
+local InterfaceSizeButton = NewButton("Size", InterfaceFrame, "Size = Medium", 2, true)
 local SizeFrame = FlyFrame:Clone()
 SizeFrame.Name = "Size"
 SizeFrame.NameLabel.Text = "Choose size"
@@ -501,10 +513,10 @@ SizeFrame.LayoutOrder = 1
 SizeFrame.Parent = MenuUI
 SizeFrame.Size = UDim2.new(0.1, 0,0.25, 0)
 
-local SmallButton = NewButton("Small", SizeFrame, "Small", 1)
-local MediumButton = NewButton("Medium", SizeFrame, "Medium", 2)
-local BigButton = NewButton("Big", SizeFrame, "Big", 3)
-local Size2Button = NewButton("Size2", SizeFrame, "Size 2 Fish", 4)
+local SmallButton = NewButton("Small", SizeFrame, "Small", 1, true)
+local MediumButton = NewButton("Medium", SizeFrame, "Medium", 2, true)
+local BigButton = NewButton("Big", SizeFrame, "Big", 3, true)
+local Size2Button = NewButton("Size2", SizeFrame, "Size 2 Fish", 4, true)
 
 local BTypeFrame = FlyFrame:Clone()
 BTypeFrame.Name = "BType"
@@ -513,19 +525,19 @@ BTypeFrame.LayoutOrder = 1
 BTypeFrame.Parent = MenuUI
 BTypeFrame.Size = UDim2.new(0.1, 0,0.25, 0)
 
-local Back = NewButton("Back", BTypeFrame, "Back", 1)
-local Front = NewButton("Front", BTypeFrame, "Front", 2)
-local Mouth = NewButton("Mouth", BTypeFrame, "Mouth", 3)
+local Back = NewButton("Back", BTypeFrame, "Back", 1, true)
+local Front = NewButton("Front", BTypeFrame, "Front", 2, true)
+local Mouth = NewButton("Mouth", BTypeFrame, "Mouth", 3, true)
 
-local KOCheckButton = NewButton("KO", CLockChecksFrame, "KO", 2)
-local WallCheckButton = NewButton("Wall", CLockChecksFrame, "Wall", 3)
-local TeamCheckButton = NewButton("Team", CLockChecksFrame, "Team", 4)
+local KOCheckButton = NewButton("KO", CLockChecksFrame, "KO", 2, true)
+local WallCheckButton = NewButton("Wall", CLockChecksFrame, "Wall", 3, true)
+local TeamCheckButton = NewButton("Team", CLockChecksFrame, "Team", 4, true)
 
 local KeybindsToggleButton = NewButton("KeybindsToggle", QOLFrame, "Keybinds", 1)
-local WhitelistButton = NewButton("Whitelist", QOLFrame, "Whitelist", 2)
-local MouseBehaviorButton = NewButton("Mouse", QOLFrame, "Mouse behavior = Free mouse", 3)
-local MouseVisibleButton = NewButton("Mouse", QOLFrame, "Mouse visible = true", 4)
-local CustomCursorButton = NewButton("Cursor", QOLFrame, "Custom cursor = false", 5)
+local WhitelistButton = NewButton("Whitelist", QOLFrame, "Whitelist", 2, true)
+local MouseBehaviorButton = NewButton("Mouse", QOLFrame, "Mouse behavior = Free mouse", 3, true)
+local MouseVisibleButton = NewButton("Mouse", QOLFrame, "Mouse visible", 4)
+local CustomCursorButton = NewButton("Cursor", QOLFrame, "Custom cursor", 5)
 
 WhitelistButton.Visible = nil
 
@@ -761,7 +773,7 @@ end)
 SmallButton.MouseButton1Down:Connect(function()
 
 	SizeFrame.Visible = nil
-	InterfaceSizeButton.Text = "Size = Small"
+	InterfaceSizeButton.TextLabel.Text = "Size = Small"
 	MenuFrame.Size = UDim2.new(0.25,0,0.25,0)
 
 end)
@@ -769,7 +781,7 @@ end)
 MediumButton.MouseButton1Down:Connect(function()
 
 	SizeFrame.Visible = nil
-	InterfaceSizeButton.Text = "Size = Medium"
+	InterfaceSizeButton.TextLabel.Text = "Size = Medium"
 	MenuFrame.Size = UDim2.new(0.5,0,0.5,0)
 
 end)
@@ -777,7 +789,7 @@ end)
 BigButton.MouseButton1Down:Connect(function()
 
 	SizeFrame.Visible = nil
-	InterfaceSizeButton.Text = "Size = Big"
+	InterfaceSizeButton.TextLabel.Text = "Size = Big"
 	MenuFrame.Size = UDim2.new(0.75,0,0.75,0)
 
 end)
@@ -785,7 +797,7 @@ end)
 Size2Button.MouseButton1Down:Connect(function()
 
 	SizeFrame.Visible = nil
-	InterfaceSizeButton.Text = "Size = Size 2 fish"
+	InterfaceSizeButton.TextLabel.Text = "Size = Size 2 fish"
 	MenuFrame.Size = UDim2.new(1,0,1,0)
 
 	local ImgLabel = Instance.new("ImageLabel")
@@ -809,7 +821,7 @@ InterfaceKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	InterfaceKeybindButton.Text = "..."
+	InterfaceKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -818,14 +830,14 @@ InterfaceKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			Key = Inp.KeyCode
-			InterfaceKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			InterfaceKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until InterfaceKeybindButton.Text ~= "..."
+	repeat wait() until InterfaceKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -943,13 +955,14 @@ end)
 MouseVisibleButton.MouseButton1Down:Connect(function()
 	
 	MouseVisible = not MouseVisible
-	MouseVisibleButton.Text = "Mouse visible = " ..tostring(MouseVisible)
+	MouseVisibleButton.Frame.Frame.Visible = MouseVisible
 	
 end)
 
 CustomCursorButton.MouseButton1Down:Connect(function()
 	
 	CustomCursor = not CustomCursor
+	CustomCursorButton.Frame.Frame.Visible = CustomCursor
 	
 end)
 
