@@ -1905,32 +1905,32 @@ local function ESPEnable()
 
 						end
 
-						if Target == v and ESPColorEnabled then
+						if not ESPTeamColor or not v.Team and Target == v and ESPColorEnabled then
 
 							LineOutline.Color = ESPColor
 							BoxOutline.Color = ESPColor
 
-						elseif not ESPTeamColor then
+						elseif not ESPTeamColor or not v.Team then
 
 							LineOutline.Color = NotTargettedESPColor
 							BoxOutline.Color = NotTargettedESPColor
 
 						end
 
-						if ESPColorEnabled then
+						if not ESPTeamColor or not v.Team and ESPColorEnabled then
 
 							if Target == v then
 
 								Highlight.OutlineColor = ESPColor
 								UI.TextColor3 = ESPColor
 
-							elseif not ESPTeamColor then
+							elseif not ESPTeamColor or not v.Team then
 
 								Highlight.OutlineColor = NotTargettedESPColor
 								UI.TextColor3 = NotTargettedESPColor
 							end
 
-						elseif not ESPTeamColor then
+						elseif not ESPTeamColor or not v.Team then
 
 							Highlight.OutlineColor = NotTargettedESPColor
 							UI.TextColor3 = NotTargettedESPColor
