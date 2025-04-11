@@ -1910,7 +1910,7 @@ local function ESPEnable()
 							LineOutline.Color = ESPColor
 							BoxOutline.Color = ESPColor
 
-						else
+						elseif not ESPTeamColor then
 
 							LineOutline.Color = NotTargettedESPColor
 							BoxOutline.Color = NotTargettedESPColor
@@ -1924,13 +1924,13 @@ local function ESPEnable()
 								Highlight.OutlineColor = ESPColor
 								UI.TextColor3 = ESPColor
 
-							else
+							elseif not ESPTeamColor then
 
 								Highlight.OutlineColor = NotTargettedESPColor
 								UI.TextColor3 = NotTargettedESPColor
 							end
 
-						else
+						elseif not ESPTeamColor then
 
 							Highlight.OutlineColor = NotTargettedESPColor
 							UI.TextColor3 = NotTargettedESPColor
