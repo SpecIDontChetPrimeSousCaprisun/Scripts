@@ -303,26 +303,49 @@ end
 
 NewTab("Home", 1, 109306454828475)
 
-local function NewButton(Name, Parent, Text, LayoutOrder, Button)
+local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 
-	if not Button then
-
-		Button = Instance.new("TextButton", Parent)	
-
-	end
-
-	local ButtonCorner = Instance.new("UICorner", Button)
+	local Button = Instance.new("TextButton", Parent)
+	local ButtonStroke = Instance.new("UIStroke", Button)
+	local CheckFrame = Instance.new("Frame", Button)
+	local GreenFrame = Instance.new("Frame", CheckFrame)
+	local Label = Instance.new("TextLabel", Button)
 
 	Button.Name = Name
-	Button.Size = UDim2.new(0.9, 0,0.1, 0)
+	Button.Size = UDim2.new(0.9, 0,0.075, 0)
 	Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
 	Button.BackgroundTransparency = 0
-	Button.TextColor3 = Color3.new(1,1,1)
-	Button.TextScaled = true
-	Button.Font = Enum.Font.FredokaOne
-	Button.Text = Text
 	Button.LayoutOrder = LayoutOrder
-	ButtonCorner.CornerRadius = UDim.new(1,0)
+	Button.Text = ""
+	ButtonStroke.Thickness = 3
+	ButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	
+	if NoCheck then
+		
+		CheckFrame:Destroy()
+		Label.Position = UDim2.fromScale(0,0)
+		Label.Size = UDim2.fromScale(1,1)
+		
+	else
+		
+		CheckFrame.Size = UDim2.fromScale(1,1)
+		CheckFrame.BackgroundColor3 = Color3.new(1,0,0)
+		ButtonStroke:Clone().Parent = CheckFrame
+		GreenFrame.Visible = nil
+		GreenFrame.Size = UDim2.fromScale(1,1)
+		GreenFrame.BackgroundColor3 = Color3.new(0,1,0)
+		Label.AnchorPoint = Vector2.new(1,0)
+		Label.Position = UDim2.fromScale(1,0)
+		Label.Size = UDim2.fromScale(0.866,1)
+
+	end
+	
+	Label.BackgroundTransparency = 1
+	Label.TextColor3 = Color3.new(1,1,1)
+	Label.TextScaled = true
+	Label.Font = Enum.Font.FredokaOne
+	Label.Text = Text
+	Instance.new("UIAspectRatioConstraint", CheckFrame)
 
 	return Button
 
@@ -331,7 +354,7 @@ end
 local function NewBox(Name, Parent, Text, LayoutOrder)
 
 	local Button = Instance.new("TextBox", Parent)
-	local ButtonCorner = Instance.new("UICorner", Button)
+	local ButtonStroke = Instance.new("UIStroke", Button)
 
 	Button.Name = Name
 	Button.Size = UDim2.new(0.9, 0,0.1, 0)
@@ -342,7 +365,8 @@ local function NewBox(Name, Parent, Text, LayoutOrder)
 	Button.Font = Enum.Font.FredokaOne
 	Button.Text = Text
 	Button.LayoutOrder = LayoutOrder
-	ButtonCorner.CornerRadius = UDim.new(1,0)
+	ButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+	ButtonStroke.Thickness = 3
 
 	return Button
 
@@ -458,15 +482,9 @@ ChatFrame.Parent = Options
 
 local CLockFrame = FlyFrame:Clone()
 CLockFrame.Name = "CLock"
-CLockFrame.NameLabel.Text = "CLock"
+CLockFrame.NameLabel.Text = "Aimbots"
 CLockFrame.LayoutOrder = 1
 CLockFrame.Parent = Options
-
-local AimbotFrame = FlyFrame:Clone()
-AimbotFrame.Name = "Aimbot"
-AimbotFrame.NameLabel.Text = "Aimbot"
-AimbotFrame.LayoutOrder = 2
-AimbotFrame.Parent = Options
 
 local CLockChecksFrame = FlyFrame:Clone()
 CLockChecksFrame.Name = "CLockChecks"
@@ -476,8 +494,8 @@ CLockChecksFrame.Parent = Options
 
 -- Home
 
-local InterfaceKeybindButton = NewButton("Kebind", InterfaceFrame, "Keybind = H", 1)
-local InterfaceSizeButton = NewButton("Size", InterfaceFrame, "Size = Medium", 2)
+local InterfaceKeybindButton = NewButton("Kebind", InterfaceFrame, "Keybind = H", 1, true)
+local InterfaceSizeButton = NewButton("Size", InterfaceFrame, "Size = Medium", 2, true)
 local SizeFrame = FlyFrame:Clone()
 SizeFrame.Name = "Size"
 SizeFrame.NameLabel.Text = "Choose size"
@@ -485,10 +503,10 @@ SizeFrame.LayoutOrder = 1
 SizeFrame.Parent = MenuUI
 SizeFrame.Size = UDim2.new(0.1, 0,0.25, 0)
 
-local SmallButton = NewButton("Small", SizeFrame, "Small", 1)
-local MediumButton = NewButton("Medium", SizeFrame, "Medium", 2)
-local BigButton = NewButton("Big", SizeFrame, "Big", 3)
-local Size2Button = NewButton("Size2", SizeFrame, "Size 2 Fish", 4)
+local SmallButton = NewButton("Small", SizeFrame, "Small", 1, true)
+local MediumButton = NewButton("Medium", SizeFrame, "Medium", 2, true)
+local BigButton = NewButton("Big", SizeFrame, "Big", 3, true)
+local Size2Button = NewButton("Size2", SizeFrame, "Size 2 Fish", 4, true)
 
 local BTypeFrame = FlyFrame:Clone()
 BTypeFrame.Name = "BType"
@@ -497,19 +515,19 @@ BTypeFrame.LayoutOrder = 1
 BTypeFrame.Parent = MenuUI
 BTypeFrame.Size = UDim2.new(0.1, 0,0.25, 0)
 
-local Back = NewButton("Back", BTypeFrame, "Back", 1)
-local Front = NewButton("Front", BTypeFrame, "Front", 2)
-local Mouth = NewButton("Mouth", BTypeFrame, "Mouth", 3)
+local Back = NewButton("Back", BTypeFrame, "Back", 1, true)
+local Front = NewButton("Front", BTypeFrame, "Front", 2, true)
+local Mouth = NewButton("Mouth", BTypeFrame, "Mouth", 3, true)
 
 local KOCheckButton = NewButton("KO", CLockChecksFrame, "KO", 2)
 local WallCheckButton = NewButton("Wall", CLockChecksFrame, "Wall", 3)
 local TeamCheckButton = NewButton("Team", CLockChecksFrame, "Team", 4)
 
-local KeybindsToggleButton = NewButton("KeybindsToggle", QOLFrame, "Disable keybinds", 1)
-local WhitelistButton = NewButton("Whitelist", QOLFrame, "Whitelist", 2)
-local MouseBehaviorButton = NewButton("Mouse", QOLFrame, "Mouse behavior = Free mouse", 3)
-local MouseVisibleButton = NewButton("Mouse", QOLFrame, "Mouse visible = true", 4)
-local CustomCursorButton = NewButton("Cursor", QOLFrame, "Custom cursor = false", 5)
+local KeybindsToggleButton = NewButton("KeybindsToggle", QOLFrame, "Keybinds", 1)
+local WhitelistButton = NewButton("Whitelist", QOLFrame, "Whitelist", 2, true)
+local MouseBehaviorButton = NewButton("Mouse", QOLFrame, "Mouse behavior = Free mouse", 3, true)
+local MouseVisibleButton = NewButton("Mouse", QOLFrame, "Mouse visible", 4)
+local CustomCursorButton = NewButton("Cursor", QOLFrame, "Custom cursor", 5)
 
 WhitelistButton.Visible = nil
 
@@ -520,30 +538,23 @@ Tabs.Home = {
 
 -- Premier "Tab"
 
-FlyEnabledButton = NewButton("Enabled", FlyFrame, "Enabled = false", 1)
-local FlyKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = F", 2)
+FlyEnabledButton = NewButton("Enabled", FlyFrame, "Fly", 1)
+local FlyKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = F", 2, true)
 local FlySpeedBox = NewBox("Speed", FlyFrame, "Speed = 0", 3)
-local NoclipEnabledButton = NewButton("NoclipEnabled", FlyFrame, "Noclip = false", 4)
-local InfJumpLabel = NewButton("Label", FlyFrame, "-- Inf jump --",5)
-local InfJumpEnabledButton = NewButton("Enabled", FlyFrame, "Enabled = false", 6)
-local InfJumpKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = M", 7)
+local NoclipEnabledButton = NewButton("NoclipEnabled", FlyFrame, "Noclip", 4)
+local InfJumpEnabledButton = NewButton("Enabled", FlyFrame, "Inf jump", 6)
+local InfJumpKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = M", 7, true)
 
-local SpeedEnabledButton = NewButton("Enabled", SpeedFrame, "Enabled = false", 1)
-local SpeedKeybindButton = NewButton("Keybind", SpeedFrame, "Keybind = G", 2)
+local SpeedEnabledButton = NewButton("Enabled", SpeedFrame, "Enabled", 1)
+local SpeedKeybindButton = NewButton("Keybind", SpeedFrame, "Keybind = G", 2, true)
 local SpeedSpeedBox = NewBox("Speed", SpeedFrame, "Speed = 0", 3)
 
-local CTPLabel = NewButton("CTP", TPFrame, "-- Click to tp --", 1)
-local CTPEnabledButton = NewButton("Enabled", TPFrame, "Enabled = false", 2)
-local CTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = P", 3)
+local CTPEnabledButton = NewButton("Enabled", TPFrame, "Click to tp", 2)
+local CTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = P", 3, true)
 
-local PTPLabel = NewButton("PTP", TPFrame, "-- Tp to selected --", 4)
-local PTPEnabledButton = NewButton("Enabled", TPFrame, "TP", 5)
-local PTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = L", 6)
+local PTPEnabledButton = NewButton("Enabled", TPFrame, "Teleport to selected plr", 5, true)
+local PTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = L", 6, true)
 local PTPPlayerBox = NewBox("Player", TPFrame, "Player = " ..PlayerToTP.DisplayName, 7)
-
-InfJumpLabel.Interactable = nil
-CTPLabel.Interactable = nil
-PTPLabel.Interactable = nil
 
 Tabs.Movement = {
 	FlyFrame,
@@ -553,12 +564,11 @@ Tabs.Movement = {
 
 -- Aimbot
 
-local CLockEnabledButton = NewButton("Enabled", CLockFrame, "Enabled = false", 1)
-local CLockKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = V", 2)
-local CLockFovLabel = NewButton("Fov", CLockChecksFrame, "-- Fov --", 4)
-local CLockFovEnableButton = NewButton("Fov", CLockChecksFrame, "Fov = false", 4)
-local CLockFovVisibleButton = NewButton("FovVisible", CLockChecksFrame, "Fov visible = false", 5)
-local CLockFovSizeBox = NewBox("Checks", CLockChecksFrame, "Fov size = 100", 6)
+local CLockEnabledButton = NewButton("Enabled", CLockFrame, "CLock", 1)
+local CLockKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = V", 2, true)
+local CLockFovEnableButton = NewButton("Fov", CLockChecksFrame, "Fov", 4)
+local CLockFovVisibleButton = NewButton("FovVisible", CLockChecksFrame, "Fov visible", 5)
+local CLockFovSizeBox = NewBox("Checks", CLockChecksFrame, "Fov size = 100", 6, true)
 local FovFrame = Instance.new("Frame", AlwaysEnabled)
 local FovFrameCorner = Instance.new("UICorner", FovFrame)
 local FovFrameBorder = Instance.new("UIStroke", FovFrame)
@@ -566,47 +576,43 @@ local FovFrameBorder = Instance.new("UIStroke", FovFrame)
 FovFrame.BackgroundTransparency = 1
 FovFrameCorner.CornerRadius = UDim.new(1,0)
 FovFrame.Visible = nil
-CLockFovLabel.Interactable = nil
 
 CLockFovVisibleButton.Visible = nil
 CLockFovSizeBox.Visible = nil
 
-local AimbotEnabledButton = NewButton("Enabled", AimbotFrame, "Enabled = false", 1)
-local AimbotKeybindButton = NewButton("Keybind", AimbotFrame, "Keybind = C", 2)
+local AimbotEnabledButton = NewButton("Enabled", CLockFrame, "Aimbot", 3)
+local AimbotKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = C", 4, true)
 
 Tabs.Aimbot = {
 	CLockFrame,
-	AimbotFrame,
 	CLockChecksFrame
 }
 -- Other
 
-local ESPEnabledButton = NewButton("Enabled", ESPFrame, "Enabled = false", 1)
-local ESPKeybindButton = NewButton("Keybind", ESPFrame, "Keybind = N", 2)
-local ESPNameEnabledButton = NewButton("NameEnabled", ESPFrame, "Names = false", 3)
-local ESPColorEnabledButton = NewButton("ColorEnabled", ESPFrame, "Color Targeted aimbot player = false", 4)
+local ESPEnabledButton = NewButton("Enabled", ESPFrame, "ESP", 1)
+local ESPKeybindButton = NewButton("Keybind", ESPFrame, "Keybind = N", 2, true)
+local ESPNameEnabledButton = NewButton("NameEnabled", ESPFrame, "Names", 3)
+local ESPColorEnabledButton = NewButton("ColorEnabled", ESPFrame, "Color Targeted aimbot player", 4)
 local ESPColorBox = NewBox("Color", ESPFrame, "Color = 255,255,0", 5)
-local ESPAdvancedButton = NewButton("Advanced", ESPFrame, "Advanced options", 6)
-local ESPOutlineTypeButton = NewButton("Boxes", AdvancedESP1, "Outline type = none", 1)
-local ESPLinesButton = NewButton("Lines", AdvancedESP1, "Lines = false", 2)
+local ESPAdvancedButton = NewButton("Advanced", ESPFrame, "Advanced options", 6, true)
+local ESPOutlineTypeButton = NewButton("Boxes", AdvancedESP1, "Outline type = none", 1, true)
+local ESPLinesButton = NewButton("Lines", AdvancedESP1, "Lines", 2)
 local NotTargetedESPColorBox = NewBox("Color", AdvancedESP2, "Color = 255,255,255", 1)
-local ESPTeamColorButton = NewButton("TeamColor", AdvancedESP2, "Adjust colors for teams = false", 2)
-local ESPRainbowButton = NewButton("Rainbow", AdvancedESP2, "LGBTQ+ = false", 6)
+local ESPTeamColorButton = NewButton("TeamColor", AdvancedESP2, "Adjust colors for teams", 2)
+local ESPRainbowButton = NewButton("Rainbow", AdvancedESP2, "LGBTQ+", 6)
 
 ESPColorBox.Visible = nil
 Tabs["AdvancedESP"] = {AdvancedESP1, AdvancedESP2}
 
-local BangEnabledButton = NewButton("Enabled", BangFrame, "Enabled = false", 1)
-local BangKeybindButton = NewButton("Keybind", BangFrame, "Keybind = B", 2)
-local BTypeButton = NewButton("Type", BangFrame, "Type = Back", 3)
+local BangEnabledButton = NewButton("Enabled", BangFrame, "Bang", 1)
+local BangKeybindButton = NewButton("Keybind", BangFrame, "Keybind = B", 2, true)
+local BTypeButton = NewButton("Type", BangFrame, "Type = Back", 3, true)
 local BangPlayerBox = NewBox("Player", BangFrame, "Player = " ..PlayerToBang.DisplayName, 4)
 
-local RTLabel = NewButton("RT", ChatFrame, "-- Rizz talk --", 1)
-local RTEnabledButton = NewButton("Enabled", ChatFrame, "Talk", 2)
-local RTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = K", 3)
-local TTLabel = NewButton("RT", ChatFrame, "-- Trash talk --", 4)
-local TTEnabledButton = NewButton("Enabled", ChatFrame, "Talk", 5)
-local TTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = J", 6)
+local RTEnabledButton = NewButton("Enabled", ChatFrame, "Rizz Talk", 2, true)
+local RTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = K", 3, true)
+local TTEnabledButton = NewButton("Enabled", ChatFrame, "Trash Talk", 5, true)
+local TTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = J", 6, true)
 
 Tabs.Other = {
 	ESPFrame,
@@ -624,18 +630,18 @@ MenuFrame.BackgroundTransparency = 1
 
 for i,v in MenuUI:GetDescendants() do
 
-	if v:IsA("TextButton") then
+	if v:IsA("TextButton") and v:FindFirstChild("TextLabel") then
 
 		v.MouseEnter:Connect(function()
 
 			HoverSound:Play()
-			v.TextColor3 = Color3.fromRGB(255, 0, 0)
+			v.TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
 
 		end)
 
 		v.MouseLeave:Connect(function()
 
-			v.TextColor3 = Color3.new(1,1,1)
+			v.TextLabel.TextColor3 = Color3.new(1,1,1)
 
 		end)
 
@@ -745,7 +751,7 @@ end)
 SmallButton.MouseButton1Down:Connect(function()
 
 	SizeFrame.Visible = nil
-	InterfaceSizeButton.Text = "Size = Small"
+	InterfaceSizeButton.TextLabel.Text = "Size = Small"
 	MenuFrame.Size = UDim2.new(0.25,0,0.25,0)
 
 end)
@@ -753,7 +759,7 @@ end)
 MediumButton.MouseButton1Down:Connect(function()
 
 	SizeFrame.Visible = nil
-	InterfaceSizeButton.Text = "Size = Medium"
+	InterfaceSizeButton.TextLabel.Text = "Size = Medium"
 	MenuFrame.Size = UDim2.new(0.5,0,0.5,0)
 
 end)
@@ -761,7 +767,7 @@ end)
 BigButton.MouseButton1Down:Connect(function()
 
 	SizeFrame.Visible = nil
-	InterfaceSizeButton.Text = "Size = Big"
+	InterfaceSizeButton.TextLabel.Text = "Size = Big"
 	MenuFrame.Size = UDim2.new(0.75,0,0.75,0)
 
 end)
@@ -769,7 +775,7 @@ end)
 Size2Button.MouseButton1Down:Connect(function()
 
 	SizeFrame.Visible = nil
-	InterfaceSizeButton.Text = "Size = Size 2 fish"
+	InterfaceSizeButton.TextLabel.Text = "Size = Size 2 fish"
 	MenuFrame.Size = UDim2.new(1,0,1,0)
 
 	local ImgLabel = Instance.new("ImageLabel")
@@ -793,7 +799,7 @@ InterfaceKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	InterfaceKeybindButton.Text = "..."
+	InterfaceKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -802,14 +808,14 @@ InterfaceKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			Key = Inp.KeyCode
-			InterfaceKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			InterfaceKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until InterfaceKeybindButton.Text ~= "..."
+	repeat wait() until InterfaceKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -820,16 +826,18 @@ end)
 
 --Keybinds
 
+KeybindsToggleButton.Frame.Frame.Visible = true
+
 local function KeyBindsToggle()
 
 	if KDB then return end
 
 	KDB = true
 	KeybindsActive = not KeybindsActive
+	KeybindsToggleButton.Frame.Frame.Visible = KeybindsActive
 
 	if KeybindsActive then
-
-		KeybindsToggleButton.Text = "Disable keybinds"
+		
 		WhitelistButton.Visible = nil
 
 		game.StarterGui:SetCore("SendNotification", {
@@ -856,7 +864,6 @@ local function KeyBindsToggle()
 
 	else
 
-		KeybindsToggleButton.Text = "Enable keybinds"
 		WhitelistButton.Visible = true
 
 		game.StarterGui:SetCore("SendNotification", {
@@ -915,7 +922,7 @@ task.spawn(function()
 			MouseBehaviorButton.MouseButton1Down:Wait()
 			
 			MouseBehavior = v
-			MouseBehaviorButton.Text = "Mouse behavior = " ..string.split(tostring(v), ".")[3]
+			MouseBehaviorButton.TextLabel.Text = "Mouse behavior = " ..string.split(tostring(v), ".")[3]
 			
 		end
 		
@@ -923,16 +930,19 @@ task.spawn(function()
 	
 end)
 
+MouseVisibleButton.Frame.Frame.Visible = MouseVisible
+
 MouseVisibleButton.MouseButton1Down:Connect(function()
 	
 	MouseVisible = not MouseVisible
-	MouseVisibleButton.Text = "Mouse visible = " ..tostring(MouseVisible)
+	MouseVisibleButton.Frame.Frame.Visible = MouseVisible
 	
 end)
 
 CustomCursorButton.MouseButton1Down:Connect(function()
 	
 	CustomCursor = not CustomCursor
+	CustomCursorButton.Frame.Frame.Visible = CustomCursor
 	
 end)
 
@@ -949,10 +959,9 @@ TWL.Completed:Wait()
 local function FlyActivate()
 
 	FlyEnabled = not FlyEnabled
+	FlyEnabledButton.Frame.Frame.Visible = FlyEnabled
 
 	if FlyEnabled then
-
-		FlyEnabledButton.Text = "Enabled = true"
 
 		local FlyVel = Instance.new("LinearVelocity", Char.HumanoidRootPart)
 		local Att = Instance.new("Attachment", Char.HumanoidRootPart)
@@ -1042,7 +1051,6 @@ local function FlyActivate()
 
 		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
 		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, true)
-		FlyEnabledButton.Text = "Enabled = false"
 		workspace.Gravity = DefaultGrav
 
 		for i,v in OldCollides do
@@ -1063,7 +1071,7 @@ FlyKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	FlyKeybindButton.Text = "..."
+	FlyKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1072,14 +1080,14 @@ FlyKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			FlyKey = Inp.KeyCode
-			FlyKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			FlyKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until FlyKeybindButton.Text ~= "..."
+	repeat wait() until FlyKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1098,16 +1106,7 @@ end)
 NoclipEnabledButton.MouseButton1Down:Connect(function()
 
 	NoclipEnabled = not NoclipEnabled
-
-	if NoclipEnabled then
-
-		NoclipEnabledButton.Text = "Noclip = true"
-
-	else
-
-		NoclipEnabledButton.Text = "Noclip = false"
-
-	end
+	NoclipEnabledButton.Frame.Frame.Visible = NoclipEnabled
 
 end)
 
@@ -1116,10 +1115,10 @@ end)
 local function InfJumpEnable()
 
 	InfJumpEnabled = not InfJumpEnabled
+	InfJumpEnabledButton.Frame.Frame.Visible = InfJumpEnabled
 
 	if InfJumpEnabled then
 
-		InfJumpEnabledButton.Text = "Enabled = true"
 		local JumpLoop = UIS.JumpRequest:Connect(function()
 
 			Char.Humanoid:ChangeState("Jumping")
@@ -1134,10 +1133,6 @@ local function InfJumpEnable()
 
 		JumpLoop:Disconnect()
 
-	else
-
-		InfJumpEnabledButton.Text = "Enabled = false"
-
 	end
 
 end
@@ -1149,7 +1144,7 @@ InfJumpKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	InfJumpKeybindButton.Text = "..."
+	InfJumpKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1158,14 +1153,14 @@ InfJumpKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			InfJumpKey = Inp.KeyCode
-			InfJumpKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			InfJumpKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until InfJumpKeybindButton.Text ~= "..."
+	repeat wait() until InfJumpKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1177,10 +1172,9 @@ end)
 local function SpeedActivate()
 
 	SpeedEnabled = not SpeedEnabled
+	SpeedEnabledButton.Frame.Frame.Visible = SpeedEnabled
 
 	if SpeedEnabled then
-
-		SpeedEnabledButton.Text = "Enabled = true"
 
 		while SpeedEnabled do
 
@@ -1192,7 +1186,6 @@ local function SpeedActivate()
 	else
 
 		Char.Humanoid.WalkSpeed = 16
-		SpeedEnabledButton.Text = "Enabled = false"
 
 	end
 end
@@ -1204,7 +1197,7 @@ SpeedKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	SpeedKeybindButton.Text = "..."
+	SpeedKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1213,14 +1206,14 @@ SpeedKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			SpeedKey = Inp.KeyCode
-			SpeedKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			SpeedKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until SpeedKeybindButton.Text ~= "..."
+	repeat wait() until SpeedKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1243,10 +1236,9 @@ end)
 local function CTPEnable()
 
 	CTPEnabled = not CTPEnabled
+	CTPEnabledButton.Frame.Frame.Visible = CTPEnabled
 
 	if CTPEnabled then
-
-		CTPEnabledButton.Text = "Enabled = true"
 
 		local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1268,10 +1260,6 @@ local function CTPEnable()
 
 		Connection:Disconnect()
 
-	else
-
-		CTPEnabledButton.Text = "Enabled = false"
-
 	end
 
 end
@@ -1283,7 +1271,7 @@ CTPKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	CTPKeybindButton.Text = "..."
+	CTPKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1292,14 +1280,14 @@ CTPKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			CTPKey = Inp.KeyCode
-			CTPKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			CTPKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until CTPKeybindButton.Text ~= "..."
+	repeat wait() until CTPKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1324,7 +1312,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 		})
 
 		PlayerToTP = game:GetService("Players"):GetPlayers()[1]
-		PTPPlayerBox.Text = "Player = " ..PlayerToTP.DisplayName
+		PTPPlayerBox.TextLabel.Text = "Player = " ..PlayerToTP.DisplayName
 
 	end
 
@@ -1337,7 +1325,7 @@ PTPKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	PTPKeybindButton.Text = "..."
+	PTPKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1346,14 +1334,14 @@ PTPKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			PTPKey = Inp.KeyCode
-			PTPKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			PTPKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until PTPKeybindButton.Text ~= "..."
+	repeat wait() until PTPKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1468,6 +1456,7 @@ end
 local function CLockEnable()
 
 	CLockEnabled = not CLockEnabled
+	CLockEnabledButton.Frame.Frame.Visible = CLockEnabled
 
 	if CLockEnabled then
 
@@ -1477,7 +1466,6 @@ local function CLockEnable()
 
 		if not Target then CLockEnabled = nil return end
 
-		CLockEnabledButton.Text = "Enabled = true"
 		UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
 
 		while CLockEnabled do
@@ -1502,8 +1490,7 @@ local function CLockEnable()
 		Cam.CameraSubject = Char.Humanoid
 
 	else
-
-		CLockEnabledButton.Text = "Enabled = false"
+		
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 
 	end
@@ -1517,7 +1504,7 @@ CLockKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	CLockKeybindButton.Text = "..."
+	CLockKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1526,14 +1513,14 @@ CLockKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			CLockKey = Inp.KeyCode
-			CLockKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			CLockKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until CLockKeybindButton.Text ~= "..."
+	repeat wait() until CLockKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1543,36 +1530,16 @@ end)
 CLockFovEnableButton.MouseButton1Down:Connect(function()
 
 	CLockFovEnabled = not CLockFovEnabled
-
-	if CLockFovEnabled then
-
-		CLockFovEnableButton.Text = "Fov = true"
-		CLockFovVisibleButton.Visible = true
-		CLockFovSizeBox.Visible = true
-
-	else
-
-		CLockFovEnableButton.Text = "Fov = false"
-		CLockFovVisibleButton.Visible = nil
-		CLockFovSizeBox.Visible = nil
-
-	end
+	CLockFovEnableButton.Frame.Frame.Visible = CLockFovEnabled
+	CLockFovVisibleButton.Visible = CLockFovEnabled
+	CLockFovSizeBox.Visible = CLockFovEnabled
 
 end)
 
 CLockFovVisibleButton.MouseButton1Down:Connect(function()
 
 	FovVisible = not FovVisible
-
-	if FovVisible then
-
-		CLockFovVisibleButton.Text = "Fov visible = true"
-
-	else
-
-		CLockFovVisibleButton.Text = "Fov visible = false"
-
-	end
+	CLockFovVisibleButton.Frame.Frame.Visible = FovVisible
 
 end)
 
@@ -1591,6 +1558,7 @@ end)
 local function AimbotEnable()
 
 	AimbotEnabled = not AimbotEnabled
+	AimbotEnabledButton.Frame.Frame.Visible = AimbotEnabled
 
 	if AimbotEnabled then
 
@@ -1600,7 +1568,6 @@ local function AimbotEnable()
 
 		if not Target then AimbotEnabled = nil return end
 
-		AimbotEnabledButton.Text = "Enabled = true"
 		UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
 
 		local Extra = (Cam.CFrame.Position - PLR.Character.Head.Position).Magnitude
@@ -1670,8 +1637,7 @@ local function AimbotEnable()
 		Cam.CameraSubject = Char.Humanoid
 
 	else
-
-		CLockEnabledButton.Text = "Enabled = false"
+		
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 
 	end
@@ -1685,7 +1651,7 @@ AimbotKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	AimbotKeybindButton.Text = "..."
+	AimbotKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1694,14 +1660,14 @@ AimbotKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			AimbotKey = Inp.KeyCode
-			AimbotKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			AimbotKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until AimbotKeybindButton.Text ~= "..."
+	repeat wait() until AimbotKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1713,49 +1679,22 @@ end)
 KOCheckButton.MouseButton1Down:Connect(function()
 
 	KOCheck = not KOCheck
-
-	if KOCheck then
-
-		KOCheckButton.BackgroundColor3 = Color3.fromRGB(38, 255, 14)
-
-	else
-
-		KOCheckButton.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
-
-	end
+	KOCheckButton.Frame.Frame.Visible = KOCheck
 
 end)
 
 WallCheckButton.MouseButton1Down:Connect(function()
 
 	WallCheck = not WallCheck
-
-	if WallCheck then
-
-		WallCheckButton.BackgroundColor3 = Color3.fromRGB(38, 255, 14)
-
-	else
-
-		WallCheckButton.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
-
-	end
+	WallCheckButton.Frame.Frame.Visible = WallCheck
 
 end)
 
 TeamCheckButton.MouseButton1Down:Connect(function()
 
 	TeamCheck = not TeamCheck
-
-	if TeamCheck then
-
-		TeamCheckButton.BackgroundColor3 = Color3.fromRGB(38, 255, 14)
-
-	else
-
-		TeamCheckButton.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
-
-	end
-
+	TeamCheckButton.Frame.Frame.Visible = TeamCheck
+	
 end)
 
 Loaded += 1
@@ -1770,10 +1709,9 @@ TWL.Completed:Wait()
 local function ESPEnable()
 
 	ESPEnabled = not ESPEnabled
+	ESPEnabledButton.Frame.Frame.Visible = ESPEnabled
 
 	if ESPEnabled then
-
-		ESPEnabledButton.Text = "Enabled = true"
 
 		local Target = FindPlr()
 
@@ -2024,7 +1962,6 @@ local function ESPEnable()
 
 	else
 
-		ESPEnabledButton.Text = "Enabled = false"
 		ESPGui:ClearAllChildren()
 
 	end
@@ -2036,10 +1973,10 @@ local function ESPRainbowEnable()
 	NotTargetedESPColorBox.Visible = ESPRainbowEnabled
 	ESPTeamColorButton.Visible = ESPRainbowEnabled
 	ESPRainbowEnabled = not ESPRainbowEnabled
+	ESPRainbowButton.Frame.Frame.Visible = ESPRainbowEnabled
 
 	if ESPRainbowEnabled then
 
-		ESPRainbowButton.Text = "LGBTQ+ = true" 
 		local RainbowVal = Instance.new("Color3Value")
 		local ColorTbl = {
 			BrickColor.Red().Color,
@@ -2077,8 +2014,7 @@ local function ESPRainbowEnable()
 		end
 
 	else
-
-		ESPRainbowButton.Text = "LGBTQ+ = false" 
+		
 		NotTargettedESPColor = NoEffectESPColor
 		
 		while not ESPRainbowEnabled do
@@ -2098,7 +2034,7 @@ ESPKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	ESPKeybindButton.Text = "..."
+	ESPKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -2107,14 +2043,14 @@ ESPKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			ESPKey = Inp.KeyCode
-			ESPKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			ESPKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until ESPKeybindButton.Text ~= "..."
+	repeat wait() until ESPKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -2127,41 +2063,21 @@ ESPTeamColorButton.MouseButton1Down:Connect(function()
 	
 	ESPRainbowButton.Visible = ESPTeamColor
 	ESPTeamColor = not ESPTeamColor
-	ESPTeamColorButton.Text = "Adjust colors for teams = " ..tostring(ESPTeamColor)
+	ESPTeamColorButton.Frame.Frame.Visible = ESPTeamColor
 	
 end)
 
 ESPNameEnabledButton.MouseButton1Down:Connect(function()
 
 	ESPNameEnabled = not ESPNameEnabled
-
-	if ESPNameEnabled then
-
-		ESPNameEnabledButton.Text = "Names = true"
-
-	else
-
-		ESPNameEnabledButton.Text = "Names = false"
-
-	end
+	ESPNameEnabledButton.Frame.Frame.Visible = ESPNameEnabled
 
 end)
 
 ESPColorEnabledButton.MouseButton1Down:Connect(function()
 
 	ESPColorEnabled = not ESPColorEnabled
-
-	if ESPColorEnabled then
-
-		ESPColorEnabledButton.Text = "ColorTargeted aimbot player = true"
-		ESPColorBox.Visible = true
-
-	else
-
-		ESPColorEnabledButton.Text = "ColorTargeted aimbot player = false"
-		ESPColorBox.Visible = nil
-
-	end
+	ESPColorEnabledButton.Frame.Frame.Visible = ESPColorEnabled
 
 end)
 
@@ -2230,14 +2146,14 @@ ESPOutlineTypeButton.MouseButton1Down:Connect(function()
 
 	ESPOutlineType = ESPOutlineTypes[ESPTypeNum]
 
-	ESPOutlineTypeButton.Text = "Outline type = " ..ESPOutlineType
+	ESPOutlineTypeButton.TextLabel.Text = "Outline type = " ..ESPOutlineType
 
 end)
 
 ESPLinesButton.MouseButton1Down:Connect(function()
 
 	ESPLinesEnabled = not ESPLinesEnabled
-	ESPLinesButton.Text = "Lines = " ..tostring(ESPLinesEnabled)
+	ESPLinesButton.Frame.Frame = ESPLinesEnabled
 
 end)
 
@@ -2278,6 +2194,7 @@ end)
 local function BangEnable()
 
 	BangEnabled = not BangEnabled
+	BangEnabledButton.Frame.Frame.Visible = BangEnabled
 
 	if BangEnabled then
 
@@ -2290,8 +2207,6 @@ local function BangEnable()
 			})
 			return
 		end
-
-		BangEnabledButton.Text = "Bang = true"
 
 		local Anim = Instance.new("Animation")
 
@@ -2351,10 +2266,6 @@ local function BangEnable()
 
 		Track:Stop()
 
-	else
-
-		BangEnabledButton.Text = "Bang = false"
-
 	end
 
 end
@@ -2369,7 +2280,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 		})
 
 		BangEnabled = nil
-		BangEnabledButton.Text = "Bang = false"
+		BangEnabledButton.Frame.Frame = BangEnabled
 		PlayerToBang = game:GetService("Players"):GetPlayers()[1]
 		BangPlayerBox.Text = "Player = " ..PlayerToBang.DisplayName
 
@@ -2385,7 +2296,7 @@ BangKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	BangKeybindButton.Text = "..."
+	BangKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -2394,14 +2305,14 @@ BangKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			BangKey = Inp.KeyCode
-			BangKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			BangKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until BangKeybindButton.Text ~= "..."
+	repeat wait() until BangKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -2443,7 +2354,7 @@ Back.MouseButton1Down:Connect(function()
 
 	BTypeFrame.Visible = nil
 	BangType = "Back"
-	BTypeButton.Text = "Type = Back"
+	BTypeButton.TextLabel.Text = "Type = Back"
 
 end)
 
@@ -2451,7 +2362,7 @@ Front.MouseButton1Down:Connect(function()
 
 	BTypeFrame.Visible = nil
 	BangType = "Front"
-	BTypeButton.Text = "Type = Front"
+	BTypeButton.TextLabel.Text = "Type = Front"
 
 end)
 
@@ -2459,7 +2370,7 @@ Mouth.MouseButton1Down:Connect(function()
 
 	BTypeFrame.Visible = nil
 	BangType = "Mouth"
-	BTypeButton.Text = "Type = Mouth"
+	BTypeButton.TextLabel.Text = "Type = Mouth"
 
 end)
 
@@ -2482,7 +2393,7 @@ RTKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	RTKeybindButton.Text = "..."
+	RTKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -2491,14 +2402,14 @@ RTKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			RTKey = Inp.KeyCode
-			RTKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			RTKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until RTKeybindButton.Text ~= "..."
+	repeat wait() until RTKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -2522,7 +2433,7 @@ TTKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	TTKeybindButton.Text = "..."
+	TTKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -2531,14 +2442,14 @@ TTKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			TTKey = Inp.KeyCode
-			TTKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			TTKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until TTKeybindButton.Text ~= "..."
+	repeat wait() until TTKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
