@@ -1,0 +1,2707 @@
+local PLR = game:GetService("Players").LocalPlayer
+local Char = PLR.Character or PLR.CharacterAdded:Wait()
+local UIS = game:GetService("UserInputService")
+local TW = game.TweenService
+local Key = Enum.KeyCode.H
+local BindingKey = nil
+local Cam = game.Workspace.CurrentCamera
+local Channel
+local MouseBehavior = Enum.MouseBehavior.Default
+local MouseVisible = true
+local CustomCursor = false
+local HoverSound = Instance.new("Sound")
+local ClickSound = Instance.new("Sound")
+
+if game:GetService("TextChatService"):FindFirstChild("TextChannels") then
+
+	Channel = game:GetService("TextChatService"):WaitForChild("TextChannels"):WaitForChild("RBXGeneral")
+
+end
+
+local VineBoom = Instance.new("Sound")
+
+VineBoom.SoundId = "rbxassetid://5178876770"
+VineBoom.Parent = game.SoundService
+HoverSound.Parent = game.SoundService
+HoverSound.SoundId = "rbxassetid://92876108656319"
+ClickSound.Parent = game.SoundService
+ClickSound.SoundId = "rbxassetid://6042053626"
+
+local Tabs = {
+	Home = {},
+	Movement = {},
+	Aimbot = {},
+	Other = {},
+	None = {}
+}
+local CurrentTab = "None"
+
+if PLR:HasTag("GoatUHubed") then
+
+	local MenuUI = Instance.new("ScreenGui")
+	local ImgLabel = Instance.new("ImageLabel")
+
+	ImgLabel.Size = UDim2.new(1,0,1,0)
+	ImgLabel.Image = "http://www.roblox.com/asset/?id=75982668557119"
+	ImgLabel.BackgroundTransparency = 1
+	ImgLabel.Parent = MenuUI
+	MenuUI.Parent = PLR.PlayerGui
+
+	game.TweenService:Create(ImgLabel, TweenInfo.new(2.5, Enum.EasingStyle.Linear), {ImageTransparency = 1}):Play()
+	VineBoom:Play()
+
+	game.StarterGui:SetCore("SendNotification", {
+		Title = "Goat Hub",
+		Text = "You aldready have an instance of goat hub running if you want to change versions then rejoin the game beafore injecting it again"
+	})
+	error("You aldready have an instance of goat hub running if you want to change versions then rejoin the game beafore injecting it again")
+
+end 
+
+game.StarterGui:SetCore("SendNotification", {
+	Title = "Goat Hub",
+	Text = "SucessFully ran goat hub universal please wait..."
+})
+
+--if PLR:HasTag("GoatHubed") then error("You aldready have an instance of goat hub running if you want to change versions then rejoin the game beafore injecting it again") end
+PLR:AddTag("GoatUHubed")
+
+-- Varibles pour la chaise gaming
+local KeybindsActive = true
+local KDB = false
+local KeybindsWhitelist = {}
+
+local OldCollides = {}
+local FlyEnabled = false
+local FlyKey = Enum.KeyCode.F
+local FlySpeed = 0
+local NoclipEnabled = false
+local OldWS
+local DefaultGrav = workspace.Gravity
+local InfJumpEnabled = false
+local InfJumpKey = Enum.KeyCode.M
+
+local SpeedEnabled = false
+local SpeedKey = Enum.KeyCode.G
+local SpeedSpeed = 0
+
+local CTPEnabled = false
+local CTPKey = Enum.KeyCode.P
+local CTPParams = RaycastParams.new()
+CTPParams.FilterDescendantsInstances = {Char}
+CTPParams.RespectCanCollide = false
+CTPParams.IgnoreWater = true
+
+local PTPKey = Enum.KeyCode.L
+local PlayerToTP = game:GetService("Players"):GetPlayers()[1]
+local OldPTPConnection
+
+local CLockEnabled = false
+local CLockKey = Enum.KeyCode.V
+local CLockFovEnabled = nil
+local FovVisible = nil
+local FovSize = 100  
+local KOCheck = nil
+local WallCheck = nil
+local TeamCheck = nil
+
+local AimbotEnabled = false
+local AimbotKey = Enum.KeyCode.C
+
+local ESPEnabled = false
+local ESPNameEnabled = false
+local ESPColorEnabled = false
+local ESPRainbowEnabled = false
+local ESPLinesEnabled = false
+local ESPTeamColor = false
+local ESPKey = Enum.KeyCode.N
+local ESPGui = Instance.new("ScreenGui", PLR.PlayerGui)
+local ESPColor = Color3.fromRGB(255,255,0)
+local ESPOutlineType = "None"
+local ESPTypeNum = 1
+local NotTargettedESPColor = Color3.new(1,1,1)
+local NoEffectESPColor = Color3.new(1,1,1)
+ESPGui.ResetOnSpawn = nil
+ESPGui.Name = "EspGui"
+ESPGui.IgnoreGuiInset = true
+
+local ESPOutlineTypes = {[1] = "None", [2] = "Highlight", [3] = "Box"}
+
+local BangEnabled = false
+local BangKey = Enum.KeyCode.B
+local BangType = "Back"
+local PlayerToBang = game:GetService("Players"):GetPlayers()[1]
+
+local RTKey = Enum.KeyCode.K
+local RTMessages = {
+	"Are you a bus ? Cuz i want to fill you with kids",
+	"I love you dady",
+	"Are you didi ? Cuz i want ALL YOUR BABY OIL !",
+	"Am i a minecraft youtuber ? Yes cuz imma mollest you",
+	"Come here and kiss me on my hot mouth, am feeling romantical today"
+}
+
+local TTKey = Enum.KeyCode.J
+local TTMessages = {
+	"EZZ",
+	"Ur not humbled lil bro",
+	"Get atomised by a vr user",
+	"Cronus on top",
+	"Its vr am flying irl",
+	"V4 and loose",
+	"Spec i dont chet"
+}
+
+-- Creation du hub
+
+local MenuUI = Instance.new("ScreenGui")
+local Cursor = Instance.new("ImageLabel", MenuUI)
+local AlwaysEnabled = Instance.new("ScreenGui", PLR.PlayerGui)
+local MenuFrame = Instance.new("Frame", MenuUI)
+local NameLabel = Instance.new("TextLabel", MenuFrame)
+local ExitButton = Instance.new("TextButton", MenuFrame)
+local Options = Instance.new("Frame", MenuFrame)
+
+local MenuFrameDrag = Instance.new("UIDragDetector", MenuFrame)
+local MenuFrameCorner = Instance.new("UICorner", MenuFrame)
+local MenuFrameRatio = Instance.new("UIAspectRatioConstraint")
+
+local TabsFrame = Instance.new("Frame", MenuFrame)
+local TabsUiLayout = Instance.new("UIListLayout", TabsFrame)
+
+local NameLabelCorner = Instance.new("UICorner", NameLabel)
+local NameLabelShadow = Instance.new("Frame", MenuFrame)
+
+local ExitButtonCorner = Instance.new("UICorner", ExitButton)
+local ExitButtonRatio = Instance.new("UIAspectRatioConstraint")
+
+local OptionsLayout = Instance.new("UIGridLayout", Options)
+
+local FlyFrame = Instance.new("Frame", Options)
+
+local FlyCorner = Instance.new("UICorner", FlyFrame)
+local FlyOptionLayout = Instance.new("UIListLayout", FlyFrame)
+local FlyEnabledButton
+
+MenuUI.ResetOnSpawn = nil
+MenuUI.Name = "GoatHub UNIVERSAL"
+Cursor.Size = UDim2.fromScale(0.05, 0.05)
+Cursor.AnchorPoint = Vector2.new(0,1)
+Cursor.BackgroundTransparency = 1
+Cursor.Image = "rbxassetid://70823320771207"
+Cursor.ZIndex = 2147483647
+Instance.new("UIAspectRatioConstraint", Cursor)
+
+AlwaysEnabled.Name = "GoatHub Always Enabled"
+
+MenuFrame.Size = UDim2.new(0.5,0,0.5,0)
+MenuFrame.Position = UDim2.new(0.5,0,0.5,0)
+MenuFrame.AnchorPoint  = Vector2.new(0.5,0.5)
+MenuFrame.BackgroundColor3 = Color3.fromRGB(45,45,45)
+MenuFrame.BackgroundTransparency = 0.25
+MenuFrame.ClipsDescendants = true
+
+MenuFrameDrag.ResponseStyle = Enum.UIDragDetectorResponseStyle.Scale
+MenuFrameDrag.BoundingUI = NameLabel
+MenuFrameCorner.CornerRadius = UDim.new(0.1,0)
+MenuFrameRatio.AspectRatio = 2.03
+MenuFrameRatio.Parent = MenuFrame
+
+NameLabel.Name = "NameLabel"
+NameLabel.Size = UDim2.new(1,0,0.1,0)
+NameLabel.Position = UDim2.new(0,0,0,0)
+NameLabel.BackgroundColor3 = Color3.fromRGB(45,45,45)
+NameLabel.Text = "GH"
+NameLabel.TextColor3 = Color3.new(1,1,1)
+NameLabel.Font = Enum.Font.Michroma
+NameLabel.TextXAlignment = Enum.TextXAlignment.Left
+NameLabel.ZIndex = 5
+NameLabel.TextScaled = true
+
+NameLabelCorner.CornerRadius = UDim.new(1,0)
+NameLabelShadow.Name = "NameBackGround"
+NameLabelShadow.BackgroundColor3 = Color3.fromRGB(45,45,45)
+NameLabelShadow.Size = UDim2.new(1, 0,0.055, 0)
+NameLabelShadow.Position = UDim2.new(0, 0,0.045, 0)
+
+ExitButton.Name = "ExitButton"
+ExitButton.Size = UDim2.new(0.08, 0,0.08, 0)
+ExitButton.Position = UDim2.new(0.937, 0,0.008, 0)
+ExitButton.BackgroundColor3 = Color3.new(1,0,0)
+ExitButton.Text = "X"
+ExitButton.TextColor3 = Color3.new(1,1,1)
+ExitButton.ZIndex = 99999
+
+ExitButtonCorner.CornerRadius = UDim.new(1,0)
+ExitButtonRatio.AspectRatio = 1
+ExitButtonRatio.Parent = ExitButton
+
+Options.Name = "Options"
+Options.Position = UDim2.new(0.026,0,0.139,0)
+Options.Size = UDim2.new(0.95, 0,0.783, 0)
+Options.Transparency = 1
+
+OptionsLayout.CellSize = UDim2.new(0.25,0,1,0)
+OptionsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
+OptionsLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+TabsFrame.AnchorPoint = Vector2.new(1,1)
+TabsFrame.Position = UDim2.new(1,0,1,0)
+TabsFrame.Size = UDim2.new(0.1, 0, 0.78,1)
+TabsFrame.BackgroundColor3 = Color3.fromRGB(45,45,45)
+
+TabsUiLayout.Padding = UDim.new(0.05)
+TabsUiLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+TabsUiLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+TabsUiLayout.SortOrder = Enum.SortOrder.LayoutOrder
+TabsUiLayout.FillDirection = Enum.FillDirection.Vertical
+
+MenuFrameCorner:Clone().Parent = TabsFrame
+
+local function NewTab(Tab, LayoutOrder, Img)
+
+	local Button = Instance.new("ImageButton", TabsFrame)
+	local ButtonCorner = Instance.new("UICorner", Button)
+	local ButtonConstraint = Instance.new("UIAspectRatioConstraint", Button)
+
+	ButtonConstraint.DominantAxis = Enum.DominantAxis.Height
+	Button.Name = Tab
+	Button.Size = UDim2.new(0.5,0,0.5,0)
+	Button.Image = "rbxassetid://" ..Img
+	Button.BorderColor3 = Color3.fromRGB(70,70,70)
+	Button.BackgroundTransparency = 0.75
+	Button.LayoutOrder = LayoutOrder
+
+	if Tab == CurrentTab then Button.BackgroundColor3 = Color3.new(1,0,0) end
+
+	Button.MouseButton1Down:Connect(function()
+
+		if CurrentTab == Tab then return end
+
+		Button.BackgroundColor3 = Color3.new(1,0,0)
+		TabsFrame[CurrentTab].BackgroundColor3 = Color3.fromRGB(70,70,70)
+
+		for i,v in Tabs[CurrentTab] do
+
+			v.Visible = nil
+
+		end
+
+		for i,v in Tabs[Tab] do
+
+			v.Visible = true
+
+		end
+
+		CurrentTab = Tab
+
+	end)
+
+	return Button
+
+end
+
+NewTab("Home", 1, 109306454828475)
+
+local function NewButton(Name, Parent, Text, LayoutOrder, Button)
+
+	if not Button then
+
+		Button = Instance.new("TextButton", Parent)	
+
+	end
+
+	local ButtonStroke = Instance.new("UIStroke", Button)
+	local CheckFrame = Instance.new("Frame", Button)
+	local GreenFrame = Instance.new("Frame", CheckFrame)
+	local Label = Instance.new("TextLabel")
+
+	Button.Name = Name
+	Button.Size = UDim2.new(0.9, 0,0.075, 0)
+	Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
+	Button.BackgroundTransparency = 0
+	Button.LayoutOrder = LayoutOrder
+	CheckFrame.Size = UDim2.fromScale(1,1)
+	CheckFrame.BackgroundColor3 = Color3.new(1,0,0)
+	ButtonStroke:Clone().Parent = CheckFrame
+	GreenFrame.Visible = nil
+	GreenFrame.Size = UDim2.fromScale(1,1)
+	GreenFrame.BackgroundColor3 = Color3.new(0,1,0)
+	Label.AnchorPoint = Vector2.new(1,0)
+	Label.Position = UDim2.fromScale(1,0)
+	Label.BackgroundTransparency = 1
+	Label.TextScaled = true
+	Label.Font = Enum.Font.FredokaOne
+	Label.Text = Text
+	Instance.new("UIAspectRatioConstraint", CheckFrame)
+	ButtonStroke.Thickness = 3
+
+	return Button
+
+end
+
+local function NewBox(Name, Parent, Text, LayoutOrder)
+
+	local Button = Instance.new("TextBox", Parent)
+	local ButtonCorner = Instance.new("UICorner", Button)
+
+	Button.Name = Name
+	Button.Size = UDim2.new(0.9, 0,0.1, 0)
+	Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
+	Button.BackgroundTransparency = 0
+	Button.TextColor3 = Color3.new(1,1,1)
+	Button.TextScaled = true
+	Button.Font = Enum.Font.FredokaOne
+	Button.Text = Text
+	Button.LayoutOrder = LayoutOrder
+	ButtonCorner.CornerRadius = UDim.new(1,0)
+
+	return Button
+
+end
+
+FlyFrame.Name = "Fly"
+FlyFrame.BackgroundColor3 = Color3.fromRGB(45,45,45)
+FlyFrame.LayoutOrder = 1
+FlyFrame.Visible = nil
+
+-- Creation d "Tabs"
+
+NewTab("Movement", 2, 10507122420)
+NewTab("Aimbot", 3, 13557340523)
+NewTab("Other", 9999, 0)
+
+-- Frames
+
+local LoadingFrame = Instance.new("CanvasGroup", NameLabel)
+local LoadingBar = Instance.new("Frame", LoadingFrame)
+local LoadingFrameCorner = Instance.new("UICorner", LoadingFrame)
+
+LoadingFrameCorner.CornerRadius = UDim.new(1,0)
+
+LoadingFrame.Name = "LoadingFrame"
+LoadingFrame.AnchorPoint = Vector2.new(0.5,0.5)
+LoadingFrame.Size = UDim2.new(0.75,0,0.25,0)
+LoadingFrame.Position = UDim2.new(0.5,0,0.5,0)
+LoadingFrame.BackgroundColor3 = Color3.new(1,1,1)
+LoadingFrame.ZIndex = 10
+LoadingBar.Size = UDim2.new(0,0,1,0)
+LoadingBar.BackgroundColor3 = Color3.fromRGB(0,150,255)
+LoadingBar.ZIndex = 20
+LoadingFrameCorner:Clone().Parent = LoadingBar
+
+local FlyName = NameLabel:Clone()
+
+FlyCorner.CornerRadius = UDim.new(0.1,0)
+FlyOptionLayout.Padding = UDim.new(0.025)
+FlyOptionLayout.SortOrder = Enum.SortOrder.LayoutOrder
+FlyOptionLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+FlyName.LoadingFrame:Destroy()
+FlyName.Parent = FlyFrame
+FlyName.Text = "Fly"
+FlyName.Name = "NameLabel"
+FlyName.TextXAlignment = Enum.TextXAlignment.Center
+
+local WhitelistFrame = Instance.new("ScrollingFrame")
+local WhitelistCorner = Instance.new("UICorner", WhitelistFrame)
+local WhitelistOptionLayout = Instance.new("UIListLayout", WhitelistFrame)
+
+WhitelistCorner.CornerRadius = UDim.new(0.1,0)
+WhitelistOptionLayout.Padding = UDim.new(0.01)
+WhitelistOptionLayout.SortOrder = Enum.SortOrder.LayoutOrder
+WhitelistOptionLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+WhitelistFrame.Size = UDim2.new(0.1, 0,0.25, 0)
+WhitelistFrame.Visible = nil
+WhitelistFrame.Parent = MenuUI
+
+local InterfaceFrame = FlyFrame:Clone()
+InterfaceFrame.Name = "Interface"
+InterfaceFrame.NameLabel.Text = "Interface"
+InterfaceFrame.LayoutOrder = 1
+InterfaceFrame.Parent = Options
+
+local QOLFrame = FlyFrame:Clone()
+QOLFrame.Name = "QOL"
+QOLFrame.NameLabel.Text = "QOL"
+QOLFrame.LayoutOrder = 2
+QOLFrame.Parent = Options
+
+local SpeedFrame = FlyFrame:Clone()
+SpeedFrame.Name = "Speed"
+SpeedFrame.NameLabel.Text = "Speed"
+SpeedFrame.LayoutOrder = 2
+SpeedFrame.Parent = Options
+
+local TPFrame = FlyFrame:Clone()
+TPFrame.Name = "TP"
+TPFrame.NameLabel.Text = "TP"
+TPFrame.LayoutOrder = 3
+TPFrame.Parent = Options
+
+local ESPFrame = FlyFrame:Clone()
+ESPFrame.Name = "ESP"
+ESPFrame.NameLabel.Text = "ESP"
+ESPFrame.LayoutOrder = 1
+ESPFrame.Parent = Options
+
+local AdvancedESP1 = FlyFrame:Clone()
+AdvancedESP1.Name = "AdvancedESP1"
+AdvancedESP1.NameLabel.Text = "UI"
+AdvancedESP1.LayoutOrder = 1
+AdvancedESP1.Parent = Options
+
+local AdvancedESP2 = FlyFrame:Clone()
+AdvancedESP2.Name = "AdvancedESP1"
+AdvancedESP2.NameLabel.Text = "Colors"
+AdvancedESP2.LayoutOrder = 2
+AdvancedESP2.Parent = Options
+
+local BangFrame = FlyFrame:Clone()
+BangFrame.Name = "Bang"
+BangFrame.NameLabel.Text = "Les 8 étapes"
+BangFrame.LayoutOrder = 2
+BangFrame.Parent = Options
+
+local ChatFrame = FlyFrame:Clone()
+ChatFrame.Name = "Chat"
+ChatFrame.NameLabel.Text = "Chat"
+ChatFrame.LayoutOrder = 3
+ChatFrame.Parent = Options
+
+local CLockFrame = FlyFrame:Clone()
+CLockFrame.Name = "CLock"
+CLockFrame.NameLabel.Text = "CLock"
+CLockFrame.LayoutOrder = 1
+CLockFrame.Parent = Options
+
+local AimbotFrame = FlyFrame:Clone()
+AimbotFrame.Name = "Aimbot"
+AimbotFrame.NameLabel.Text = "Aimbot"
+AimbotFrame.LayoutOrder = 2
+AimbotFrame.Parent = Options
+
+local CLockChecksFrame = FlyFrame:Clone()
+CLockChecksFrame.Name = "CLockChecks"
+CLockChecksFrame.NameLabel.Text = "Checks"
+CLockChecksFrame.LayoutOrder = 3
+CLockChecksFrame.Parent = Options
+
+-- Home
+
+local InterfaceKeybindButton = NewButton("Kebind", InterfaceFrame, "Keybind = H", 1)
+local InterfaceSizeButton = NewButton("Size", InterfaceFrame, "Size = Medium", 2)
+local SizeFrame = FlyFrame:Clone()
+SizeFrame.Name = "Size"
+SizeFrame.NameLabel.Text = "Choose size"
+SizeFrame.LayoutOrder = 1
+SizeFrame.Parent = MenuUI
+SizeFrame.Size = UDim2.new(0.1, 0,0.25, 0)
+
+local SmallButton = NewButton("Small", SizeFrame, "Small", 1)
+local MediumButton = NewButton("Medium", SizeFrame, "Medium", 2)
+local BigButton = NewButton("Big", SizeFrame, "Big", 3)
+local Size2Button = NewButton("Size2", SizeFrame, "Size 2 Fish", 4)
+
+local BTypeFrame = FlyFrame:Clone()
+BTypeFrame.Name = "BType"
+BTypeFrame.NameLabel.Text = "Choose type"
+BTypeFrame.LayoutOrder = 1
+BTypeFrame.Parent = MenuUI
+BTypeFrame.Size = UDim2.new(0.1, 0,0.25, 0)
+
+local Back = NewButton("Back", BTypeFrame, "Back", 1)
+local Front = NewButton("Front", BTypeFrame, "Front", 2)
+local Mouth = NewButton("Mouth", BTypeFrame, "Mouth", 3)
+
+local KOCheckButton = NewButton("KO", CLockChecksFrame, "KO", 2)
+local WallCheckButton = NewButton("Wall", CLockChecksFrame, "Wall", 3)
+local TeamCheckButton = NewButton("Team", CLockChecksFrame, "Team", 4)
+
+local KeybindsToggleButton = NewButton("KeybindsToggle", QOLFrame, "Disable keybinds", 1)
+local WhitelistButton = NewButton("Whitelist", QOLFrame, "Whitelist", 2)
+local MouseBehaviorButton = NewButton("Mouse", QOLFrame, "Mouse behavior = Free mouse", 3)
+local MouseVisibleButton = NewButton("Mouse", QOLFrame, "Mouse visible = true", 4)
+local CustomCursorButton = NewButton("Cursor", QOLFrame, "Custom cursor = false", 5)
+
+WhitelistButton.Visible = nil
+
+Tabs.Home = {
+	InterfaceFrame,
+	QOLFrame
+}
+
+-- Premier "Tab"
+
+FlyEnabledButton = NewButton("Enabled", FlyFrame, "Enabled = false", 1)
+local FlyKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = F", 2)
+local FlySpeedBox = NewBox("Speed", FlyFrame, "Speed = 0", 3)
+local NoclipEnabledButton = NewButton("NoclipEnabled", FlyFrame, "Noclip = false", 4)
+local InfJumpLabel = NewButton("Label", FlyFrame, "-- Inf jump --",5)
+local InfJumpEnabledButton = NewButton("Enabled", FlyFrame, "Enabled = false", 6)
+local InfJumpKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = M", 7)
+
+local SpeedEnabledButton = NewButton("Enabled", SpeedFrame, "Enabled = false", 1)
+local SpeedKeybindButton = NewButton("Keybind", SpeedFrame, "Keybind = G", 2)
+local SpeedSpeedBox = NewBox("Speed", SpeedFrame, "Speed = 0", 3)
+
+local CTPLabel = NewButton("CTP", TPFrame, "-- Click to tp --", 1)
+local CTPEnabledButton = NewButton("Enabled", TPFrame, "Enabled = false", 2)
+local CTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = P", 3)
+
+local PTPLabel = NewButton("PTP", TPFrame, "-- Tp to selected --", 4)
+local PTPEnabledButton = NewButton("Enabled", TPFrame, "TP", 5)
+local PTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = L", 6)
+local PTPPlayerBox = NewBox("Player", TPFrame, "Player = " ..PlayerToTP.DisplayName, 7)
+
+InfJumpLabel.Interactable = nil
+CTPLabel.Interactable = nil
+PTPLabel.Interactable = nil
+
+Tabs.Movement = {
+	FlyFrame,
+	SpeedFrame,
+	TPFrame
+}
+
+-- Aimbot
+
+local CLockEnabledButton = NewButton("Enabled", CLockFrame, "Enabled = false", 1)
+local CLockKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = V", 2)
+local CLockFovLabel = NewButton("Fov", CLockChecksFrame, "-- Fov --", 4)
+local CLockFovEnableButton = NewButton("Fov", CLockChecksFrame, "Fov = false", 4)
+local CLockFovVisibleButton = NewButton("FovVisible", CLockChecksFrame, "Fov visible = false", 5)
+local CLockFovSizeBox = NewBox("Checks", CLockChecksFrame, "Fov size = 100", 6)
+local FovFrame = Instance.new("Frame", AlwaysEnabled)
+local FovFrameCorner = Instance.new("UICorner", FovFrame)
+local FovFrameBorder = Instance.new("UIStroke", FovFrame)
+
+FovFrame.BackgroundTransparency = 1
+FovFrameCorner.CornerRadius = UDim.new(1,0)
+FovFrame.Visible = nil
+CLockFovLabel.Interactable = nil
+
+CLockFovVisibleButton.Visible = nil
+CLockFovSizeBox.Visible = nil
+
+local AimbotEnabledButton = NewButton("Enabled", AimbotFrame, "Enabled = false", 1)
+local AimbotKeybindButton = NewButton("Keybind", AimbotFrame, "Keybind = C", 2)
+
+Tabs.Aimbot = {
+	CLockFrame,
+	AimbotFrame,
+	CLockChecksFrame
+}
+-- Other
+
+local ESPEnabledButton = NewButton("Enabled", ESPFrame, "Enabled = false", 1)
+local ESPKeybindButton = NewButton("Keybind", ESPFrame, "Keybind = N", 2)
+local ESPNameEnabledButton = NewButton("NameEnabled", ESPFrame, "Names = false", 3)
+local ESPColorEnabledButton = NewButton("ColorEnabled", ESPFrame, "Color Targeted aimbot player = false", 4)
+local ESPColorBox = NewBox("Color", ESPFrame, "Color = 255,255,0", 5)
+local ESPAdvancedButton = NewButton("Advanced", ESPFrame, "Advanced options", 6)
+local ESPOutlineTypeButton = NewButton("Boxes", AdvancedESP1, "Outline type = none", 1)
+local ESPLinesButton = NewButton("Lines", AdvancedESP1, "Lines = false", 2)
+local NotTargetedESPColorBox = NewBox("Color", AdvancedESP2, "Color = 255,255,255", 1)
+local ESPTeamColorButton = NewButton("TeamColor", AdvancedESP2, "Adjust colors for teams = false", 2)
+local ESPRainbowButton = NewButton("Rainbow", AdvancedESP2, "LGBTQ+ = false", 6)
+
+ESPColorBox.Visible = nil
+Tabs["AdvancedESP"] = {AdvancedESP1, AdvancedESP2}
+
+local BangEnabledButton = NewButton("Enabled", BangFrame, "Enabled = false", 1)
+local BangKeybindButton = NewButton("Keybind", BangFrame, "Keybind = B", 2)
+local BTypeButton = NewButton("Type", BangFrame, "Type = Back", 3)
+local BangPlayerBox = NewBox("Player", BangFrame, "Player = " ..PlayerToBang.DisplayName, 4)
+
+local RTLabel = NewButton("RT", ChatFrame, "-- Rizz talk --", 1)
+local RTEnabledButton = NewButton("Enabled", ChatFrame, "Talk", 2)
+local RTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = K", 3)
+local TTLabel = NewButton("RT", ChatFrame, "-- Trash talk --", 4)
+local TTEnabledButton = NewButton("Enabled", ChatFrame, "Talk", 5)
+local TTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = J", 6)
+
+Tabs.Other = {
+	ESPFrame,
+	BangFrame
+}
+
+if Channel then
+
+	table.insert(Tabs.Other, ChatFrame)
+
+end
+
+TabsFrame.Visible = nil
+MenuFrame.BackgroundTransparency = 1
+
+for i,v in MenuUI:GetDescendants() do
+
+	if v:IsA("TextButton") then
+
+		v.MouseEnter:Connect(function()
+
+			HoverSound:Play()
+			v.TextColor3 = Color3.fromRGB(255, 0, 0)
+
+		end)
+
+		v.MouseLeave:Connect(function()
+
+			v.TextColor3 = Color3.new(1,1,1)
+
+		end)
+
+		v.MouseButton1Down:Connect(function()
+
+			ClickSound:Play()
+
+		end)
+
+	elseif v:IsA("ImageButton") then
+
+		v.MouseEnter:Connect(function()
+
+			HoverSound:Play()
+			v.ImageColor3 = Color3.fromRGB(255, 0, 0)
+
+		end)
+
+		v.MouseLeave:Connect(function()
+
+			v.ImageColor3 = Color3.new(1,1,1)
+
+		end)
+
+		v.MouseButton1Down:Connect(function()
+
+			ClickSound:Play()
+
+		end)
+
+	end
+
+	if v.Name == "Keybind" then
+
+		local Name = v.Parent.Name
+		local Button = NewButton(Name, WhitelistFrame, Name, i)
+		local Connection
+
+		Button.Size = UDim2.new(0.9, 0, 0.025, 0)
+
+		Button.MouseButton1Down:Connect(function()
+
+			if table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)) then
+
+				table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)))
+				Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
+				v.Visible = nil
+				Connection:Disconnect()
+
+			else
+
+				local OldKey = string.sub(v.Text, #v.Text, #v.Text)
+
+				table.insert(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text))
+				Button.BackgroundColor3 = Color3.fromRGB(38, 255, 14)
+				v.Visible = true
+
+				Connection = v:GetPropertyChangedSignal("Text"):Connect(function()
+
+					if string.sub(v.Text, #v.Text, #v.Text) == "." then return end
+
+					table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, OldKey))
+					table.insert(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text))
+
+				end)
+
+			end
+
+		end)
+
+	end
+
+end
+
+MenuUI.Parent = PLR.PlayerGui
+
+ExitButton.MouseButton1Down:Connect(function()
+
+	MenuUI.Enabled = not MenuUI.Enabled
+	UIS.MouseBehavior = MouseBehavior
+	UIS.MouseIconEnabled = MouseVisible
+
+end)
+
+local TotalToLoad = 0
+local Loaded = 0
+
+for i,v in Tabs do
+
+	TotalToLoad += 1
+
+end
+
+-- Home
+
+-- Interface
+
+-- Size
+
+InterfaceSizeButton.MouseButton1Down:Connect(function(PosX, PosY)
+
+	SizeFrame.Position = UDim2.new(0,PosX,0,PosY)
+	SizeFrame.Visible = true
+
+end)
+
+SmallButton.MouseButton1Down:Connect(function()
+
+	SizeFrame.Visible = nil
+	InterfaceSizeButton.Text = "Size = Small"
+	MenuFrame.Size = UDim2.new(0.25,0,0.25,0)
+
+end)
+
+MediumButton.MouseButton1Down:Connect(function()
+
+	SizeFrame.Visible = nil
+	InterfaceSizeButton.Text = "Size = Medium"
+	MenuFrame.Size = UDim2.new(0.5,0,0.5,0)
+
+end)
+
+BigButton.MouseButton1Down:Connect(function()
+
+	SizeFrame.Visible = nil
+	InterfaceSizeButton.Text = "Size = Big"
+	MenuFrame.Size = UDim2.new(0.75,0,0.75,0)
+
+end)
+
+Size2Button.MouseButton1Down:Connect(function()
+
+	SizeFrame.Visible = nil
+	InterfaceSizeButton.Text = "Size = Size 2 fish"
+	MenuFrame.Size = UDim2.new(1,0,1,0)
+
+	local ImgLabel = Instance.new("ImageLabel")
+	local TW = game.TweenService:Create(ImgLabel, TweenInfo.new(2.5, Enum.EasingStyle.Linear), {ImageTransparency = 1})
+
+	ImgLabel.Size = UDim2.new(1,0,1,0)
+	ImgLabel.Image = "http://www.roblox.com/asset/?id=84861241476453"
+	ImgLabel.BackgroundTransparency = 1
+	ImgLabel.Parent = MenuUI
+	VineBoom:Play()
+
+	TW:Play()
+	TW.Completed:Wait()
+
+	ImgLabel:Destroy()
+
+end)
+
+InterfaceKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	InterfaceKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			Key = Inp.KeyCode
+			InterfaceKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until InterfaceKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+--QOL
+
+--Keybinds
+
+local function KeyBindsToggle()
+
+	if KDB then return end
+
+	KDB = true
+	KeybindsActive = not KeybindsActive
+
+	if KeybindsActive then
+
+		KeybindsToggleButton.Text = "Disable keybinds"
+		WhitelistButton.Visible = nil
+
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Goat Hub",
+			Text = "Enableing keybinds this might take time..."
+		})
+
+		for i,v in MenuUI:GetDescendants() do
+
+			task.wait()
+
+			if v.Name == "Keybind" then
+
+				v.Visible = true
+
+			end
+
+		end
+
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Goat Hub",
+			Text = "Successfully enabled keybinds"
+		})
+
+	else
+
+		KeybindsToggleButton.Text = "Enable keybinds"
+		WhitelistButton.Visible = true
+
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Goat Hub",
+			Text = "Disableing keybinds this might take time..."
+		})
+
+		for i,v in MenuUI:GetDescendants() do
+
+			task.wait()
+
+			if v.Name == "Keybind" then
+
+				v.Visible = nil
+
+			end
+
+		end
+
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Goat Hub",
+			Text = "Successfully disabled keybinds"
+		})
+
+	end
+
+	KDB = nil
+
+end
+
+KeybindsToggleButton.MouseButton1Down:Connect(KeyBindsToggle)
+
+WhitelistButton.MouseButton1Down:Connect(function(PosX, PosY)
+
+	WhitelistFrame.Position = UDim2.new(0,PosX,0,PosY)
+	WhitelistFrame.Visible = not WhitelistFrame.Visible
+
+end)
+
+-- Mouse
+
+task.spawn(function()
+	
+	local MouseBehaviors = {
+		Enum.MouseBehavior.LockCenter,
+		Enum.MouseBehavior.LockCurrentPosition,
+		Enum.MouseBehavior.Default
+	}
+	
+	while task.wait() do
+		
+		for i,v in MouseBehaviors do
+			
+			if v == MouseBehavior then continue end
+			
+			MouseBehaviorButton.MouseButton1Down:Wait()
+			
+			MouseBehavior = v
+			MouseBehaviorButton.Text = "Mouse behavior = " ..string.split(tostring(v), ".")[3]
+			
+		end
+		
+	end
+	
+end)
+
+MouseVisibleButton.MouseButton1Down:Connect(function()
+	
+	MouseVisible = not MouseVisible
+	MouseVisibleButton.Text = "Mouse visible = " ..tostring(MouseVisible)
+	
+end)
+
+CustomCursorButton.MouseButton1Down:Connect(function()
+	
+	CustomCursor = not CustomCursor
+	
+end)
+
+Loaded += 1
+
+local TWL = TW:Create(LoadingBar, TweenInfo.new(0.25), {Size = UDim2.new(Loaded / TotalToLoad,0,1,0)})
+
+TWL:Play()
+TWL.Completed:Wait()
+-- Mtn la chaise gaming OP
+
+--Fly
+
+local function FlyActivate()
+
+	FlyEnabled = not FlyEnabled
+
+	if FlyEnabled then
+
+		FlyEnabledButton.Text = "Enabled = true"
+
+		local FlyVel = Instance.new("LinearVelocity", Char.HumanoidRootPart)
+		local Att = Instance.new("Attachment", Char.HumanoidRootPart)
+
+		FlyVel.ForceLimitsEnabled = nil
+		FlyVel.Attachment0 = Att :: Attachment
+		workspace.Gravity = 0
+
+		while FlyEnabled do
+
+			task.wait()
+
+			if NoclipEnabled then
+
+				for i,v in Char:GetDescendants() do
+
+					if v:IsA("BasePart") then
+
+						if v.CanCollide then
+
+							v.CanCollide = false
+							table.insert(OldCollides, v)
+
+						end
+
+					end
+
+				end
+
+			else
+
+				for i,v in OldCollides do
+
+					v.CanCollide = true
+
+				end
+
+				table.clear(OldCollides)
+
+			end
+
+			Att.Parent = Char.HumanoidRootPart
+			FlyVel.Parent = Char
+			FlyVel.Attachment0 = Att :: Attachment
+			Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
+			Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
+
+			local Inps = {}
+			local KKInps = UIS:GetKeysPressed()
+
+			for i,v in KKInps do
+
+				table.insert(Inps, v.KeyCode)
+
+			end
+
+			if table.find(Inps, Enum.KeyCode.W) then
+
+				FlyVel.VectorVelocity = Cam.CFrame.LookVector * FlySpeed
+
+			elseif table.find(Inps, Enum.KeyCode.S) then
+
+				FlyVel.VectorVelocity = Cam.CFrame.LookVector * -FlySpeed
+
+			elseif table.find(Inps, Enum.KeyCode.D) then
+
+				FlyVel.VectorVelocity = Cam.CFrame.RightVector * FlySpeed
+
+			elseif table.find(Inps, Enum.KeyCode.A) then
+
+				FlyVel.VectorVelocity = Cam.CFrame.RightVector * -FlySpeed
+
+			else
+
+				FlyVel.VectorVelocity = Vector3.zero
+				Char.HumanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+
+			end
+
+		end
+
+		FlyVel:Destroy()
+		Char.HumanoidRootPart.AssemblyLinearVelocity = Vector3.zero
+		Char.HumanoidRootPart.Massless = nil
+
+	else
+
+		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
+		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, true)
+		FlyEnabledButton.Text = "Enabled = false"
+		workspace.Gravity = DefaultGrav
+
+		for i,v in OldCollides do
+
+			v.CanCollide = true
+
+		end
+
+		table.clear(OldCollides)
+
+	end
+end
+
+FlyEnabledButton.MouseButton1Down:Connect(FlyActivate)
+
+FlyKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	FlyKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			FlyKey = Inp.KeyCode
+			FlyKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until FlyKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+FlySpeedBox.FocusLost:Connect(function(EP)
+
+	if not EP or not tonumber(FlySpeedBox.Text) then FlySpeedBox.Text = "Speed = " ..FlySpeed return end
+
+	FlySpeed = tonumber(FlySpeedBox.Text)
+	FlySpeedBox.Text = "Speed = " ..FlySpeed
+
+end)
+
+NoclipEnabledButton.MouseButton1Down:Connect(function()
+
+	NoclipEnabled = not NoclipEnabled
+
+	if NoclipEnabled then
+
+		NoclipEnabledButton.Text = "Noclip = true"
+
+	else
+
+		NoclipEnabledButton.Text = "Noclip = false"
+
+	end
+
+end)
+
+--Math.Huge jump
+
+local function InfJumpEnable()
+
+	InfJumpEnabled = not InfJumpEnabled
+
+	if InfJumpEnabled then
+
+		InfJumpEnabledButton.Text = "Enabled = true"
+		local JumpLoop = UIS.JumpRequest:Connect(function()
+
+			Char.Humanoid:ChangeState("Jumping")
+
+		end)
+
+		while InfJumpEnabled do
+
+			task.wait()
+
+		end
+
+		JumpLoop:Disconnect()
+
+	else
+
+		InfJumpEnabledButton.Text = "Enabled = false"
+
+	end
+
+end
+
+InfJumpEnabledButton.MouseButton1Down:Connect(InfJumpEnable)
+
+InfJumpKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	InfJumpKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			InfJumpKey = Inp.KeyCode
+			InfJumpKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until InfJumpKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+--Speed
+
+local function SpeedActivate()
+
+	SpeedEnabled = not SpeedEnabled
+
+	if SpeedEnabled then
+
+		SpeedEnabledButton.Text = "Enabled = true"
+
+		while SpeedEnabled do
+
+			Char.Humanoid.WalkSpeed = SpeedSpeed
+			task.wait()
+
+		end
+
+	else
+
+		Char.Humanoid.WalkSpeed = 16
+		SpeedEnabledButton.Text = "Enabled = false"
+
+	end
+end
+
+SpeedEnabledButton.MouseButton1Down:Connect(SpeedActivate)
+
+SpeedKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	SpeedKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			SpeedKey = Inp.KeyCode
+			SpeedKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until SpeedKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+SpeedSpeedBox.FocusLost:Connect(function(EP)
+
+	if not EP or not tonumber(SpeedSpeedBox.Text) then SpeedSpeedBox.Text = "Speed = " ..SpeedSpeed return end
+
+	SpeedSpeed = tonumber(SpeedSpeedBox.Text)
+	SpeedSpeedBox.Text = "Speed = " ..SpeedSpeed
+
+end)
+
+--TP
+
+--Click to tp
+
+local function CTPEnable()
+
+	CTPEnabled = not CTPEnabled
+
+	if CTPEnabled then
+
+		CTPEnabledButton.Text = "Enabled = true"
+
+		local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+			if GPE then return end
+
+			if Inp.UserInputType == Enum.UserInputType.MouseButton1 then
+
+				local MP = UIS:GetMouseLocation()
+				local MR = Cam:ViewportPointToRay(MP.X, MP.Y)
+				local Result = workspace:Raycast(Cam.CFrame.Position, MR.Direction * 999999, CTPParams)
+
+				PLR.Character:PivotTo(CFrame.new(Result.Position))
+
+			end
+
+		end)
+
+		repeat wait() until not CTPEnabled
+
+		Connection:Disconnect()
+
+	else
+
+		CTPEnabledButton.Text = "Enabled = false"
+
+	end
+
+end
+
+CTPEnabledButton.MouseButton1Down:Connect(CTPEnable)
+
+CTPKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	CTPKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			CTPKey = Inp.KeyCode
+			CTPKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until CTPKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+-- TP to player
+
+local function PTPEnable()
+
+	Char:PivotTo(PlayerToTP.Character:GetPivot())
+
+end
+
+game:GetService("Players").PlayerRemoving:Connect(function(plr)
+
+	if plr == PlayerToTP then
+
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Goat Hub",
+			Text = "The targeted player of your tp (" ..PlayerToTP.DisplayName.. ") has left changed target to you."
+		})
+
+		PlayerToTP = game:GetService("Players"):GetPlayers()[1]
+		PTPPlayerBox.Text = "Player = " ..PlayerToTP.DisplayName
+
+	end
+
+end)
+
+PTPEnabledButton.MouseButton1Down:Connect(PTPEnable)
+
+PTPKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	PTPKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			PTPKey = Inp.KeyCode
+			PTPKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until PTPKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+PTPPlayerBox.FocusLost:Connect(function(EP)
+
+	if not EP then return end
+
+	local PlayerName = PTPPlayerBox.Text
+	local PLayer
+
+	for i,v in game:GetService("Players"):GetPlayers() do
+
+		if PLayer then continue end
+
+		if string.find(string.lower(v.DisplayName), string.lower(PlayerName)) then
+
+			PLayer = v
+			PlayerToTP = v
+
+		end
+
+	end
+
+	PTPPlayerBox.Text = "Player = " ..PlayerToTP.DisplayName
+
+end)
+
+Loaded += 1
+
+TWL:Cancel()
+TWL = TW:Create(LoadingBar, TweenInfo.new(0.25), {Size = UDim2.new(Loaded / TotalToLoad,0,1,0)})
+TWL:Play()
+TWL.Completed:Wait()
+
+--Aimbot
+
+--CLock
+
+local function FindPlr()
+
+	local Target
+	local TDist = 1000000
+
+	for i,v in game:GetService("Players"):GetPlayers() do
+
+		if v == PLR then continue end
+		if not v.Character then continue end
+		if not v.Character:FindFirstChild("Humanoid") then continue end
+		if not v.Character:FindFirstChild("HumanoidRootPart") then continue end
+		--if (v.Character:GetPivot().Position - Char:GetPivot().Position).Magnitude > MaxDist then continue end
+
+		if KOCheck then
+
+			if v.Character.Humanoid.Health <= 0 then continue end
+
+		end
+
+		if TeamCheck then
+
+			if PLR.Team then
+
+				if v.Team == PLR.Team then continue end
+
+			end 
+
+		end
+
+		local MP = game.UserInputService:GetMouseLocation()
+		local Pos, IsOnScreen = Cam.WorldToScreenPoint(Cam, v.Character.HumanoidRootPart.Position)
+		local Position = Vector2.new(Pos.X, Pos.Y) 
+
+		if not IsOnScreen then continue end
+		if (Position - MP).Magnitude >= TDist then continue end
+
+		if CLockFovEnabled then
+
+			if (Position - MP).Magnitude >= FovSize then continue end
+
+		end
+
+		if WallCheck then
+
+			local Origin = Char.HumanoidRootPart.Position
+			local Direction = (v.Character.HumanoidRootPart.Position - Origin) * 9999999999
+			local Params = RaycastParams.new()
+
+			Params.FilterDescendantsInstances = {Char}
+			Params.FilterType = Enum.RaycastFilterType.Exclude
+
+			local Result = workspace:Raycast(Origin, Direction, Params)
+
+			print(Result, Result.Instance.Parent, Result.Instance.Parent.Parent, v)
+
+			if not Result then continue end
+			--if not Result.Instance:GetRootPart() then continue end
+			if Result.Instance.Parent ~= v.Character and Result.Instance.Parent.Parent ~= v.Character then continue end
+
+		end
+
+		Target = v
+		TDist = (Position - MP).Magnitude
+
+	end
+
+	return Target
+
+end
+
+local function CLockEnable()
+
+	CLockEnabled = not CLockEnabled
+
+	if CLockEnabled then
+
+		AimbotEnabled = nil
+
+		local Target = FindPlr()
+
+		if not Target then CLockEnabled = nil return end
+
+		CLockEnabledButton.Text = "Enabled = true"
+		UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
+
+		while CLockEnabled do
+
+			task.wait()
+
+			if not Target.Character then continue end
+			if not Target.Character:FindFirstChild("Humanoid") then continue end
+
+			if KOCheck then
+
+				if Target.Character.Humanoid.Health <= 0 then CLockEnabled = nil continue end
+
+			end
+
+			Cam.CameraType = Enum.CameraType.Custom
+			Cam.CameraSubject = Target.Character.Humanoid
+
+		end
+
+		UIS.MouseBehavior = Enum.MouseBehavior.Default
+		Cam.CameraSubject = Char.Humanoid
+
+	else
+
+		CLockEnabledButton.Text = "Enabled = false"
+		UIS.MouseBehavior = Enum.MouseBehavior.Default
+
+	end
+
+end
+
+CLockEnabledButton.MouseButton1Down:Connect(CLockEnable)
+
+CLockKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	CLockKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			CLockKey = Inp.KeyCode
+			CLockKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until CLockKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+CLockFovEnableButton.MouseButton1Down:Connect(function()
+
+	CLockFovEnabled = not CLockFovEnabled
+
+	if CLockFovEnabled then
+
+		CLockFovEnableButton.Text = "Fov = true"
+		CLockFovVisibleButton.Visible = true
+		CLockFovSizeBox.Visible = true
+
+	else
+
+		CLockFovEnableButton.Text = "Fov = false"
+		CLockFovVisibleButton.Visible = nil
+		CLockFovSizeBox.Visible = nil
+
+	end
+
+end)
+
+CLockFovVisibleButton.MouseButton1Down:Connect(function()
+
+	FovVisible = not FovVisible
+
+	if FovVisible then
+
+		CLockFovVisibleButton.Text = "Fov visible = true"
+
+	else
+
+		CLockFovVisibleButton.Text = "Fov visible = false"
+
+	end
+
+end)
+
+CLockFovSizeBox.FocusLost:Connect(function(EP)
+
+	if not EP then return end
+	if not tonumber(CLockFovSizeBox.Text) then return end
+
+	FovSize = tonumber(CLockFovSizeBox.Text)
+	CLockFovSizeBox.Text = "Fov size = " ..FovSize
+
+end)
+
+-- Aimbot
+
+local function AimbotEnable()
+
+	AimbotEnabled = not AimbotEnabled
+
+	if AimbotEnabled then
+
+		CLockEnabled = nil
+
+		local Target = FindPlr()
+
+		if not Target then AimbotEnabled = nil return end
+
+		AimbotEnabledButton.Text = "Enabled = true"
+		UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
+
+		local Extra = (Cam.CFrame.Position - PLR.Character.Head.Position).Magnitude
+
+		UIS.InputChanged:Connect(function(Inp, GPE)
+
+			if GPE then return end
+
+			if Inp.UserInputType == Enum.UserInputType.MouseWheel then
+
+				Extra += Inp.Position.Z
+
+			end
+
+		end)
+
+		game["Run Service"]:BindToRenderStep("ABATACAM", 999999999999999, function()
+
+			task.wait()
+
+			if not Target.Character then return end
+			if not Target.Character:FindFirstChild("Humanoid") then return end
+
+			if KOCheck then
+
+				if Target.Character.Humanoid.Health <= 0 then AimbotEnabled = nil return end
+
+			end
+
+			if Cam.CameraType == Enum.CameraType.Custom then
+
+				if Target.Character:FindFirstChild("Head") then
+
+					local A = PLR.Character.Head.Position
+					local B = Target.Character.Head.Position
+					local Offset = Vector3.new(0,0,0)
+
+					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+
+					Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+
+				else
+
+					local A = PLR.Character.HumanoidRootPart.Position
+					local B = Target.Character.HumanoidRootPart.Position
+					local Offset = Vector3.new(0,0,0)
+
+					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+
+					Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+
+				end
+
+			elseif Cam.CameraType == Enum.CameraType.Scriptable then
+
+				Cam.CFrame = CFrame.new(Cam.CFrame.Position, Target.Character.HumanoidRootPart.Postion)
+
+			end			
+
+		end)
+
+		repeat wait() until not AimbotEnabled
+
+		game["Run Service"]:UnbindFromRenderStep("ABATACAM")
+		UIS.MouseBehavior = Enum.MouseBehavior.Default
+		Cam.CameraType = Enum.CameraType.Custom
+		Cam.CameraSubject = Char.Humanoid
+
+	else
+
+		CLockEnabledButton.Text = "Enabled = false"
+		UIS.MouseBehavior = Enum.MouseBehavior.Default
+
+	end
+
+end
+
+AimbotEnabledButton.MouseButton1Down:Connect(AimbotEnable)
+
+AimbotKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	AimbotKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			AimbotKey = Inp.KeyCode
+			AimbotKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until AimbotKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+-- Checks
+
+KOCheckButton.MouseButton1Down:Connect(function()
+
+	KOCheck = not KOCheck
+
+	if KOCheck then
+
+		KOCheckButton.BackgroundColor3 = Color3.fromRGB(38, 255, 14)
+
+	else
+
+		KOCheckButton.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
+
+	end
+
+end)
+
+WallCheckButton.MouseButton1Down:Connect(function()
+
+	WallCheck = not WallCheck
+
+	if WallCheck then
+
+		WallCheckButton.BackgroundColor3 = Color3.fromRGB(38, 255, 14)
+
+	else
+
+		WallCheckButton.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
+
+	end
+
+end)
+
+TeamCheckButton.MouseButton1Down:Connect(function()
+
+	TeamCheck = not TeamCheck
+
+	if TeamCheck then
+
+		TeamCheckButton.BackgroundColor3 = Color3.fromRGB(38, 255, 14)
+
+	else
+
+		TeamCheckButton.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
+
+	end
+
+end)
+
+Loaded += 1
+
+TWL:Cancel()
+TWL = TW:Create(LoadingBar, TweenInfo.new(0.25), {Size = UDim2.new(Loaded / TotalToLoad,0,1,0)})
+TWL:Play()
+TWL.Completed:Wait()
+
+--ESP
+
+local function ESPEnable()
+
+	ESPEnabled = not ESPEnabled
+
+	if ESPEnabled then
+
+		ESPEnabledButton.Text = "Enabled = true"
+
+		local Target = FindPlr()
+
+		local function ESP(v : Player)
+
+			if v == PLR then return end
+
+			local Highlight = Instance.new("Highlight", v.Character)
+			local Line = Instance.new("Frame", ESPGui)
+			local LineOutline = Instance.new("UIStroke", Line)
+			local Box = Instance.new("Frame", ESPGui)
+			local BoxOutline = Instance.new("UIStroke", Box)
+			local Box3d = Instance.new("Part", workspace)
+			local AttLeft = Instance.new("Attachment", Box3d)
+			local AttRight = Instance.new("Attachment", Box3d)
+			local AttUp = Instance.new("Attachment", Box3d)
+			local AttDown = Instance.new("Attachment", Box3d)
+
+			Box3d.Anchored = true
+			Box3d.CanCollide = nil
+			Box3d.Transparency = 1
+			Box.BackgroundTransparency = 1
+			Box.AnchorPoint = Vector2.new(0.5,0.25)
+			Line.Size = UDim2.new(0,0,0,0)
+			Line.AnchorPoint = Vector2.new(0.5,0.5)
+			LineOutline.Color = Color3.new(1,1,1)
+			Highlight.FillTransparency = 1
+
+			local function WorldToScreen(Pos) --This function gets a World Position (Pos) and returns a Vector2 value of the screen coordinates
+				local M = PLR:GetMouse()
+
+				local point = Cam.CoordinateFrame:pointToObjectSpace(Pos)
+				local aspectRatio = M.ViewSizeX / M.ViewSizeY
+				local hfactor = math.tan(math.rad(Cam.FieldOfView) / 2)
+				local wfactor = aspectRatio*hfactor
+
+				local x = (point.x/point.z) / -wfactor
+				local y = (point.y/point.z) /  hfactor
+
+				return Vector2.new(M.ViewSizeX * (0.5 + 0.5 * x), M.ViewSizeY * (0.5 + 0.5 * y))
+			end
+
+			task.spawn(function()
+
+				local UI = Instance.new("TextLabel")
+
+				while ESPEnabled do
+
+					task.wait()
+
+					if ESPOutlineType ~= "Highlight" then
+
+						Highlight.Enabled = nil
+
+					else
+
+						Highlight.Enabled = true
+
+					end
+
+					if ESPOutlineType ~= "Box" then
+
+						Box.Visible = nil
+
+					else
+
+						Box.Visible = true
+
+					end
+
+					if ESPLinesEnabled then
+
+						Line.Visible = true
+
+					else
+
+						Line.Visible = nil
+
+					end
+
+					if v.Character then
+
+						local Pos, IsOnScreen = Cam:WorldToScreenPoint(v.Character:GetPivot().Position)
+						local Size
+						local Char3DSize = v.Character:GetExtentsSize()
+
+						Box3d.CFrame = v.Character:GetPivot()
+						Box3d.Size = Char3DSize
+
+						AttLeft.Position = Vector3.new(-Char3DSize.X / 2,0,0)
+						AttRight.Position = Vector3.new(Char3DSize.X / 2,0,0)
+						AttUp.Position = Vector3.new(0,Char3DSize.Y / 2,0)
+						AttDown.Position = Vector3.new(0,-Char3DSize.Y / 2,0)
+
+						local PosLeft = WorldToScreen(AttLeft.WorldPosition)
+						local PosRight = WorldToScreen(AttRight.WorldPosition)
+						local PosUp = WorldToScreen(AttUp.WorldPosition)
+						local PosDown = WorldToScreen(AttDown.WorldPosition)
+						local _, DownOnScreen = Cam:WorldToScreenPoint(AttDown.WorldPosition)
+						
+						local UdimAndNotVectorThingie = UDim2.fromOffset(PosDown.X, PosDown.Y)
+						local viewportSize = Cam.ViewportSize
+
+						Line.Position = UDim2.new(0.5,0,1,0)
+						Line.Position = UDim2.fromOffset(
+							Line.Position.X.Scale * viewportSize.X,
+							Line.Position.Y.Scale * viewportSize.Y
+						)
+						Line.Size = UDim2.new(0, 0, 0, (Vector2.new(Line.Position.X.Offset,Line.Position.Y.Offset) - PosDown).Magnitude * 2)
+
+						local Diff = UdimAndNotVectorThingie - Line.Position
+
+						Line.Rotation = math.deg(math.atan2(Diff.Y.Offset, Diff.X.Offset)) - 90
+
+						if not DownOnScreen then Line.Visible = nil end
+						if not IsOnScreen then Box.Visible = nil end
+
+						local Size = UDim2.new(0, (PosLeft - PosRight).Magnitude, 0, (PosUp - PosDown).Magnitude)
+
+						if Target == v and ESPColorEnabled then
+
+							LineOutline.Color = ESPColor
+							BoxOutline.Color = ESPColor
+
+						elseif not ESPTeamColor or not v.Team then
+
+							LineOutline.Color = NotTargettedESPColor
+							BoxOutline.Color = NotTargettedESPColor
+
+						end
+
+						if ESPColorEnabled then
+
+							if Target == v then
+
+								Highlight.OutlineColor = ESPColor
+								UI.TextColor3 = ESPColor
+
+							else
+
+								Highlight.OutlineColor = NotTargettedESPColor
+								UI.TextColor3 = NotTargettedESPColor
+								
+							end
+
+						else
+
+							Highlight.OutlineColor = NotTargettedESPColor
+							UI.TextColor3 = NotTargettedESPColor
+
+						end
+
+						if ESPTeamColor and v.Team and v ~= Target then
+
+							local Color = v.TeamColor.Color
+
+							Highlight.OutlineColor = Color
+							UI.TextColor3 = Color
+							LineOutline.Color = Color
+							BoxOutline.Color = Color
+
+						end
+
+						if v.Character:FindFirstChild("HumanoidRootPart") then
+							
+							Box.Size = Size
+							Box.Position = UDim2.fromOffset(WorldToScreen(v.Character.HumanoidRootPart.Position).X, WorldToScreen(v.Character.HumanoidRootPart.Position).Y)							
+							
+						end
+
+						Highlight.Parent = v.Character
+
+					else
+
+						Box.Visible = nil
+						Line.Visible = nil
+
+					end
+
+					if ESPNameEnabled and v.Character then
+
+						if not v.Character:FindFirstChild("Head") then UI:Remove() continue end
+
+						local Pos, IsOnScreen = Cam.WorldToScreenPoint(Cam, v.Character.Head.Position)
+						local Vec2Pos = WorldToScreen(v.Character.Head.Position)
+
+						if not IsOnScreen then UI:Remove() continue end
+
+						UI.Parent = ESPGui
+						UI.AnchorPoint = Vector2.new(0.5,0)
+						UI.Size = UDim2.new(0.061, 0,0.028, 0)
+						UI.TextScaled = true
+						UI.BackgroundTransparency = 1
+						UI.Text = v.DisplayName
+						UI.Font = Enum.Font.FredokaOne
+						UI.Position = UDim2.fromOffset(Vec2Pos.X, Vec2Pos.Y)
+
+					else
+
+						UI:Remove()
+
+					end
+
+				end
+
+			end)
+
+			v.CharacterAdded:Connect(function()
+
+				Highlight:Destroy()
+				Highlight = Instance.new("Highlight", v.Character)
+				Highlight.FillTransparency = 1
+
+			end)
+
+			task.spawn(function()
+
+				while ESPEnabled do
+
+					task.wait()
+
+				end
+
+				Highlight:Destroy()
+				Line:Destroy()
+				Box:Destroy()
+				Box3d:Destroy()
+
+			end)
+
+		end
+
+		for i,v in game:GetService("Players"):GetPlayers() do
+
+			ESP(v)
+
+		end
+
+		game:GetService("Players").PlayerAdded:Connect(ESP)
+
+		while ESPEnabled do
+
+			task.wait()
+
+			Target = FindPlr()
+
+		end
+
+	else
+
+		ESPEnabledButton.Text = "Enabled = false"
+		ESPGui:ClearAllChildren()
+
+	end
+
+end
+
+local function ESPRainbowEnable()
+
+	NotTargetedESPColorBox.Visible = ESPRainbowEnabled
+	ESPTeamColorButton.Visible = ESPRainbowEnabled
+	ESPRainbowEnabled = not ESPRainbowEnabled
+
+	if ESPRainbowEnabled then
+
+		ESPRainbowButton.Text = "LGBTQ+ = true" 
+		local RainbowVal = Instance.new("Color3Value")
+		local ColorTbl = {
+			BrickColor.Red().Color,
+			BrickColor.Yellow().Color,
+			BrickColor.Blue().Color,
+			Color3.new(1,0,1),
+			Color3.new(0.5,0,1)
+		}
+
+		task.spawn(function()
+
+			while ESPRainbowEnabled do
+				
+				task.wait()
+				
+				NotTargettedESPColor = RainbowVal.Value
+				
+			end
+
+		end)
+
+		while ESPRainbowEnabled do
+
+			task.wait()
+
+			for i,v in ColorTbl do
+
+				local TWER = TW:Create(RainbowVal, TweenInfo.new(1, Enum.EasingStyle.Linear), {Value = v})
+
+				TWER:Play()
+				TWER.Completed:Wait()
+
+			end
+
+		end
+
+	else
+
+		ESPRainbowButton.Text = "LGBTQ+ = false" 
+		NotTargettedESPColor = NoEffectESPColor
+		
+		while not ESPRainbowEnabled do
+			
+			task.wait()
+			
+			NotTargettedESPColor = NoEffectESPColor
+			
+		end
+		
+	end
+
+end
+
+ESPKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	ESPKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			ESPKey = Inp.KeyCode
+			ESPKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until ESPKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+ESPEnabledButton.MouseButton1Down:Connect(ESPEnable)
+ESPRainbowButton.MouseButton1Down:Connect(ESPRainbowEnable)
+ESPTeamColorButton.MouseButton1Down:Connect(function()
+	
+	ESPRainbowButton.Visible = ESPTeamColor
+	ESPTeamColor = not ESPTeamColor
+	ESPTeamColorButton.Text = "Adjust colors for teams = " ..tostring(ESPTeamColor)
+	
+end)
+
+ESPNameEnabledButton.MouseButton1Down:Connect(function()
+
+	ESPNameEnabled = not ESPNameEnabled
+
+	if ESPNameEnabled then
+
+		ESPNameEnabledButton.Text = "Names = true"
+
+	else
+
+		ESPNameEnabledButton.Text = "Names = false"
+
+	end
+
+end)
+
+ESPColorEnabledButton.MouseButton1Down:Connect(function()
+
+	ESPColorEnabled = not ESPColorEnabled
+
+	if ESPColorEnabled then
+
+		ESPColorEnabledButton.Text = "ColorTargeted aimbot player = true"
+		ESPColorBox.Visible = true
+
+	else
+
+		ESPColorEnabledButton.Text = "ColorTargeted aimbot player = false"
+		ESPColorBox.Visible = nil
+
+	end
+
+end)
+
+ESPColorBox.FocusLost:Connect(function(EP)
+
+	if not EP then return end
+
+	local Colors = string.split(ESPColorBox.Text, ",")
+
+	if not tonumber(Colors[1]) or not tonumber(Colors[2]) or not tonumber(Colors[3]) then
+
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Error",
+			Text = "Invalid color"
+		})
+
+		return
+
+	end
+
+	local R = tonumber(Colors[1])
+	local G = tonumber(Colors[2])
+	local B = tonumber(Colors[3])
+
+	ESPColor = Color3.fromRGB(R,G,B)
+	ESPColorBox.Text = "Color = " ..tostring(R).. "," ..tostring(G).. "," ..tostring(B)
+
+end)
+
+local Tralalelotralala = Instance.new("Frame", TabsFrame)
+
+Tralalelotralala.Visible = nil
+Tralalelotralala.Name = "AdvancedESP"
+
+ESPAdvancedButton.MouseButton1Down:Connect(function()
+
+	if CurrentTab == "AdvancedESP" then return end
+
+	TabsFrame[CurrentTab].BackgroundColor3 = Color3.fromRGB(70,70,70)
+
+	for i,v in Tabs[CurrentTab] do
+
+		v.Visible = nil
+
+	end
+
+	for i,v in Tabs["AdvancedESP"] do
+
+		v.Visible = true
+
+	end
+
+	CurrentTab = "AdvancedESP"
+
+end)
+
+ESPOutlineTypeButton.MouseButton1Down:Connect(function()
+
+	ESPTypeNum += 1
+
+	if ESPTypeNum > #ESPOutlineTypes then
+
+		ESPTypeNum = 1
+
+	end
+
+	ESPOutlineType = ESPOutlineTypes[ESPTypeNum]
+
+	ESPOutlineTypeButton.Text = "Outline type = " ..ESPOutlineType
+
+end)
+
+ESPLinesButton.MouseButton1Down:Connect(function()
+
+	ESPLinesEnabled = not ESPLinesEnabled
+	ESPLinesButton.Text = "Lines = " ..tostring(ESPLinesEnabled)
+
+end)
+
+NotTargetedESPColorBox.FocusLost:Connect(function(EP)
+
+	if not EP then return end
+
+	local Colors = string.split(NotTargetedESPColorBox.Text, ",")
+
+	if not tonumber(Colors[1]) or not tonumber(Colors[2]) or not tonumber(Colors[3]) then
+
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Error",
+			Text = "Invalid color"
+		})
+
+		return
+
+	end
+
+	local R = tonumber(Colors[1])
+	local G = tonumber(Colors[2])
+	local B = tonumber(Colors[3])
+
+	if not ESPRainbowEnabled then
+		
+		NotTargettedESPColor = Color3.fromRGB(R,G,B)
+		
+	end
+	
+	NoEffectESPColor = Color3.fromRGB(R,G,B)
+	NotTargetedESPColorBox.Text = "Color = " ..tostring(R).. "," ..tostring(G).. "," ..tostring(B)
+
+end)
+
+--Bang
+
+local function BangEnable()
+
+	BangEnabled = not BangEnabled
+
+	if BangEnabled then
+
+		if not Char or Char.Humanoid.Health <= 0 then BangEnabled = nil return end
+		if PLR == PlayerToBang then
+
+			game.StarterGui:SetCore("SendNotification", {
+				Title = "Error",
+				Text = "Tried to bang yourself please choose a valid player"
+			})
+			return
+		end
+
+		BangEnabledButton.Text = "Bang = true"
+
+		local Anim = Instance.new("Animation")
+
+		if Char:FindFirstChild("LowerTorso") then
+
+			Anim.AnimationId = "rbxassetid://5918726674"
+
+		else
+
+			Anim.AnimationId = "rbxassetid://148840371"
+
+		end
+
+		local Track = Char.Humanoid:LoadAnimation(Anim)
+
+		Track:Play()
+
+		while BangEnabled do
+
+			task.wait()
+
+			if not PlayerToBang.Character:FindFirstChild("HumanoidRootPart") then
+
+				Track:Stop()
+
+				continue
+
+			elseif Char.Humanoid.Health <= 0 then
+
+				continue
+
+			elseif not Track.IsPlaying and BangEnabled then
+
+				Track:Play()
+
+			end
+
+			local Pos
+
+			if BangType == "Back" then
+
+				Pos = PlayerToBang.Character:GetPivot() * CFrame.new(0,0,Char.HumanoidRootPart.Size.Z)
+
+			elseif BangType == "Front" then
+
+				Pos = PlayerToBang.Character:GetPivot() * CFrame.new(Vector3.new(0,0,-Char.HumanoidRootPart.Size.Z), Vector3.new(0,0,180))
+
+			else
+
+				Pos = PlayerToBang.Character.Head.CFrame * CFrame.new(Vector3.new(0,0,-Char.HumanoidRootPart.Size.Z), Vector3.new(0,0,180))
+
+			end 
+
+			Char:PivotTo(Pos)
+
+		end
+
+		Track:Stop()
+
+	else
+
+		BangEnabledButton.Text = "Bang = false"
+
+	end
+
+end
+
+game:GetService("Players").PlayerRemoving:Connect(function(plr)
+
+	if plr == PlayerToBang then
+
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Goat Hub",
+			Text = "The targeted player of your bang (" ..PlayerToBang.DisplayName.. ") has left changed target to you."
+		})
+
+		BangEnabled = nil
+		BangEnabledButton.Text = "Bang = false"
+		PlayerToBang = game:GetService("Players"):GetPlayers()[1]
+		BangPlayerBox.Text = "Player = " ..PlayerToBang.DisplayName
+
+	end
+
+end)
+
+
+BangEnabledButton.MouseButton1Down:Connect(BangEnable)
+
+BangKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	BangKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			BangKey = Inp.KeyCode
+			BangKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until BangKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+BangPlayerBox.FocusLost:Connect(function(EP)
+
+	if not EP then return end
+
+	local PlayerName = BangPlayerBox.Text
+	local PLayer
+
+	for i,v in game:GetService("Players"):GetPlayers() do
+
+		if PLayer then continue end
+
+		if string.find(string.lower(v.DisplayName), string.lower(PlayerName)) then
+
+			PLayer = v
+			PlayerToBang = v
+
+		end
+
+	end
+
+	BangPlayerBox.Text = "Player = " ..PlayerToBang.DisplayName
+
+end)
+
+BTypeButton.MouseButton1Down:Connect(function(PosX, PosY)
+
+	BTypeFrame.Position = UDim2.new(0,PosX,0,PosY)
+	BTypeFrame.Visible = true
+
+end)
+
+Back.MouseButton1Down:Connect(function()
+
+	BTypeFrame.Visible = nil
+	BangType = "Back"
+	BTypeButton.Text = "Type = Back"
+
+end)
+
+Front.MouseButton1Down:Connect(function()
+
+	BTypeFrame.Visible = nil
+	BangType = "Front"
+	BTypeButton.Text = "Type = Front"
+
+end)
+
+Mouth.MouseButton1Down:Connect(function()
+
+	BTypeFrame.Visible = nil
+	BangType = "Mouth"
+	BTypeButton.Text = "Type = Mouth"
+
+end)
+
+--Chat
+
+--Rizz talk
+
+local function RTEnable()
+
+	if not Channel then return end
+
+	Channel:SendAsync(RTMessages[math.random(1, #RTMessages)])
+
+end
+
+RTEnabledButton.MouseButton1Down:Connect(RTEnable)
+
+RTKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	RTKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			RTKey = Inp.KeyCode
+			RTKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until RTKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+--Trash talk
+
+local function TTEnable()
+
+	if not Channel then return end
+
+	Channel:SendAsync(TTMessages[math.random(1, #TTMessages)])
+
+end
+
+TTEnabledButton.MouseButton1Down:Connect(TTEnable)
+
+TTKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	TTKeybindButton.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			TTKey = Inp.KeyCode
+			TTKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until TTKeybindButton.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+Loaded += 1
+
+TWL:Cancel()
+TWL = TW:Create(LoadingBar, TweenInfo.new(0.25), {Size = UDim2.new(Loaded / TotalToLoad,0,1,0)})
+TWL:Play()
+TWL.Completed:Wait()
+
+--Inputs
+
+UIS.InputBegan:Connect(function(Inp, GPE)
+
+	if GPE or BindingKey then return end
+
+	if Inp.KeyCode == Key then
+
+		MenuUI.Enabled = not MenuUI.Enabled
+
+		if not MenuUI.Enabled then
+
+			UIS.MouseBehavior = MouseBehavior
+			UIS.MouseIconEnabled = MouseVisible
+
+		end
+
+	end
+
+	if not KeybindsActive and not table.find(KeybindsWhitelist, string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), #tostring(Inp.KeyCode))) then return end
+
+	if Inp.KeyCode == FlyKey then
+
+		FlyActivate()
+
+	elseif Inp.KeyCode == InfJumpKey then
+
+		InfJumpEnable()
+
+	elseif Inp.KeyCode == SpeedKey then
+
+		SpeedActivate()
+
+	elseif Inp.KeyCode == ESPKey then
+
+		ESPEnable()
+
+	elseif Inp.KeyCode == CTPKey then
+
+		CTPEnable()
+
+	elseif Inp.KeyCode == BangKey then
+
+		BangEnable()
+
+	elseif Inp.KeyCode == PTPKey then
+
+		PTPEnable()
+
+	elseif Inp.KeyCode == RTKey then
+
+		RTEnable()
+
+	elseif Inp.KeyCode == TTKey then
+
+		TTEnable()
+
+	elseif Inp.KeyCode == CLockKey then
+
+		CLockEnable()
+
+	elseif Inp.KeyCode == AimbotKey then
+
+		AimbotEnable()
+
+	end
+
+end)
+
+-- Fixing the death problem
+
+PLR.CharacterAdded:Connect(function(char)
+
+	Char = char
+
+end)
+
+OldMouse = UIS.MouseBehavior
+UIS.MouseBehavior = Enum.MouseBehavior.Default
+
+game.StarterGui:SetCore("SendNotification", {
+	Title = "Goat Hub",
+	Text = "Done"
+})
+
+local TWLF = TW:Create(LoadingBar, TweenInfo.new(0.5), {BackgroundTransparency = 1})
+local TWMF = TW:Create(MenuFrame, TweenInfo.new(0.5), {BackgroundTransparency = 0.25})
+
+LoadingFrame.BackgroundTransparency = 1
+TWLF:Play()
+TWLF.Completed:Wait()
+LoadingFrame:Destroy()
+NameLabel.Text = "GH Universal"
+TWMF:Play()
+TWMF.Completed:Wait()
+
+TabsFrame.Visible = true
+CurrentTab = "Home"
+
+for i,v in Tabs[CurrentTab] do
+
+	v.Visible = true
+
+end
+
+
+while task.wait() do
+
+	AlwaysEnabled.Parent = PLR.PlayerGui
+
+	if CurrentTab ~= "Home" then
+
+		WhitelistFrame.Visible = nil
+
+	end
+
+	if CLockFovEnabled then
+
+		local MP = UIS:GetMouseLocation()
+
+		FovFrame.AnchorPoint = Vector2.new(0.5,0.5)
+		FovFrame.Position = UDim2.new(0, MP.X, 0, MP.Y - 50)
+		FovFrame.Size = UDim2.new(0, FovSize * 1.75, 0, FovSize * 1.75)
+		FovFrame.Visible = FovVisible
+
+	else
+
+		FovFrame.Visible = nil
+
+	end
+
+	if MenuUI.Enabled then
+		
+		UIS.MouseBehavior = Enum.MouseBehavior.Default
+		UIS.MouseIconEnabled = true
+		Cursor.Visible = CustomCursor
+		Cursor.Position = UDim2.fromOffset(UIS:GetMouseLocation().X, UIS:GetMouseLocation().Y)
+
+	end
+
+end
