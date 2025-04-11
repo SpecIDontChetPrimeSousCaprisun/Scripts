@@ -50,7 +50,7 @@ if PLR:HasTag("GoatUHubed") then
 	game.TweenService:Create(ImgLabel, TweenInfo.new(2.5, Enum.EasingStyle.Linear), {ImageTransparency = 1}):Play()
 	VineBoom:Play()
 
-	game.StarterGui:SetCore("SendNotification", {
+	game:GetService("StarterGui"):SetCore("SendNotification", {
 		Title = "Goat Hub",
 		Text = "You aldready have an instance of goat hub running if you want to change versions then rejoin the game beafore injecting it again"
 	})
@@ -58,7 +58,7 @@ if PLR:HasTag("GoatUHubed") then
 
 end 
 
-game.StarterGui:SetCore("SendNotification", {
+game:GetService("StarterGui"):SetCore("SendNotification", {
 	Title = "Goat Hub",
 	Text = "SucessFully ran goat hub universal please wait..."
 })
@@ -847,7 +847,7 @@ local function KeyBindsToggle()
 		
 		WhitelistButton.Visible = nil
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "Enableing keybinds this might take time..."
 		})
@@ -864,7 +864,7 @@ local function KeyBindsToggle()
 
 		end
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "Successfully enabled keybinds"
 		})
@@ -873,7 +873,7 @@ local function KeyBindsToggle()
 
 		WhitelistButton.Visible = true
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "Disableing keybinds this might take time..."
 		})
@@ -890,7 +890,7 @@ local function KeyBindsToggle()
 
 		end
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "Successfully disabled keybinds"
 		})
@@ -1313,7 +1313,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 
 	if plr == PlayerToTP then
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "The targeted player of your tp (" ..PlayerToTP.DisplayName.. ") has left changed target to you."
 		})
@@ -2096,7 +2096,7 @@ ESPColorBox.FocusLost:Connect(function(EP)
 
 	if not tonumber(Colors[1]) or not tonumber(Colors[2]) or not tonumber(Colors[3]) then
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Error",
 			Text = "Invalid color"
 		})
@@ -2172,7 +2172,7 @@ NotTargetedESPColorBox.FocusLost:Connect(function(EP)
 
 	if not tonumber(Colors[1]) or not tonumber(Colors[2]) or not tonumber(Colors[3]) then
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Error",
 			Text = "Invalid color"
 		})
@@ -2208,7 +2208,7 @@ local function BangEnable()
 		if not Char or Char.Humanoid.Health <= 0 then BangEnabled = nil return end
 		if PLR == PlayerToBang then
 
-			game.StarterGui:SetCore("SendNotification", {
+			game:GetService("StarterGui"):SetCore("SendNotification", {
 				Title = "Error",
 				Text = "Tried to bang yourself please choose a valid player"
 			})
@@ -2281,7 +2281,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 
 	if plr == PlayerToBang then
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "The targeted player of your bang (" ..PlayerToBang.DisplayName.. ") has left changed target to you."
 		})
@@ -2550,7 +2550,7 @@ end)
 OldMouse = UIS.MouseBehavior
 UIS.MouseBehavior = Enum.MouseBehavior.Default
 
-game.StarterGui:SetCore("SendNotification", {
+game:GetService("StarterGui"):SetCore("SendNotification", {
 	Title = "Goat Hub",
 	Text = "Done"
 })
