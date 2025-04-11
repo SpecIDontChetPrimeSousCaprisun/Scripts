@@ -521,7 +521,7 @@ local KOCheckButton = NewButton("KO", CLockChecksFrame, "KO", 2)
 local WallCheckButton = NewButton("Wall", CLockChecksFrame, "Wall", 3)
 local TeamCheckButton = NewButton("Team", CLockChecksFrame, "Team", 4)
 
-local KeybindsToggleButton = NewButton("KeybindsToggle", QOLFrame, "Disable keybinds", 1)
+local KeybindsToggleButton = NewButton("KeybindsToggle", QOLFrame, "Keybinds", 1)
 local WhitelistButton = NewButton("Whitelist", QOLFrame, "Whitelist", 2)
 local MouseBehaviorButton = NewButton("Mouse", QOLFrame, "Mouse behavior = Free mouse", 3)
 local MouseVisibleButton = NewButton("Mouse", QOLFrame, "Mouse visible = true", 4)
@@ -645,13 +645,13 @@ for i,v in MenuUI:GetDescendants() do
 		v.MouseEnter:Connect(function()
 
 			HoverSound:Play()
-			v.TextColor3 = Color3.fromRGB(255, 0, 0)
+			v.TextLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
 
 		end)
 
 		v.MouseLeave:Connect(function()
 
-			v.TextColor3 = Color3.new(1,1,1)
+			v.TextLabel.TextColor3 = Color3.new(1,1,1)
 
 		end)
 
@@ -842,10 +842,10 @@ local function KeyBindsToggle()
 
 	KDB = true
 	KeybindsActive = not KeybindsActive
+	KeybindsToggleButton.Frame.Frame.Visible = KeybindsActive
 
 	if KeybindsActive then
-
-		KeybindsToggleButton.Text = "Disable keybinds"
+		
 		WhitelistButton.Visible = nil
 
 		game.StarterGui:SetCore("SendNotification", {
@@ -872,7 +872,6 @@ local function KeyBindsToggle()
 
 	else
 
-		KeybindsToggleButton.Text = "Enable keybinds"
 		WhitelistButton.Visible = true
 
 		game.StarterGui:SetCore("SendNotification", {
