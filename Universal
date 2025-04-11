@@ -114,13 +114,16 @@ local ESPNameEnabled = false
 local ESPColorEnabled = false
 local ESPRainbowEnabled = false
 local ESPLinesEnabled = false
+local ESPStickmanEnabled = false
 local ESPKey = Enum.KeyCode.N
 local ESPGui = Instance.new("ScreenGui", PLR.PlayerGui)
+local StickmansFolder = Instance.new("Folder", ESPGui)
 local ESPColor = Color3.fromRGB(255,255,0)
 local ESPOutlineType = "None"
 local ESPTypeNum = 1
 local NotTargettedESPColor = Color3.new(1,1,1)
 local NoEffectESPColor = Color3.new(1,1,1)
+StickmansFolder.Name = "Stickmans"
 ESPGui.ResetOnSpawn = nil
 ESPGui.Name = "EspGui"
 ESPGui.IgnoreGuiInset = true
@@ -574,12 +577,14 @@ Tabs.Aimbot = {
 local ESPEnabledButton = NewButton("Enabled", ESPFrame, "Enabled = false", 1)
 local ESPKeybindButton = NewButton("Keybind", ESPFrame, "Keybind = N", 2)
 local ESPNameEnabledButton = NewButton("NameEnabled", ESPFrame, "Names = false", 3)
-local ESPColorEnabledButton = NewButton("ColorEnabled", ESPFrame, "ColorTargeted aimbot player = false", 4)
+local ESPColorEnabledButton = NewButton("ColorEnabled", ESPFrame, "Color Targeted aimbot player = false", 4)
 local ESPColorBox = NewBox("Color", ESPFrame, "Color = 255,255,0", 5)
 local ESPAdvancedButton = NewButton("Advanced", ESPFrame, "Advanced options", 6)
 local ESPOutlineTypeButton = NewButton("Boxes", AdvancedESP1, "Outline type = none", 1)
 local ESPLinesButton = NewButton("Lines", AdvancedESP1, "Lines = false", 2)
-local ESPRainbowButton = NewButton("Rainbow", AdvancedESP2, "LGBTQ+ = false", 2)
+local ESPStickmanButton = NewButton("Stickman", nil, "Stickmans = false", 3)
+local NotTargetedESPColorBox = NewBox("Color", AdvancedESP2, "Color = 255,255,0", 1)
+local ESPRainbowButton = NewButton("Rainbow", AdvancedESP2, "LGBTQ+ = false", 6)
 
 ESPColorBox.Visible = nil
 Tabs["AdvancedESP"] = {AdvancedESP1, AdvancedESP2}
@@ -1743,16 +1748,32 @@ local function ESPEnable()
 			local AttRight = Instance.new("Attachment", Box3d)
 			local AttUp = Instance.new("Attachment", Box3d)
 			local AttDown = Instance.new("Attachment", Box3d)
+			local SticksFolder = Instance.new("Folder", StickmansFolder)
 
+			SticksFolder.Name = v.DisplayName
 			Box3d.Anchored = true
 			Box3d.CanCollide = nil
 			Box3d.Transparency = 1
 			Box.BackgroundTransparency = 1
-			Box.AnchorPoint = Vector2.new(0.5,0)
+			Box.AnchorPoint = Vector2.new(0.5,0.25)
 			Line.Size = UDim2.new(0,0,0,0)
 			Line.AnchorPoint = Vector2.new(0.5,0.5)
 			LineOutline.Color = Color3.new(1,1,1)
 			Highlight.FillTransparency = 1
+
+			local function WorldToScreen(Pos) --This function gets a World Position (Pos) and returns a Vector2 value of the screen coordinates
+				local M = PLR:GetMouse()
+
+				local point = Cam.CoordinateFrame:pointToObjectSpace(Pos)
+				local aspectRatio = M.ViewSizeX / M.ViewSizeY
+				local hfactor = math.tan(math.rad(Cam.FieldOfView) / 2)
+				local wfactor = aspectRatio*hfactor
+
+				local x = (point.x/point.z) / -wfactor
+				local y = (point.y/point.z) /  hfactor
+
+				return Vector2.new(M.ViewSizeX * (0.5 + 0.5 * x), M.ViewSizeY * (0.5 + 0.5 * y))
+			end
 
 			task.spawn(function()
 
@@ -1806,20 +1827,13 @@ local function ESPEnable()
 						AttUp.Position = Vector3.new(0,Char3DSize.Y / 2,0)
 						AttDown.Position = Vector3.new(0,-Char3DSize.Y / 2,0)
 
-						local function TranslateDepth(Pos : Vector3)
-							
-							Pos = Vector3.new(Pos.X, Pos.Y - Pos.Z, 0)
-							
-							return Pos
-							
-						end
-
-						local PosLeft, _ = TranslateDepth(Cam:WorldToScreenPoint(AttLeft.WorldPosition))
-						local PosRight, _ = TranslateDepth(Cam:WorldToScreenPoint(AttRight.WorldPosition))
-						local PosUp, _ = TranslateDepth(Cam:WorldToScreenPoint(AttUp.WorldPosition))
-						local PosDown, DownOnScreen = Cam:WorldToScreenPoint(AttDown.WorldPosition)
+						local PosLeft = WorldToScreen(AttLeft.WorldPosition)
+						local PosRight = WorldToScreen(AttRight.WorldPosition)
+						local PosUp = WorldToScreen(AttUp.WorldPosition)
+						local PosDown = WorldToScreen(AttDown.WorldPosition)
+						local _, DownOnScreen = Cam:WorldToScreenPoint(AttDown.WorldPosition)
 						
-						local UdimAndNotVectorThingie = UDim2.new(0, PosDown.X, 0, PosDown.Y)
+						local UdimAndNotVectorThingie = UDim2.fromOffset(PosDown.X, PosDown.Y)
 						local viewportSize = Cam.ViewportSize
 
 						Line.Position = UDim2.new(0.5,0,1,0)
@@ -1827,15 +1841,14 @@ local function ESPEnable()
 							Line.Position.X.Scale * viewportSize.X,
 							Line.Position.Y.Scale * viewportSize.Y
 						)
-						Line.Size = UDim2.new(0, 0, 0, ((Vector3.new(Line.Position.X.Offset,Line.Position.Y.Offset,0) - PosDown).Magnitude * 2) - PosDown.Z)
+						Line.Size = UDim2.new(0, 0, 0, (Vector2.new(Line.Position.X.Offset,Line.Position.Y.Offset) - PosDown).Magnitude * 2)
 
 						local Diff = UdimAndNotVectorThingie - Line.Position
 
 						Line.Rotation = math.deg(math.atan2(Diff.Y.Offset, Diff.X.Offset)) - 90
 
 						if not DownOnScreen then Line.Visible = nil end
-
-						PosDown = TranslateDepth(PosDown)
+						if not IsOnScreen then Box.Visible = nil end
 
 						local Size = UDim2.new(0, (PosLeft - PosRight).Magnitude, 0, (PosUp - PosDown).Magnitude)
 
@@ -1851,9 +1864,68 @@ local function ESPEnable()
 
 						end
 
-						Box.Size = Size
-						Box.Position = UDim2.fromOffset(Pos.X, Pos.Y)
+						SticksFolder:ClearAllChildren()
 
+						if ESPStickmanEnabled then
+							
+							for i,v in v.Character:GetChildren() do
+								
+								if v:IsA("BasePart") then
+									
+									local Stick = Instance.new("Frame", SticksFolder)
+									local StickOutline = Instance.new("UIStroke", Stick)
+									local PosYDown = WorldToScreen(Vector3.new(v.Position.X,v.Position.Y + (v.Size.Y / 2),v.Position.Z))
+									local PosYUp = WorldToScreen(Vector3.new(v.Position.X,v.Position.Y - (v.Size.Y / 2),v.Position.Z))
+									local Vec2Pos = WorldToScreen(v.Position)
+									local StickDiff = PosYUp - PosYDown
+									
+									Stick.Size = UDim2.new(0,0,0,0)
+									Stick.AnchorPoint = Vector2.new(0.5,0.5)
+									StickOutline.Color = Color3.new(1,1,1)
+									
+									Stick.Position = UDim2.fromOffset(Vec2Pos.X, Vec2Pos.Y)
+									Stick.Size = UDim2.fromOffset(0,(PosYUp - PosYDown).Magnitude)
+									Stick.Rotation = math.deg(math.atan2(StickDiff.Y, StickDiff.X)) - 90
+									
+									if Target == v then
+
+										Stick.BackgroundColor3 = ESPColor
+
+									else
+
+										Stick.BackgroundColor3 = NotTargettedESPColor
+										
+									end
+									
+								end
+								
+							end
+							
+						end
+
+						if ESPColorEnabled then
+
+							if Target == v then
+
+								Highlight.OutlineColor = ESPColor
+								UI.TextColor3 = ESPColor
+
+							else
+
+								Highlight.OutlineColor = NotTargettedESPColor
+								UI.TextColor3 = NotTargettedESPColor
+							end
+
+						else
+
+							Highlight.OutlineColor = NotTargettedESPColor
+							UI.TextColor3 = NotTargettedESPColor
+
+						end
+
+						Box.Size = Size
+						Box.Position = UDim2.fromOffset(WorldToScreen(v.Character.HumanoidRootPart.Position).X, WorldToScreen(v.Character.HumanoidRootPart.Position).Y)
+						Highlight.Parent = v.Character
 
 					else
 
@@ -1862,31 +1934,12 @@ local function ESPEnable()
 
 					end
 
-					if ESPColorEnabled then
-
-						if Target == v then
-
-							Highlight.OutlineColor = ESPColor
-							UI.TextColor3 = ESPColor
-
-						else
-
-							Highlight.OutlineColor = NotTargettedESPColor
-							UI.TextColor3 = NotTargettedESPColor
-						end
-
-					else
-
-						Highlight.OutlineColor = NotTargettedESPColor
-						UI.TextColor3 = NotTargettedESPColor
-
-					end
-
 					if ESPNameEnabled and v.Character then
 
-						if not v.Character:FindFirstChild("HumanoidRootPart") then UI:Remove() continue end
+						if not v.Character:FindFirstChild("Head") then UI:Remove() continue end
 
-						local Pos, IsOnScreen = Cam.WorldToScreenPoint(Cam, v.Character.HumanoidRootPart.Position)
+						local Pos, IsOnScreen = Cam.WorldToScreenPoint(Cam, v.Character.Head.Position)
+						local Vec2Pos = WorldToScreen(v.Character.Head.Position)
 
 						if not IsOnScreen then UI:Remove() continue end
 
@@ -1898,7 +1951,7 @@ local function ESPEnable()
 						UI.Text = v.DisplayName
 						UI.Font = Enum.Font.FredokaOne
 						if not ESPColorEnabled then UI.TextColor3 = NotTargettedESPColor end
-						UI.Position = UDim2.new(0,Pos.X,0,Pos.Y)
+						UI.Position = UDim2.fromOffset(Vec2Pos.X, Vec2Pos.Y)
 
 					else
 
@@ -1962,6 +2015,7 @@ end
 
 local function ESPRainbowEnable()
 
+	NotTargetedESPColorBox.Visible = ESPRainbowEnabled
 	ESPRainbowEnabled = not ESPRainbowEnabled
 
 	if ESPRainbowEnabled then
@@ -1978,7 +2032,9 @@ local function ESPRainbowEnable()
 
 		task.spawn(function()
 
-			while task.wait() do
+			while ESPRainbowEnabled do
+				
+				task.wait()
 				
 				NotTargettedESPColor = RainbowVal.Value
 				
@@ -1986,13 +2042,13 @@ local function ESPRainbowEnable()
 
 		end)
 
-		while task.wait() do
+		while ESPRainbowEnabled do
+
+			task.wait()
 
 			for i,v in ColorTbl do
 
 				local TWER = TW:Create(RainbowVal, TweenInfo.new(1, Enum.EasingStyle.Linear), {Value = v})
-
-				print(v)
 
 				TWER:Play()
 				TWER.Completed:Wait()
@@ -2005,7 +2061,15 @@ local function ESPRainbowEnable()
 
 		ESPRainbowButton.Text = "LGBTQ+ = false" 
 		NotTargettedESPColor = NoEffectESPColor
-
+		
+		while not ESPRainbowEnabled do
+			
+			task.wait()
+			
+			NotTargettedESPColor = NoEffectESPColor
+			
+		end
+		
 	end
 
 end
@@ -2148,6 +2212,45 @@ ESPLinesButton.MouseButton1Down:Connect(function()
 
 	ESPLinesEnabled = not ESPLinesEnabled
 	ESPLinesButton.Text = "Lines = " ..tostring(ESPLinesEnabled)
+
+end)
+
+ESPStickmanButton.MouseButton1Down:Connect(function()
+
+	ESPStickmanEnabled = not ESPStickmanEnabled
+	ESPStickmanButton.Text = "Stickmans = " ..tostring(ESPStickmanEnabled)
+
+end)
+
+NotTargetedESPColorBox.FocusLost:Connect(function(EP)
+
+	if not EP then return end
+
+	local Colors = string.split(NotTargetedESPColorBox.Text, ",")
+
+	if not tonumber(Colors[1]) or not tonumber(Colors[2]) or not tonumber(Colors[3]) then
+
+		game.StarterGui:SetCore("SendNotification", {
+			Title = "Error",
+			Text = "Invalid color"
+		})
+
+		return
+
+	end
+
+	local R = tonumber(Colors[1])
+	local G = tonumber(Colors[2])
+	local B = tonumber(Colors[3])
+
+	if not ESPRainbowEnabled then
+		
+		NotTargettedESPColor = Color3.fromRGB(R,G,B)
+		
+	end
+	
+	NoEffectESPColor = Color3.fromRGB(R,G,B)
+	NotTargetedESPColorBox.Text = "Color = " ..tostring(R).. "," ..tostring(G).. "," ..tostring(B)
 
 end)
 
