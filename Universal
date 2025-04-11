@@ -691,20 +691,17 @@ for i,v in MenuUI:GetDescendants() do
 
 		Button.MouseButton1Down:Connect(function()
 
-			if table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)) then
+			if table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)) then
 
-				table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)))
+				table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)))
 				v.Visible = nil
 				Connection:Disconnect()
-				print("a")
 
 			else
 
-				print("b")
+				local OldKey = string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)
 
-				local OldKey = string.sub(v.Text, #v.Text, #v.Text)
-
-				table.insert(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text))
+				table.insert(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text))
 				v.Visible = true
 
 				Connection = v:GetPropertyChangedSignal("Text"):Connect(function()
@@ -712,7 +709,7 @@ for i,v in MenuUI:GetDescendants() do
 					if string.sub(v.Text, #v.Text, #v.Text) == "." then return end
 
 					table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, OldKey))
-					table.insert(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text))
+					table.insert(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text))
 
 				end)
 
