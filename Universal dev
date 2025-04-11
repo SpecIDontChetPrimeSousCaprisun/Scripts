@@ -314,13 +314,14 @@ local function NewButton(Name, Parent, Text, LayoutOrder, Button)
 	local ButtonStroke = Instance.new("UIStroke", Button)
 	local CheckFrame = Instance.new("Frame", Button)
 	local GreenFrame = Instance.new("Frame", CheckFrame)
-	local Label = Instance.new("TextLabel")
+	local Label = Instance.new("TextLabel", Button)
 
 	Button.Name = Name
 	Button.Size = UDim2.new(0.9, 0,0.075, 0)
 	Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
 	Button.BackgroundTransparency = 0
 	Button.LayoutOrder = LayoutOrder
+	Button.Text = ""
 	ButtonStroke.Thickness = 3
 	ButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	CheckFrame.Size = UDim2.fromScale(1,1)
