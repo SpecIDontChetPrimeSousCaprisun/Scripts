@@ -694,16 +694,17 @@ for i,v in MenuUI:GetDescendants() do
 			if table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)) then
 
 				table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)))
-				Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
 				v.Visible = nil
 				Connection:Disconnect()
+				print("a")
 
 			else
+
+				print("b")
 
 				local OldKey = string.sub(v.Text, #v.Text, #v.Text)
 
 				table.insert(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text))
-				Button.BackgroundColor3 = Color3.fromRGB(38, 255, 14)
 				v.Visible = true
 
 				Connection = v:GetPropertyChangedSignal("Text"):Connect(function()
@@ -716,6 +717,8 @@ for i,v in MenuUI:GetDescendants() do
 				end)
 
 			end
+			
+			Button.Frame.Frame.Visible = v.Visible
 
 		end)
 
