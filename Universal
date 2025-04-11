@@ -1893,19 +1893,7 @@ local function ESPEnable()
 
 						local Size = UDim2.new(0, (PosLeft - PosRight).Magnitude, 0, (PosUp - PosDown).Magnitude)
 
-
-						if ESPTeamColor and v.Team then
-
-							local Color = v.TeamColor.Color
-
-							Highlight.OutlineColor = Color
-							UI.TextColor3 = Color
-							LineOutline.Color = Color
-							BoxOutline.Color = Color
-
-						end
-
-						if not ESPTeamColor or not v.Team and Target == v and ESPColorEnabled then
+						if Target == v and ESPColorEnabled then
 
 							LineOutline.Color = ESPColor
 							BoxOutline.Color = ESPColor
@@ -1917,23 +1905,35 @@ local function ESPEnable()
 
 						end
 
-						if not ESPTeamColor or not v.Team and ESPColorEnabled then
+						if ESPColorEnabled then
 
 							if Target == v then
 
 								Highlight.OutlineColor = ESPColor
 								UI.TextColor3 = ESPColor
 
-							elseif not ESPTeamColor or not v.Team then
+							else
 
 								Highlight.OutlineColor = NotTargettedESPColor
 								UI.TextColor3 = NotTargettedESPColor
+								
 							end
 
-						elseif not ESPTeamColor or not v.Team then
+						else
 
 							Highlight.OutlineColor = NotTargettedESPColor
 							UI.TextColor3 = NotTargettedESPColor
+
+						end
+
+						if ESPTeamColor and v.Team and v ~= Target then
+
+							local Color = v.TeamColor.Color
+
+							Highlight.OutlineColor = Color
+							UI.TextColor3 = Color
+							LineOutline.Color = Color
+							BoxOutline.Color = Color
 
 						end
 
