@@ -1927,8 +1927,7 @@ local function ESPEnable()
 
 						if ESPTeamColor and v.Team then
 							
-							local Color = v.TeamColor
-							local Part = Instance.new("Part")
+							local Color = v.TeamColor.Color
 							
 							Part.BrickColor = Color
 							Color = Part.Color
