@@ -605,8 +605,8 @@ ESPColorBox.Visible = nil
 Tabs["AdvancedESP"] = {AdvancedESP1, AdvancedESP2}
 
 local BangEnabledButton = NewButton("Enabled", BangFrame, "Bang", 1)
-local BangKeybindButton = NewButton("Keybind", BangFrame, "Keybind = B", 2)
-local BTypeButton = NewButton("Type", BangFrame, "Type = Back", 3)
+local BangKeybindButton = NewButton("Keybind", BangFrame, "Keybind = B", 2, true)
+local BTypeButton = NewButton("Type", BangFrame, "Type = Back", 3, true)
 local BangPlayerBox = NewBox("Player", BangFrame, "Player = " ..PlayerToBang.DisplayName, 4)
 
 local RTEnabledButton = NewButton("Enabled", ChatFrame, "Rizz Talk", 2, true)
@@ -2194,7 +2194,7 @@ end)
 local function BangEnable()
 
 	BangEnabled = not BangEnabled
-	BangEnabledButton.Frame.Frame = BangEnabled
+	BangEnabledButton.Frame.Frame.Visible = BangEnabled
 
 	if BangEnabled then
 
