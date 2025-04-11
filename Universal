@@ -1968,8 +1968,6 @@ local function ESPEnable()
 						UI.BackgroundTransparency = 1
 						UI.Text = v.DisplayName
 						UI.Font = Enum.Font.FredokaOne
-						if not ESPColorEnabled then UI.TextColor3 = NotTargettedESPColor end
-						
 						UI.Position = UDim2.fromOffset(Vec2Pos.X, Vec2Pos.Y)
 
 					else
@@ -2035,6 +2033,7 @@ end
 local function ESPRainbowEnable()
 
 	NotTargetedESPColorBox.Visible = ESPRainbowEnabled
+	ESPTeamColorButton.Visible = ESPRainbowEnabled
 	ESPRainbowEnabled = not ESPRainbowEnabled
 
 	if ESPRainbowEnabled then
@@ -2125,6 +2124,7 @@ ESPEnabledButton.MouseButton1Down:Connect(ESPEnable)
 ESPRainbowButton.MouseButton1Down:Connect(ESPRainbowEnable)
 ESPTeamColorButton.MouseButton1Down:Connect(function()
 	
+	ESPRainbowButton.Visible = ESPTeamColor
 	ESPTeamColor = not ESPTeamColor
 	ESPTeamColorButton.Text = "Adjust colors for teams = " ..tostring(ESPTeamColor)
 	
