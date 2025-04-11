@@ -1929,10 +1929,6 @@ local function ESPEnable()
 							
 							local Color = v.TeamColor.Color
 							
-							Part.BrickColor = Color
-							Color = Part.Color
-							Part = nil
-							
 							Highlight.OutlineColor = Color
 							UI.TextColor3 = Color
 							LineOutline.Color = Color
