@@ -543,30 +543,23 @@ Tabs.Home = {
 
 -- Premier "Tab"
 
-FlyEnabledButton = NewButton("Enabled", FlyFrame, "Enabled = false", 1)
-local FlyKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = F", 2)
+FlyEnabledButton = NewButton("Enabled", FlyFrame, "Fly", 1)
+local FlyKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = F", 2, true)
 local FlySpeedBox = NewBox("Speed", FlyFrame, "Speed = 0", 3)
-local NoclipEnabledButton = NewButton("NoclipEnabled", FlyFrame, "Noclip = false", 4)
-local InfJumpLabel = NewButton("Label", FlyFrame, "-- Inf jump --",5)
-local InfJumpEnabledButton = NewButton("Enabled", FlyFrame, "Enabled = false", 6)
-local InfJumpKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = M", 7)
+local NoclipEnabledButton = NewButton("NoclipEnabled", FlyFrame, "Noclip", 4)
+local InfJumpEnabledButton = NewButton("Enabled", FlyFrame, "Inf jump", 6)
+local InfJumpKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = M", 7, true)
 
-local SpeedEnabledButton = NewButton("Enabled", SpeedFrame, "Enabled = false", 1)
-local SpeedKeybindButton = NewButton("Keybind", SpeedFrame, "Keybind = G", 2)
+local SpeedEnabledButton = NewButton("Enabled", SpeedFrame, "Enabled", 1)
+local SpeedKeybindButton = NewButton("Keybind", SpeedFrame, "Keybind = G", 2, true)
 local SpeedSpeedBox = NewBox("Speed", SpeedFrame, "Speed = 0", 3)
 
-local CTPLabel = NewButton("CTP", TPFrame, "-- Click to tp --", 1)
-local CTPEnabledButton = NewButton("Enabled", TPFrame, "Enabled = false", 2)
-local CTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = P", 3)
+local CTPEnabledButton = NewButton("Enabled", TPFrame, "Click to tp", 2)
+local CTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = P", 3, true)
 
-local PTPLabel = NewButton("PTP", TPFrame, "-- Tp to selected --", 4)
-local PTPEnabledButton = NewButton("Enabled", TPFrame, "TP", 5)
-local PTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = L", 6)
+local PTPEnabledButton = NewButton("Enabled", TPFrame, "Teleport to selected plr", 5, true)
+local PTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = L", 6, true)
 local PTPPlayerBox = NewBox("Player", TPFrame, "Player = " ..PlayerToTP.DisplayName, 7)
-
-InfJumpLabel.Interactable = nil
-CTPLabel.Interactable = nil
-PTPLabel.Interactable = nil
 
 Tabs.Movement = {
 	FlyFrame,
@@ -939,13 +932,15 @@ task.spawn(function()
 			MouseBehaviorButton.MouseButton1Down:Wait()
 			
 			MouseBehavior = v
-			MouseBehaviorButton.Text = "Mouse behavior = " ..string.split(tostring(v), ".")[3]
+			MouseBehaviorButton.TextLabel.Text = "Mouse behavior = " ..string.split(tostring(v), ".")[3]
 			
 		end
 		
 	end
 	
 end)
+
+MouseVisibleButton.Frame.Frame.Visible = MouseVisible
 
 MouseVisibleButton.MouseButton1Down:Connect(function()
 	
@@ -974,10 +969,9 @@ TWL.Completed:Wait()
 local function FlyActivate()
 
 	FlyEnabled = not FlyEnabled
+	FlyEnabledButton.Frame.Frame.Visible = FlyEnabled
 
 	if FlyEnabled then
-
-		FlyEnabledButton.Text = "Enabled = true"
 
 		local FlyVel = Instance.new("LinearVelocity", Char.HumanoidRootPart)
 		local Att = Instance.new("Attachment", Char.HumanoidRootPart)
@@ -1067,7 +1061,6 @@ local function FlyActivate()
 
 		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
 		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, true)
-		FlyEnabledButton.Text = "Enabled = false"
 		workspace.Gravity = DefaultGrav
 
 		for i,v in OldCollides do
@@ -1088,7 +1081,7 @@ FlyKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	FlyKeybindButton.Text = "..."
+	FlyKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1097,14 +1090,14 @@ FlyKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			FlyKey = Inp.KeyCode
-			FlyKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			FlyKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until FlyKeybindButton.Text ~= "..."
+	repeat wait() until FlyKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1123,16 +1116,7 @@ end)
 NoclipEnabledButton.MouseButton1Down:Connect(function()
 
 	NoclipEnabled = not NoclipEnabled
-
-	if NoclipEnabled then
-
-		NoclipEnabledButton.Text = "Noclip = true"
-
-	else
-
-		NoclipEnabledButton.Text = "Noclip = false"
-
-	end
+	NoclipEnabledButton.Frame.Frame.Visible = NoclipEnabled
 
 end)
 
@@ -1141,10 +1125,10 @@ end)
 local function InfJumpEnable()
 
 	InfJumpEnabled = not InfJumpEnabled
+	InfJumpEnabledButton.Frame.Frame.Visible = InfJumpEnabled
 
 	if InfJumpEnabled then
 
-		InfJumpEnabledButton.Text = "Enabled = true"
 		local JumpLoop = UIS.JumpRequest:Connect(function()
 
 			Char.Humanoid:ChangeState("Jumping")
@@ -1159,10 +1143,6 @@ local function InfJumpEnable()
 
 		JumpLoop:Disconnect()
 
-	else
-
-		InfJumpEnabledButton.Text = "Enabled = false"
-
 	end
 
 end
@@ -1174,7 +1154,7 @@ InfJumpKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	InfJumpKeybindButton.Text = "..."
+	InfJumpKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1183,14 +1163,14 @@ InfJumpKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			InfJumpKey = Inp.KeyCode
-			InfJumpKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			InfJumpKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until InfJumpKeybindButton.Text ~= "..."
+	repeat wait() until InfJumpKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1202,10 +1182,9 @@ end)
 local function SpeedActivate()
 
 	SpeedEnabled = not SpeedEnabled
+	SpeedEnabledButton.Frame.Frame.Visible = SpeedEnabled
 
 	if SpeedEnabled then
-
-		SpeedEnabledButton.Text = "Enabled = true"
 
 		while SpeedEnabled do
 
@@ -1217,7 +1196,6 @@ local function SpeedActivate()
 	else
 
 		Char.Humanoid.WalkSpeed = 16
-		SpeedEnabledButton.Text = "Enabled = false"
 
 	end
 end
@@ -1229,7 +1207,7 @@ SpeedKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	SpeedKeybindButton.Text = "..."
+	SpeedKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1238,14 +1216,14 @@ SpeedKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			SpeedKey = Inp.KeyCode
-			SpeedKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			SpeedKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until SpeedKeybindButton.Text ~= "..."
+	repeat wait() until SpeedKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1268,10 +1246,9 @@ end)
 local function CTPEnable()
 
 	CTPEnabled = not CTPEnabled
+	CTPEnabledButton.Frame.Frame.Visible = CTPEnabled
 
 	if CTPEnabled then
-
-		CTPEnabledButton.Text = "Enabled = true"
 
 		local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1293,10 +1270,6 @@ local function CTPEnable()
 
 		Connection:Disconnect()
 
-	else
-
-		CTPEnabledButton.Text = "Enabled = false"
-
 	end
 
 end
@@ -1308,7 +1281,7 @@ CTPKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	CTPKeybindButton.Text = "..."
+	CTPKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1317,14 +1290,14 @@ CTPKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			CTPKey = Inp.KeyCode
-			CTPKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			CTPKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until CTPKeybindButton.Text ~= "..."
+	repeat wait() until CTPKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -1349,7 +1322,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 		})
 
 		PlayerToTP = game:GetService("Players"):GetPlayers()[1]
-		PTPPlayerBox.Text = "Player = " ..PlayerToTP.DisplayName
+		PTPPlayerBox.TextLabel.Text = "Player = " ..PlayerToTP.DisplayName
 
 	end
 
@@ -1362,7 +1335,7 @@ PTPKeybindButton.MouseButton1Down:Connect(function()
 	if BindingKey then return end
 
 	BindingKey = true
-	PTPKeybindButton.Text = "..."
+	PTPKeybindButton.TextLabel.Text = "..."
 
 	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
 
@@ -1371,14 +1344,14 @@ PTPKeybindButton.MouseButton1Down:Connect(function()
 		if Inp.UserInputType == Enum.UserInputType.Keyboard then
 
 			PTPKey = Inp.KeyCode
-			PTPKeybindButton.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+			PTPKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
 
 		end
 
 
 	end)
 
-	repeat wait() until PTPKeybindButton.Text ~= "..."
+	repeat wait() until PTPKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
