@@ -321,6 +321,8 @@ local function NewButton(Name, Parent, Text, LayoutOrder, Button)
 	Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
 	Button.BackgroundTransparency = 0
 	Button.LayoutOrder = LayoutOrder
+	ButtonStroke.Thickness = 3
+	ButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 	CheckFrame.Size = UDim2.fromScale(1,1)
 	CheckFrame.BackgroundColor3 = Color3.new(1,0,0)
 	ButtonStroke:Clone().Parent = CheckFrame
@@ -330,11 +332,11 @@ local function NewButton(Name, Parent, Text, LayoutOrder, Button)
 	Label.AnchorPoint = Vector2.new(1,0)
 	Label.Position = UDim2.fromScale(1,0)
 	Label.BackgroundTransparency = 1
+	Label.TextColor3 = Color3.new(1,1,1)
 	Label.TextScaled = true
 	Label.Font = Enum.Font.FredokaOne
 	Label.Text = Text
 	Instance.new("UIAspectRatioConstraint", CheckFrame)
-	ButtonStroke.Thickness = 3
 
 	return Button
 
