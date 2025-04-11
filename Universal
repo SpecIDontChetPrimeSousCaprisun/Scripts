@@ -1923,8 +1923,13 @@ local function ESPEnable()
 
 						end
 
-						Box.Size = Size
-						Box.Position = UDim2.fromOffset(WorldToScreen(v.Character.HumanoidRootPart.Position).X, WorldToScreen(v.Character.HumanoidRootPart.Position).Y)
+						if v.Character:FindFirstChild("HumanoidRootPart") then
+							
+							Box.Size = Size
+							Box.Position = UDim2.fromOffset(WorldToScreen(v.Character.HumanoidRootPart.Position).X, WorldToScreen(v.Character.HumanoidRootPart.Position).Y)							
+							
+						end
+
 						Highlight.Parent = v.Character
 
 					else
