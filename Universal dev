@@ -50,7 +50,7 @@ if PLR:HasTag("GoatUHubed") then
 	game.TweenService:Create(ImgLabel, TweenInfo.new(2.5, Enum.EasingStyle.Linear), {ImageTransparency = 1}):Play()
 	VineBoom:Play()
 
-	game.StarterGui:SetCore("SendNotification", {
+	game:GetService("StarterGui"):SetCore("SendNotification", {
 		Title = "Goat Hub",
 		Text = "You aldready have an instance of goat hub running if you want to change versions then rejoin the game beafore injecting it again"
 	})
@@ -58,7 +58,7 @@ if PLR:HasTag("GoatUHubed") then
 
 end 
 
-game.StarterGui:SetCore("SendNotification", {
+game:GetService("StarterGui"):SetCore("SendNotification", {
 	Title = "Goat Hub",
 	Text = "SucessFully ran goat hub universal please wait..."
 })
@@ -482,9 +482,15 @@ ChatFrame.Parent = Options
 
 local CLockFrame = FlyFrame:Clone()
 CLockFrame.Name = "CLock"
-CLockFrame.NameLabel.Text = "Aimbots"
+CLockFrame.NameLabel.Text = "CLock"
 CLockFrame.LayoutOrder = 1
 CLockFrame.Parent = Options
+
+local AimbotFrame = FlyFrame:Clone()
+AimbotFrame.Name = "Aimbot"
+AimbotFrame.NameLabel.Text = "Aimbot"
+AimbotFrame.LayoutOrder = 2
+AimbotFrame.Parent = Options
 
 local CLockChecksFrame = FlyFrame:Clone()
 CLockChecksFrame.Name = "CLockChecks"
@@ -580,11 +586,12 @@ FovFrame.Visible = nil
 CLockFovVisibleButton.Visible = nil
 CLockFovSizeBox.Visible = nil
 
-local AimbotEnabledButton = NewButton("Enabled", CLockFrame, "Aimbot", 3)
-local AimbotKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = C", 4, true)
+local AimbotEnabledButton = NewButton("Enabled", AimbotFrame, "Aimbot", 3)
+local AimbotKeybindButton = NewButton("Keybind", AimbotFrame, "Keybind = C", 4, true)
 
 Tabs.Aimbot = {
 	CLockFrame,
+	AimbotFrame,
 	CLockChecksFrame
 }
 -- Other
@@ -684,19 +691,17 @@ for i,v in MenuUI:GetDescendants() do
 
 		Button.MouseButton1Down:Connect(function()
 
-			if table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)) then
+			if table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)) then
 
-				table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text)))
-				Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
+				table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)))
 				v.Visible = nil
 				Connection:Disconnect()
 
 			else
 
-				local OldKey = string.sub(v.Text, #v.Text, #v.Text)
+				local OldKey = string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)
 
-				table.insert(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text))
-				Button.BackgroundColor3 = Color3.fromRGB(38, 255, 14)
+				table.insert(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text))
 				v.Visible = true
 
 				Connection = v:GetPropertyChangedSignal("Text"):Connect(function()
@@ -704,11 +709,13 @@ for i,v in MenuUI:GetDescendants() do
 					if string.sub(v.Text, #v.Text, #v.Text) == "." then return end
 
 					table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, OldKey))
-					table.insert(KeybindsWhitelist, string.sub(v.Text, #v.Text, #v.Text))
+					table.insert(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text))
 
 				end)
 
 			end
+			
+			Button.Frame.Frame.Visible = v.Visible
 
 		end)
 
@@ -840,7 +847,7 @@ local function KeyBindsToggle()
 		
 		WhitelistButton.Visible = nil
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "Enableing keybinds this might take time..."
 		})
@@ -857,7 +864,7 @@ local function KeyBindsToggle()
 
 		end
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "Successfully enabled keybinds"
 		})
@@ -866,7 +873,7 @@ local function KeyBindsToggle()
 
 		WhitelistButton.Visible = true
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "Disableing keybinds this might take time..."
 		})
@@ -883,7 +890,7 @@ local function KeyBindsToggle()
 
 		end
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "Successfully disabled keybinds"
 		})
@@ -1020,7 +1027,7 @@ local function FlyActivate()
 
 			if table.find(Inps, Enum.KeyCode.W) then
 
-				FlyVel.VectorVelocity = Cam.CFrame.LookVector * FlySpeed
+				Char.HumanoidRootPart.CFrame *= CFrame.new(Cam.CFrame.LookVector * FlySpeed)
 
 			elseif table.find(Inps, Enum.KeyCode.S) then
 
@@ -1306,7 +1313,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 
 	if plr == PlayerToTP then
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "The targeted player of your tp (" ..PlayerToTP.DisplayName.. ") has left changed target to you."
 		})
@@ -1919,7 +1926,7 @@ local function ESPEnable()
 
 			end)
 
-			v.CharacterAdded:Connect(function()
+			local OnRespawn = v.CharacterAdded:Connect(function()
 
 				Highlight:Destroy()
 				Highlight = Instance.new("Highlight", v.Character)
@@ -1939,6 +1946,7 @@ local function ESPEnable()
 				Line:Destroy()
 				Box:Destroy()
 				Box3d:Destroy()
+				OnRespawn:Disconnect()
 
 			end)
 
@@ -2078,6 +2086,7 @@ ESPColorEnabledButton.MouseButton1Down:Connect(function()
 
 	ESPColorEnabled = not ESPColorEnabled
 	ESPColorEnabledButton.Frame.Frame.Visible = ESPColorEnabled
+	ESPColorBox.Visible = ESPColorEnabled
 
 end)
 
@@ -2089,7 +2098,7 @@ ESPColorBox.FocusLost:Connect(function(EP)
 
 	if not tonumber(Colors[1]) or not tonumber(Colors[2]) or not tonumber(Colors[3]) then
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Error",
 			Text = "Invalid color"
 		})
@@ -2165,7 +2174,7 @@ NotTargetedESPColorBox.FocusLost:Connect(function(EP)
 
 	if not tonumber(Colors[1]) or not tonumber(Colors[2]) or not tonumber(Colors[3]) then
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Error",
 			Text = "Invalid color"
 		})
@@ -2201,7 +2210,7 @@ local function BangEnable()
 		if not Char or Char.Humanoid.Health <= 0 then BangEnabled = nil return end
 		if PLR == PlayerToBang then
 
-			game.StarterGui:SetCore("SendNotification", {
+			game:GetService("StarterGui"):SetCore("SendNotification", {
 				Title = "Error",
 				Text = "Tried to bang yourself please choose a valid player"
 			})
@@ -2274,7 +2283,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 
 	if plr == PlayerToBang then
 
-		game.StarterGui:SetCore("SendNotification", {
+		game:GetService("StarterGui"):SetCore("SendNotification", {
 			Title = "Goat Hub",
 			Text = "The targeted player of your bang (" ..PlayerToBang.DisplayName.. ") has left changed target to you."
 		})
@@ -2467,7 +2476,7 @@ TWL.Completed:Wait()
 
 UIS.InputBegan:Connect(function(Inp, GPE)
 
-	if GPE or BindingKey then return end
+	if BindingKey then return end
 
 	if Inp.KeyCode == Key then
 
@@ -2482,6 +2491,7 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 
 	end
 
+	if GPE then return end
 	if not KeybindsActive and not table.find(KeybindsWhitelist, string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), #tostring(Inp.KeyCode))) then return end
 
 	if Inp.KeyCode == FlyKey then
@@ -2543,7 +2553,7 @@ end)
 OldMouse = UIS.MouseBehavior
 UIS.MouseBehavior = Enum.MouseBehavior.Default
 
-game.StarterGui:SetCore("SendNotification", {
+game:GetService("StarterGui"):SetCore("SendNotification", {
 	Title = "Goat Hub",
 	Text = "Done"
 })
