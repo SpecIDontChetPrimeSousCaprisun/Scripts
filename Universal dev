@@ -1027,7 +1027,7 @@ local function FlyActivate()
 
 			if table.find(Inps, Enum.KeyCode.W) then
 
-				Char:PivotTo(Char:GetPivot().Position + (Cam.CFrame.LookVector * FlySpeed))
+				Char.HumanoidRootPart.CFrame *= CFrame.new(Cam.CFrame.LookVector * FlySpeed, Vector3.new(0, Cam.CFrame.LookVector.Y, 0))
 
 			elseif table.find(Inps, Enum.KeyCode.S) then
 
