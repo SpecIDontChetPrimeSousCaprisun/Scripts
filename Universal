@@ -1926,7 +1926,7 @@ local function ESPEnable()
 
 			end)
 
-			v.CharacterAdded:Connect(function()
+			local OnRespawn = v.CharacterAdded:Connect(function()
 
 				Highlight:Destroy()
 				Highlight = Instance.new("Highlight", v.Character)
@@ -1946,6 +1946,7 @@ local function ESPEnable()
 				Line:Destroy()
 				Box:Destroy()
 				Box3d:Destroy()
+				OnRespawn:Disconnect()
 
 			end)
 
@@ -2612,3 +2613,4 @@ while task.wait() do
 	end
 
 end
+
