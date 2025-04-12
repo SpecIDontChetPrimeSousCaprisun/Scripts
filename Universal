@@ -2085,6 +2085,7 @@ ESPColorEnabledButton.MouseButton1Down:Connect(function()
 
 	ESPColorEnabled = not ESPColorEnabled
 	ESPColorEnabledButton.Frame.Frame.Visible = ESPColorEnabled
+	ESPColorBox.Visible = ESPColorEnabled
 
 end)
 
