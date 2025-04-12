@@ -2476,7 +2476,7 @@ TWL.Completed:Wait()
 
 UIS.InputBegan:Connect(function(Inp, GPE)
 
-	if GPE or BindingKey then return end
+	if BindingKey then return end
 
 	if Inp.KeyCode == Key then
 
@@ -2491,6 +2491,7 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 
 	end
 
+	if GPE then return end
 	if not KeybindsActive and not table.find(KeybindsWhitelist, string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), #tostring(Inp.KeyCode))) then return end
 
 	if Inp.KeyCode == FlyKey then
@@ -2613,4 +2614,3 @@ while task.wait() do
 	end
 
 end
-
