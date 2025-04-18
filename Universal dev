@@ -1027,7 +1027,7 @@ local function FlyActivate()
 
 			if table.find(Inps, Enum.KeyCode.W) then
 
-				Char.HumanoidRootPart.CFrame *= CFrame.new(Vector3.new(Cam.CFrame.LookVector.X * FlySpeed, Cam.CFrame.LookVector.Y * FlySpeed, Cam.CFrame.LookVector.Z * FlySpeed))
+				Char.HumanoidRootPart.CFrame *= Cam.CFrame.LookVector * (FlySpeed / 10)
 
 			elseif table.find(Inps, Enum.KeyCode.S) then
 
