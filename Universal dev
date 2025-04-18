@@ -1027,8 +1027,7 @@ local function FlyActivate()
 
 			if table.find(Inps, Enum.KeyCode.W) then
 
-				Char.HumanoidRootPart.Orientation = Vector3.new(0, Cam.CFrame.LookVector.Y, 0)
-				Char.HumanoidRootPart.CFrame *= CFrame.new(Cam.CFrame.LookVector * FlySpeed)
+				Char.HumanoidRootPart.CFrame *= CFrame.new(Vector3.new(Cam.CFrame.LookVector.X * FlySpeed, Cam.CFrame.LookVector.Y * FlySpeed, Cam.CFrame.LookVector.Z * FlySpeed))
 
 			elseif table.find(Inps, Enum.KeyCode.S) then
 
