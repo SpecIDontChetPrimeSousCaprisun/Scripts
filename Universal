@@ -2225,7 +2225,7 @@ local function BangEnable()
 
 		end
 
-		local Track = Char.Humanoid:LoadAnimation(Anim)
+		local Track = PLR.Character.Humanoid:LoadAnimation(Anim)
 
 		Track:Play()
 
