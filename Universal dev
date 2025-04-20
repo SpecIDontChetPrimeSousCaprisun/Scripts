@@ -1013,8 +1013,6 @@ local function FlyActivate()
 			Att.Parent = Char.HumanoidRootPart
 			FlyVel.Parent = Char
 			FlyVel.Attachment0 = Att :: Attachment
-			Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, false)
-			Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
 
 			local Inps = {}
 			local KKInps = UIS:GetKeysPressed()
@@ -1056,8 +1054,6 @@ local function FlyActivate()
 
 	else
 
-		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
-		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, true)
 		Char.HumanoidRootPart.Anchored = false
 
 		for i,v in OldCollides do
