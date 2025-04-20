@@ -975,7 +975,7 @@ local function FlyActivate()
 
 		FlyVel.ForceLimitsEnabled = nil
 		FlyVel.Attachment0 = Att :: Attachment
-		workspace.Gravity = 0
+		Char.HumanoidRootPart.Anchored = true
 
 		while FlyEnabled do
 
@@ -1031,15 +1031,15 @@ local function FlyActivate()
 
 			elseif table.find(Inps, Enum.KeyCode.S) then
 
-				FlyVel.VectorVelocity = Cam.CFrame.LookVector * -FlySpeed
+				Char.HumanoidRootPart.CFrame += Cam.CFrame.LookVector * (-FlySpeed / 10)
 
 			elseif table.find(Inps, Enum.KeyCode.D) then
 
-				FlyVel.VectorVelocity = Cam.CFrame.RightVector * FlySpeed
+				Char.HumanoidRootPart.CFrame += Cam.CFrame.RightVector * (FlySpeed / 10)
 
 			elseif table.find(Inps, Enum.KeyCode.A) then
 
-				FlyVel.VectorVelocity = Cam.CFrame.RightVector * -FlySpeed
+				Char.HumanoidRootPart.CFrame += Cam.CFrame.RightVector * (-FlySpeed / 10)
 
 			else
 
@@ -1058,7 +1058,7 @@ local function FlyActivate()
 
 		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.FallingDown, true)
 		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, true)
-		workspace.Gravity = DefaultGrav
+		Char.HumanoidRootPart.Anchored = false
 
 		for i,v in OldCollides do
 
