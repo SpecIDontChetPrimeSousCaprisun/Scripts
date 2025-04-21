@@ -723,7 +723,7 @@ for i,v in MenuUI:GetDescendants() do
 
 end
 
-MenuUI.Parent = PLR.PlayerGui
+MenuUI.Parent = game:GetService("CoreGui")
 
 ExitButton.MouseButton1Down:Connect(function()
 
@@ -2158,7 +2158,7 @@ end)
 ESPLinesButton.MouseButton1Down:Connect(function()
 
 	ESPLinesEnabled = not ESPLinesEnabled
-	ESPLinesButton.Frame.Frame = ESPLinesEnabled
+	ESPLinesButton.Frame.Frame.Visible = ESPLinesEnabled
 
 end)
 
@@ -2225,7 +2225,7 @@ local function BangEnable()
 
 		end
 
-		local Track = Char.Humanoid:LoadAnimation(Anim)
+		local Track = PLR.Character.Humanoid:LoadAnimation(Anim)
 
 		Track:Play()
 
@@ -2577,7 +2577,7 @@ end
 
 while task.wait() do
 
-	AlwaysEnabled.Parent = PLR.PlayerGui
+	AlwaysEnabled.Parent = game:GetService("CoreGui")
 
 	if CurrentTab ~= "Home" then
 
