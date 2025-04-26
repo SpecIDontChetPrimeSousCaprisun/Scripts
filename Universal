@@ -2225,6 +2225,9 @@ local function BangEnable()
 
 			task.wait()
 
+			if not Char then continue end
+			if not Char:FindFirstChild("HumanoidRootPart") then continue end
+
 			if not PlayerToBang.Character:FindFirstChild("HumanoidRootPart") then
 
 				Track:Stop()
