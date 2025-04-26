@@ -207,6 +207,10 @@ MenuFrameCorner.CornerRadius = UDim.new(0.1,0)
 MenuFrameRatio.AspectRatio = 2.03
 MenuFrameRatio.Parent = MenuFrame
 
+local VerUI = Instance.new("ScreenGui")
+local VerFrame = MenuFrame:Clone()
+VerFrame.Parent = VerUI
+
 NameLabel.Name = "NameLabel"
 NameLabel.Size = UDim2.new(1,0,0.1,0)
 NameLabel.Position = UDim2.new(0,0,0,0)
@@ -258,9 +262,35 @@ TabsUiLayout.FillDirection = Enum.FillDirection.Vertical
 
 MenuFrameCorner:Clone().Parent = TabsFrame
 
-local VerUI = Instance.new("ScreenGui")
-local VerFrame = MenuFrame:Clone()
-VerFrame.Parent = VerUI
+local VerBox = Instance.new("TextLabel", VerFrame)
+local SafeButton = Instance.new("TextButton", VerFrame)
+local SafeButtonCorner = Instance.new("UICorner", SafeButton)
+local SafeButtonStroke = Instance.new("UIStroke", SafeButton)
+
+VerBox.BackgroundTransparency = 1
+VerBox.Size = UDim2.fromScale(0.75, 0.5)
+VerBox.Position = UDim2.fromScale(0.5, 0.34)
+VerBox.Text = "Do you wish to launch the safe version or have more options like speed ?"
+VerBox.Font = Enum.Font.FredokaOne
+
+SafeButton.Position = UDim2.fromScale(0.25, 0.75)
+SafeButton.Size = UDim2.fromScale(0.2, 0.1)
+SafeButton.BackgroundColor3 = Color3.new(0,1,0)
+SafeButton.Text = "Safe"
+SafeButton.Font = Enum.Font.FredokaOne
+SafeButton.TextColor3 = Color3.new(1,1,1)
+SafeButtonCorner.CornerRadius = UDim.new(1,0)
+SafeButtonStroke.Thickness = 3
+SafeButtonStroke.Color = Color3.new(1,1,1)
+
+local NotSafeButton = SafeButton:Clone()
+
+NotSafeButton.Position = UDim2.fromScale(0.75, 0.75)
+NotSafeButton.Text = "More options"
+NotSafeButton.BackgroundColor3 = Color3.new(1,0,0)
+NotSafeButton.Font = Enum.Font.FredokaOne
+
+NotSafeButton.Parent = VerFrame
 
 local function NewTab(Tab, LayoutOrder, Img)
 
@@ -728,7 +758,38 @@ for i,v in MenuUI:GetDescendants() do
 end
 
 VerUI.Parent = PLR.PlayerGui
-MenuUI.Parent = game:GetService("CoreGui")
+
+local Ansered = false
+local Ver
+
+SafeButton.MouseButton1Down:Once(function()
+	
+	Ver = "Safe"
+	Ansered = true
+	
+end)
+
+NotSafeButton.MouseButton1Down:Once(function()
+
+	Ver = "NotSafe"
+	Ansered = true
+
+end)
+
+repeat wait() until Ansered
+
+VerUI:Destroy()
+
+if Ver == "Safe" then
+	
+	MenuUI.Parent = PLR.PlayerGui
+	table.remove(Tabs.Movement, table.find(Tabs.Movement, SpeedFrame))
+	
+else
+	
+	MenuUI.Parent = game:GetService("CoreGui")
+	
+end
 
 ExitButton.MouseButton1Down:Connect(function()
 
