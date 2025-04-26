@@ -260,6 +260,7 @@ MenuFrameCorner:Clone().Parent = TabsFrame
 
 local VerUI = Instance.new("ScreenGui")
 local VerFrame = MenuFrame:Clone()
+VerFrame.Parent = VerUI
 
 local function NewTab(Tab, LayoutOrder, Img)
 
