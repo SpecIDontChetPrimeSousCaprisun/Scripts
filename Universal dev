@@ -154,33 +154,33 @@ local TTMessages = {
 
 -- Creation du hub
 
-local MenuUI = Instance.new("ScreenGui")
-local Cursor = Instance.new("ImageLabel", MenuUI)
-local AlwaysEnabled = Instance.new("ScreenGui", PLR.PlayerGui)
-local MenuFrame = Instance.new("Frame", MenuUI)
-local NameLabel = Instance.new("TextLabel", MenuFrame)
-local ExitButton = Instance.new("TextButton", MenuFrame)
-local Options = Instance.new("Frame", MenuFrame)
+MenuUI = Instance.new("ScreenGui")
+Cursor = Instance.new("ImageLabel", MenuUI)
+AlwaysEnabled = Instance.new("ScreenGui", PLR.PlayerGui)
+MenuFrame = Instance.new("Frame", MenuUI)
+NameLabel = Instance.new("TextLabel", MenuFrame)
+ExitButton = Instance.new("TextButton", MenuFrame)
+Options = Instance.new("Frame", MenuFrame)
 
-local MenuFrameDrag = Instance.new("UIDragDetector", MenuFrame)
-local MenuFrameCorner = Instance.new("UICorner", MenuFrame)
-local MenuFrameRatio = Instance.new("UIAspectRatioConstraint")
+MenuFrameDrag = Instance.new("UIDragDetector", MenuFrame)
+MenuFrameCorner = Instance.new("UICorner", MenuFrame)
+MenuFrameRatio = Instance.new("UIAspectRatioConstraint")
 
-local TabsFrame = Instance.new("Frame", MenuFrame)
-local TabsUiLayout = Instance.new("UIListLayout", TabsFrame)
+TabsFrame = Instance.new("Frame", MenuFrame)
+TabsUiLayout = Instance.new("UIListLayout", TabsFrame)
 
-local NameLabelCorner = Instance.new("UICorner", NameLabel)
-local NameLabelShadow = Instance.new("Frame", MenuFrame)
+NameLabelCorner = Instance.new("UICorner", NameLabel)
+NameLabelShadow = Instance.new("Frame", MenuFrame)
 
-local ExitButtonCorner = Instance.new("UICorner", ExitButton)
-local ExitButtonRatio = Instance.new("UIAspectRatioConstraint")
+ExitButtonCorner = Instance.new("UICorner", ExitButton)
+ExitButtonRatio = Instance.new("UIAspectRatioConstraint")
 
-local OptionsLayout = Instance.new("UIGridLayout", Options)
+OptionsLayout = Instance.new("UIGridLayout", Options)
 
-local FlyFrame = Instance.new("Frame", Options)
+FlyFrame = Instance.new("Frame", Options)
 
-local FlyCorner = Instance.new("UICorner", FlyFrame)
-local FlyOptionLayout = Instance.new("UIListLayout", FlyFrame)
+FlyCorner = Instance.new("UICorner", FlyFrame)
+FlyOptionLayout = Instance.new("UIListLayout", FlyFrame)
 local FlyEnabledButton
 
 MenuUI.ResetOnSpawn = nil
@@ -207,8 +207,8 @@ MenuFrameCorner.CornerRadius = UDim.new(0.1,0)
 MenuFrameRatio.AspectRatio = 2.03
 MenuFrameRatio.Parent = MenuFrame
 
-local VerUI = Instance.new("ScreenGui")
-local VerFrame = MenuFrame:Clone()
+VerUI = Instance.new("ScreenGui")
+VerFrame = MenuFrame:Clone()
 VerFrame.Parent = VerUI
 
 NameLabel.Name = "NameLabel"
@@ -262,10 +262,10 @@ TabsUiLayout.FillDirection = Enum.FillDirection.Vertical
 
 MenuFrameCorner:Clone().Parent = TabsFrame
 
-local VerBox = Instance.new("TextLabel", VerFrame)
-local SafeButton = Instance.new("TextButton", VerFrame)
-local SafeButtonCorner = Instance.new("UICorner", SafeButton)
-local SafeButtonStroke = Instance.new("UIStroke", SafeButton)
+VerBox = Instance.new("TextLabel", VerFrame)
+SafeButton = Instance.new("TextButton", VerFrame)
+SafeButtonCorner = Instance.new("UICorner", SafeButton)
+SafeButtonStroke = Instance.new("UIStroke", SafeButton)
 
 VerBox.BackgroundTransparency = 1
 VerBox.Size = UDim2.fromScale(0.75, 0.5)
@@ -283,7 +283,7 @@ SafeButtonCorner.CornerRadius = UDim.new(1,0)
 SafeButtonStroke.Thickness = 3
 SafeButtonStroke.Color = Color3.new(1,1,1)
 
-local NotSafeButton = SafeButton:Clone()
+NotSafeButton = SafeButton:Clone()
 
 NotSafeButton.Position = UDim2.fromScale(0.75, 0.75)
 NotSafeButton.Text = "More options"
@@ -759,8 +759,8 @@ end
 	
 VerUI.Parent = PLR.PlayerGui
 
-local Ansered = false
-local Ver
+Ansered = false
+Ver
 
 SafeButton.MouseButton1Down:Once(function()
 
