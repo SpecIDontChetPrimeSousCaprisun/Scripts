@@ -258,6 +258,9 @@ TabsUiLayout.FillDirection = Enum.FillDirection.Vertical
 
 MenuFrameCorner:Clone().Parent = TabsFrame
 
+local VerUI = Instance.new("ScreenGui")
+local VerFrame = MenuFrame:Clone()
+
 local function NewTab(Tab, LayoutOrder, Img)
 
 	local Button = Instance.new("ImageButton", TabsFrame)
@@ -723,6 +726,7 @@ for i,v in MenuUI:GetDescendants() do
 
 end
 
+VerUI.Parent = PLR.PlayerGui
 MenuUI.Parent = game:GetService("CoreGui")
 
 ExitButton.MouseButton1Down:Connect(function()
@@ -2224,6 +2228,9 @@ local function BangEnable()
 		while BangEnabled do
 
 			task.wait()
+
+			if not Char then continue end
+			if not Char:FindFirstChild("HumanoidRootPart") then continue end
 
 			if not PlayerToBang.Character:FindFirstChild("HumanoidRootPart") then
 
