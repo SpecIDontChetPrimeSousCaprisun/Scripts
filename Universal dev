@@ -756,44 +756,50 @@ for i,v in MenuUI:GetDescendants() do
 	end
 
 end
-
-if true then
 	
-	VerUI.Parent = PLR.PlayerGui
+VerUI.Parent = PLR.PlayerGui
 
-	local Ansered = false
-	local Ver
+local Ansered = false
+local Ver
 
-	SafeButton.MouseButton1Down:Once(function()
+SafeButton.MouseButton1Down:Once(function()
 
-		Ver = "Safe"
-		Ansered = true
+	Ver = "Safe"
+	Ansered = true
 
-	end)
+end)
 
-	NotSafeButton.MouseButton1Down:Once(function()
+NotSafeButton.MouseButton1Down:Once(function()
 
-		Ver = "NotSafe"
-		Ansered = true
+	Ver = "NotSafe"
+	Ansered = true
 
-	end)
+end)
 
-	repeat wait() until Ansered
+repeat wait() until Ansered
 
-	VerUI:Destroy()
+VerUI:Destroy()
 
-	if Ver == "Safe" then
+if Ver == "Safe" then
 
-		MenuUI.Parent = PLR.PlayerGui
-		table.remove(Tabs.Movement, table.find(Tabs.Movement, SpeedFrame))
+	MenuUI.Parent = PLR.PlayerGui
+	table.remove(Tabs.Movement, table.find(Tabs.Movement, SpeedFrame))
 
-	else
+else
 
-		MenuUI.Parent = game:GetService("CoreGui")
+	MenuUI.Parent = game:GetService("CoreGui")
 
-	end
-	
 end
+
+Ansered = nil
+Ver = nil
+VerUI = nil
+VerBox = nil
+VerFrame = nil
+SafeButton = nil
+SafeButtonCorner = nil
+SafeButtonStroke = nil
+NotSafeButton = nil
 
 ExitButton.MouseButton1Down:Connect(function()
 
