@@ -760,7 +760,7 @@ end
 VerUI.Parent = PLR.PlayerGui
 
 Ansered = false
-Ver
+local Ver
 
 SafeButton.MouseButton1Down:Once(function()
 
