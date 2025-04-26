@@ -158,13 +158,31 @@ MenuUI = Instance.new("ScreenGui")
 Cursor = Instance.new("ImageLabel", MenuUI)
 AlwaysEnabled = Instance.new("ScreenGui", PLR.PlayerGui)
 MenuFrame = Instance.new("Frame", MenuUI)
-NameLabel = Instance.new("TextLabel", MenuFrame)
-ExitButton = Instance.new("TextButton", MenuFrame)
-Options = Instance.new("Frame", MenuFrame)
-
 MenuFrameDrag = Instance.new("UIDragDetector", MenuFrame)
 MenuFrameCorner = Instance.new("UICorner", MenuFrame)
 MenuFrameRatio = Instance.new("UIAspectRatioConstraint")
+
+MenuFrame.Size = UDim2.new(0.5,0,0.5,0)
+MenuFrame.Position = UDim2.new(0.5,0,0.5,0)
+MenuFrame.AnchorPoint  = Vector2.new(0.5,0.5)
+MenuFrame.BackgroundColor3 = Color3.fromRGB(45,45,45)
+MenuFrame.BackgroundTransparency = 0.25
+MenuFrame.ClipsDescendants = true
+
+MenuFrameDrag.ResponseStyle = Enum.UIDragDetectorResponseStyle.Scale
+MenuFrameDrag.BoundingUI = NameLabel
+MenuFrameCorner.CornerRadius = UDim.new(0.1,0)
+MenuFrameRatio.AspectRatio = 2.03
+MenuFrameRatio.Parent = MenuFrame
+
+VerUI = Instance.new("ScreenGui")
+VerFrame = MenuFrame:Clone()
+VerFrame.Parent = VerUI
+VerFrame.UIDragDetector:Destroy()
+
+NameLabel = Instance.new("TextLabel", MenuFrame)
+ExitButton = Instance.new("TextButton", MenuFrame)
+Options = Instance.new("Frame", MenuFrame)
 
 TabsFrame = Instance.new("Frame", MenuFrame)
 TabsUiLayout = Instance.new("UIListLayout", TabsFrame)
@@ -193,23 +211,6 @@ Cursor.ZIndex = 2147483647
 Instance.new("UIAspectRatioConstraint", Cursor)
 
 AlwaysEnabled.Name = "GoatHub Always Enabled"
-
-MenuFrame.Size = UDim2.new(0.5,0,0.5,0)
-MenuFrame.Position = UDim2.new(0.5,0,0.5,0)
-MenuFrame.AnchorPoint  = Vector2.new(0.5,0.5)
-MenuFrame.BackgroundColor3 = Color3.fromRGB(45,45,45)
-MenuFrame.BackgroundTransparency = 0.25
-MenuFrame.ClipsDescendants = true
-
-MenuFrameDrag.ResponseStyle = Enum.UIDragDetectorResponseStyle.Scale
-MenuFrameDrag.BoundingUI = NameLabel
-MenuFrameCorner.CornerRadius = UDim.new(0.1,0)
-MenuFrameRatio.AspectRatio = 2.03
-MenuFrameRatio.Parent = MenuFrame
-
-VerUI = Instance.new("ScreenGui")
-VerFrame = MenuFrame:Clone()
-VerFrame.Parent = VerUI
 
 NameLabel.Name = "NameLabel"
 NameLabel.Size = UDim2.new(1,0,0.1,0)
@@ -272,6 +273,9 @@ VerBox.Size = UDim2.fromScale(0.75, 0.5)
 VerBox.Position = UDim2.fromScale(0.5, 0.34)
 VerBox.Text = "Do you wish to launch the safe version or have more options like speed ?"
 VerBox.Font = Enum.Font.FredokaOne
+VerBox.TextScaled = true
+VerBox.AnchorPoint = Vector2.new(0.5, 0.5)
+VerBox.TextColor3 = Color3.new(1,1,1)
 
 SafeButton.Position = UDim2.fromScale(0.25, 0.75)
 SafeButton.Size = UDim2.fromScale(0.2, 0.1)
@@ -279,7 +283,10 @@ SafeButton.BackgroundColor3 = Color3.new(0,1,0)
 SafeButton.Text = "Safe"
 SafeButton.Font = Enum.Font.FredokaOne
 SafeButton.TextColor3 = Color3.new(1,1,1)
+SafeButton.AnchorPoint = Vector2.new(0.5, 0.5)
+SafeButton.TextScaled = true
 SafeButtonCorner.CornerRadius = UDim.new(1,0)
+SafeButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 SafeButtonStroke.Thickness = 3
 SafeButtonStroke.Color = Color3.new(1,1,1)
 
@@ -769,6 +776,7 @@ SafeButton.MouseButton1Down:Once(function()
 
 end)
 
+
 NotSafeButton.MouseButton1Down:Once(function()
 
 	Ver = "NotSafe"
@@ -790,16 +798,6 @@ else
 	MenuUI.Parent = game:GetService("CoreGui")
 
 end
-
-Ansered = nil
-Ver = nil
-VerUI = nil
-VerBox = nil
-VerFrame = nil
-SafeButton = nil
-SafeButtonCorner = nil
-SafeButtonStroke = nil
-NotSafeButton = nil
 
 ExitButton.MouseButton1Down:Connect(function()
 
@@ -2648,7 +2646,15 @@ end
 
 while task.wait() do
 
-	AlwaysEnabled.Parent = game:GetService("CoreGui")
+	if Ver == "Safe" then
+		
+		AlwaysEnabled.Parent = PLR.PlayerGui
+		
+	else
+		
+		AlwaysEnabled.Parent = game:GetService("CoreGui")
+		
+	end
 
 	if CurrentTab ~= "Home" then
 
