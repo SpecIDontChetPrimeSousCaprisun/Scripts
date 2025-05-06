@@ -45,7 +45,7 @@ if PLR:HasTag("GoatUHubed") then
 	ImgLabel.Image = "http://www.roblox.com/asset/?id=75982668557119"
 	ImgLabel.BackgroundTransparency = 1
 	ImgLabel.Parent = MenuUI
-	MenuUI.Parent = PLR.PlayerGui
+	MenuUI.Parent = game:GetService("CoreGui").CaptureOverlay
 
 	game.TweenService:Create(ImgLabel, TweenInfo.new(2.5, Enum.EasingStyle.Linear), {ImageTransparency = 1}):Play()
 	VineBoom:Play()
@@ -115,7 +115,7 @@ local ESPRainbowEnabled = false
 local ESPLinesEnabled = false
 local ESPTeamColor = false
 local ESPKey = Enum.KeyCode.N
-local ESPGui = Instance.new("ScreenGui", PLR.PlayerGui)
+local ESPGui = Instance.new("ScreenGui", game:GetService("CoreGui").CaptureOverlay)
 local ESPColor = Color3.fromRGB(255,255,0)
 local ESPOutlineType = "None"
 local ESPTypeNum = 1
@@ -154,45 +154,13 @@ local TTMessages = {
 
 -- Creation du hub
 
-local MenuUI = Instance.new("ScreenGui")
-local Cursor = Instance.new("ImageLabel", MenuUI)
-local AlwaysEnabled = Instance.new("ScreenGui", PLR.PlayerGui)
-local MenuFrame = Instance.new("Frame", MenuUI)
-local NameLabel = Instance.new("TextLabel", MenuFrame)
-local ExitButton = Instance.new("TextButton", MenuFrame)
-local Options = Instance.new("Frame", MenuFrame)
-
-local MenuFrameDrag = Instance.new("UIDragDetector", MenuFrame)
-local MenuFrameCorner = Instance.new("UICorner", MenuFrame)
-local MenuFrameRatio = Instance.new("UIAspectRatioConstraint")
-
-local TabsFrame = Instance.new("Frame", MenuFrame)
-local TabsUiLayout = Instance.new("UIListLayout", TabsFrame)
-
-local NameLabelCorner = Instance.new("UICorner", NameLabel)
-local NameLabelShadow = Instance.new("Frame", MenuFrame)
-
-local ExitButtonCorner = Instance.new("UICorner", ExitButton)
-local ExitButtonRatio = Instance.new("UIAspectRatioConstraint")
-
-local OptionsLayout = Instance.new("UIGridLayout", Options)
-
-local FlyFrame = Instance.new("Frame", Options)
-
-local FlyCorner = Instance.new("UICorner", FlyFrame)
-local FlyOptionLayout = Instance.new("UIListLayout", FlyFrame)
-local FlyEnabledButton
-
-MenuUI.ResetOnSpawn = nil
-MenuUI.Name = "GoatHub UNIVERSAL"
-Cursor.Size = UDim2.fromScale(0.05, 0.05)
-Cursor.AnchorPoint = Vector2.new(0,1)
-Cursor.BackgroundTransparency = 1
-Cursor.Image = "rbxassetid://70823320771207"
-Cursor.ZIndex = 2147483647
-Instance.new("UIAspectRatioConstraint", Cursor)
-
-AlwaysEnabled.Name = "GoatHub Always Enabled"
+MenuUI = Instance.new("ScreenGui")
+Cursor = Instance.new("ImageLabel", MenuUI)
+AlwaysEnabled = Instance.new("ScreenGui")
+MenuFrame = Instance.new("Frame", MenuUI)
+MenuFrameDrag = Instance.new("UIDragDetector", MenuFrame)
+MenuFrameCorner = Instance.new("UICorner", MenuFrame)
+MenuFrameRatio = Instance.new("UIAspectRatioConstraint")
 
 MenuFrame.Size = UDim2.new(0.5,0,0.5,0)
 MenuFrame.Position = UDim2.new(0.5,0,0.5,0)
@@ -206,6 +174,42 @@ MenuFrameDrag.BoundingUI = NameLabel
 MenuFrameCorner.CornerRadius = UDim.new(0.1,0)
 MenuFrameRatio.AspectRatio = 2.03
 MenuFrameRatio.Parent = MenuFrame
+
+VerUI = Instance.new("ScreenGui")
+VerFrame = MenuFrame:Clone()
+VerFrame.Parent = VerUI
+VerFrame.UIDragDetector:Destroy()
+
+NameLabel = Instance.new("TextLabel", MenuFrame)
+ExitButton = Instance.new("TextButton", MenuFrame)
+Options = Instance.new("Frame", MenuFrame)
+
+TabsFrame = Instance.new("Frame", MenuFrame)
+TabsUiLayout = Instance.new("UIListLayout", TabsFrame)
+
+NameLabelCorner = Instance.new("UICorner", NameLabel)
+NameLabelShadow = Instance.new("Frame", MenuFrame)
+
+ExitButtonCorner = Instance.new("UICorner", ExitButton)
+ExitButtonRatio = Instance.new("UIAspectRatioConstraint")
+
+OptionsLayout = Instance.new("UIGridLayout", Options)
+
+FlyFrame = Instance.new("Frame", Options)
+
+FlyCorner = Instance.new("UICorner", FlyFrame)
+FlyOptionLayout = Instance.new("UIListLayout", FlyFrame)
+local FlyEnabledButton
+
+MenuUI.ResetOnSpawn = nil
+MenuUI.Name = "GoatHub UNIVERSAL"
+Cursor.Size = UDim2.fromScale(0.05, 0.05)
+Cursor.AnchorPoint = Vector2.new(0,1)
+Cursor.BackgroundTransparency = 1
+Cursor.ZIndex = 2147483647
+Instance.new("UIAspectRatioConstraint", Cursor)
+
+AlwaysEnabled.Name = "GoatHub Always Enabled"
 
 NameLabel.Name = "NameLabel"
 NameLabel.Size = UDim2.new(1,0,0.1,0)
@@ -258,6 +262,82 @@ TabsUiLayout.FillDirection = Enum.FillDirection.Vertical
 
 MenuFrameCorner:Clone().Parent = TabsFrame
 
+VerBox = Instance.new("TextLabel", VerFrame)
+SafeButton = Instance.new("TextButton", VerFrame)
+SafeButtonCorner = Instance.new("UICorner", SafeButton)
+SafeButtonStroke = Instance.new("UIStroke", SafeButton)
+
+VerBox.BackgroundTransparency = 1
+VerBox.Size = UDim2.fromScale(0.75, 0.5)
+VerBox.Position = UDim2.fromScale(0.5, 0.34)
+VerBox.Text = "Do you wish to launch the safe version or have more options like speed ?"
+VerBox.Font = Enum.Font.FredokaOne
+VerBox.TextScaled = true
+VerBox.AnchorPoint = Vector2.new(0.5, 0.5)
+VerBox.TextColor3 = Color3.new(1,1,1)
+
+SafeButton.Position = UDim2.fromScale(0.25, 0.75)
+SafeButton.Size = UDim2.fromScale(0.2, 0.1)
+SafeButton.BackgroundColor3 = Color3.new(0,1,0)
+SafeButton.Text = "Safe"
+SafeButton.Font = Enum.Font.FredokaOne
+SafeButton.TextColor3 = Color3.new(1,1,1)
+SafeButton.AnchorPoint = Vector2.new(0.5, 0.5)
+SafeButton.TextScaled = true
+SafeButtonCorner.CornerRadius = UDim.new(1,0)
+SafeButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+SafeButtonStroke.Thickness = 3
+SafeButtonStroke.Color = Color3.new(1,1,1)
+
+NotSafeButton = SafeButton:Clone()
+
+NotSafeButton.Position = UDim2.fromScale(0.75, 0.75)
+NotSafeButton.Text = "More options"
+NotSafeButton.BackgroundColor3 = Color3.new(1,0,0)
+NotSafeButton.Font = Enum.Font.FredokaOne
+
+NotSafeButton.Parent = VerFrame
+
+
+VerUI.Parent = game:GetService("CoreGui").CaptureOverlay
+
+Ansered = false
+local Ver
+
+SafeButton.MouseButton1Down:Once(function()
+
+	Ver = "Safe"
+	Ansered = true
+	Cursor.BackgroundTransparency = 0
+
+end)
+
+
+NotSafeButton.MouseButton1Down:Once(function()
+
+	Ver = "NotSafe"
+	Ansered = true
+	Cursor.Image = "rbxassetid://70823320771207"
+
+end)
+
+repeat wait() until Ansered
+
+VerUI:Destroy()
+
+if Ver == "Safe" then
+
+	MenuUI.Parent = game:GetService("CoreGui").CaptureOverlay
+
+else
+
+	MenuUI.Parent = game:GetService("CoreGui")
+
+end
+
+AlwaysEnabled.Parent = MenuUI.Parent
+ESPGui.Parent = MenuUI.Parent
+
 local function NewTab(Tab, LayoutOrder, Img)
 
 	local Button = Instance.new("ImageButton", TabsFrame)
@@ -267,7 +347,13 @@ local function NewTab(Tab, LayoutOrder, Img)
 	ButtonConstraint.DominantAxis = Enum.DominantAxis.Height
 	Button.Name = Tab
 	Button.Size = UDim2.new(0.5,0,0.5,0)
-	Button.Image = "rbxassetid://" ..Img
+	
+	if Ver ~= "Safe" then
+		
+		Button.Image = "rbxassetid://" ..Img
+		
+	end
+	
 	Button.BorderColor3 = Color3.fromRGB(70,70,70)
 	Button.BackgroundTransparency = 0.75
 	Button.LayoutOrder = LayoutOrder
@@ -635,6 +721,12 @@ end
 TabsFrame.Visible = nil
 MenuFrame.BackgroundTransparency = 1
 
+if Ver == "Safe" then
+	
+	table.remove(Tabs.Movement, table.find(Tabs.Movement, SpeedFrame))
+	
+end
+
 for i,v in MenuUI:GetDescendants() do
 
 	if v:IsA("TextButton") and v:FindFirstChild("TextLabel") then
@@ -723,7 +815,6 @@ for i,v in MenuUI:GetDescendants() do
 
 end
 
-MenuUI.Parent = game:GetService("CoreGui")
 
 ExitButton.MouseButton1Down:Connect(function()
 
@@ -1753,7 +1844,7 @@ local function ESPEnable()
 
 				local UI = Instance.new("TextLabel")
 
-				while ESPEnabled do
+				while ESPEnabled and v.Parent == game.Players do
 
 					task.wait()
 
@@ -2572,7 +2663,15 @@ end
 
 while task.wait() do
 
-	AlwaysEnabled.Parent = game:GetService("CoreGui")
+	if Ver == "Safe" then
+		
+		AlwaysEnabled.Parent = game:GetService("CoreGui").CaptureOverlay
+		
+	else
+		
+		AlwaysEnabled.Parent = game:GetService("CoreGui")
+		
+	end
 
 	if CurrentTab ~= "Home" then
 
