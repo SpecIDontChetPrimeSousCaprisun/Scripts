@@ -1,7 +1,7 @@
 local PLR = game:GetService("Players").LocalPlayer
 local Char = PLR.Character or PLR.CharacterAdded:Wait()
 local UIS = game:GetService("UserInputService")
-local TW = game.TweenService
+local TW = game:GetService("TweenService")
 local Key = Enum.KeyCode.H
 local BindingKey = nil
 local Cam = game.Workspace.CurrentCamera
@@ -21,10 +21,10 @@ end
 local VineBoom = Instance.new("Sound")
 
 VineBoom.SoundId = "rbxassetid://5178876770"
-VineBoom.Parent = game.SoundService
-HoverSound.Parent = game.SoundService
+VineBoom.Parent = game:GetService("SoundService")
+HoverSound.Parent = game:GetService("SoundService")
 HoverSound.SoundId = "rbxassetid://92876108656319"
-ClickSound.Parent = game.SoundService
+ClickSound.Parent = game:GetService("SoundService")
 ClickSound.SoundId = "rbxassetid://6042053626"
 
 local Tabs = {
@@ -787,7 +787,12 @@ for i,v in MenuUI:GetDescendants() do
 
 				table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)))
 				v.Visible = nil
-				Connection:Disconnect()
+				
+				pcall(function()
+					
+					Connection:Disconnect()
+					
+				end)
 
 			else
 
@@ -2576,47 +2581,47 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 	if GPE then return end
 	if not KeybindsActive and not table.find(KeybindsWhitelist, string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), #tostring(Inp.KeyCode))) then return end
 
-	if Inp.KeyCode == FlyKey then
+	if Inp.KeyCode == FlyKey and FlyKeybindButton.Visible then
 
 		FlyActivate()
 
-	elseif Inp.KeyCode == InfJumpKey then
+	elseif Inp.KeyCode == InfJumpKey and InfJumpKeybindButton.Visible then
 
 		InfJumpEnable()
 
-	elseif Inp.KeyCode == SpeedKey then
+	elseif Inp.KeyCode == SpeedKey and SpeedKeybindButton.Visible and Ver ~= "Safe" then
 
 		SpeedActivate()
 
-	elseif Inp.KeyCode == ESPKey then
+	elseif Inp.KeyCode == ESPKey and ESPKeybindButton.Visible then
 
 		ESPEnable()
 
-	elseif Inp.KeyCode == CTPKey then
+	elseif Inp.KeyCode == CTPKey and CTPKeybindButton.Visible then
 
 		CTPEnable()
 
-	elseif Inp.KeyCode == BangKey then
+	elseif Inp.KeyCode == BangKey and BangKeybindButton.Visible then
 
 		BangEnable()
 
-	elseif Inp.KeyCode == PTPKey then
+	elseif Inp.KeyCode == PTPKey and PTPKeybindButton.Visible then
 
 		PTPEnable()
 
-	elseif Inp.KeyCode == RTKey then
+	elseif Inp.KeyCode == RTKey and RTKeybindButton.Visible then
 
 		RTEnable()
 
-	elseif Inp.KeyCode == TTKey then
+	elseif Inp.KeyCode == TTKey and TTKeybindButton.Visible then
 
 		TTEnable()
 
-	elseif Inp.KeyCode == CLockKey then
+	elseif Inp.KeyCode == CLockKey and CLockKeybindButton.Visible then
 
 		CLockEnable()
 
-	elseif Inp.KeyCode == AimbotKey then
+	elseif Inp.KeyCode == AimbotKey and AimbotKeybindButton.Visible then
 
 		AimbotEnable()
 
