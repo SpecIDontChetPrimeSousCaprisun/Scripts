@@ -1,7 +1,7 @@
 local PLR = game:GetService("Players").LocalPlayer
 local Char = PLR.Character or PLR.CharacterAdded:Wait()
 local UIS = game:GetService("UserInputService")
-local TW = game:GetService("TweenService")
+local TW = game.TweenService
 local Key = Enum.KeyCode.H
 local BindingKey = nil
 local Cam = game.Workspace.CurrentCamera
@@ -21,10 +21,10 @@ end
 local VineBoom = Instance.new("Sound")
 
 VineBoom.SoundId = "rbxassetid://5178876770"
-VineBoom.Parent = game:GetService("SoundService")
-HoverSound.Parent = game:GetService("SoundService")
+VineBoom.Parent = game.SoundService
+HoverSound.Parent = game.SoundService
 HoverSound.SoundId = "rbxassetid://92876108656319"
-ClickSound.Parent = game:GetService("SoundService")
+ClickSound.Parent = game.SoundService
 ClickSound.SoundId = "rbxassetid://6042053626"
 
 local Tabs = {
@@ -107,6 +107,10 @@ local TeamCheck = nil
 
 local AimbotEnabled = false
 local AimbotKey = Enum.KeyCode.C
+
+FlingEnabled = false
+FlingTarget = game.Players:GetPlayers()[1]
+FlingKey = nil
 
 local ESPEnabled = false
 local ESPNameEnabled = false
@@ -467,6 +471,7 @@ FlyFrame.Visible = nil
 
 NewTab("Movement", 2, 10507122420)
 NewTab("Aimbot", 3, 13557340523)
+NewTab("Fling", 4, 0)
 NewTab("Other", 9999, 0)
 
 -- Frames
@@ -584,6 +589,12 @@ CLockChecksFrame.NameLabel.Text = "Checks"
 CLockChecksFrame.LayoutOrder = 3
 CLockChecksFrame.Parent = Options
 
+FlingFrame = FlyFrame:Clone()
+FlingFrame.Name = "FlingFrame"
+FlingFrame.NameLabel.Text = "Fling"
+FlingFrame.LayoutOrder = 1
+FlingFrame.Parent = Options
+
 -- Home
 
 local InterfaceKeybindButton = NewButton("Kebind", InterfaceFrame, "Keybind = H", 1, true)
@@ -680,6 +691,18 @@ Tabs.Aimbot = {
 	AimbotFrame,
 	CLockChecksFrame
 }
+
+-- Fling
+
+FlingButton = NewButton("Fling", FlingFrame, "Fling selected plr", 1, true)
+FlingBox = NewBox("Checks", FlingFrame, "Target = " ..FlingTarget.DisplayName, 2)
+FlingKeybindButton = NewButton("Keybind", FlingFrame, "Keybind = none", 3, true)
+FlingAllButton = NewButton("Fling", FlingFrame, "Fling all", 4, true)
+
+Tabs.Fling = {
+	FlingFrame
+}
+
 -- Other
 
 local ESPEnabledButton = NewButton("Enabled", ESPFrame, "ESP", 1)
@@ -1795,6 +1818,234 @@ TWL = TW:Create(LoadingBar, TweenInfo.new(0.25), {Size = UDim2.new(Loaded / Tota
 TWL:Play()
 TWL.Completed:Wait()
 
+-- Fling
+
+function Fling()
+	
+	if FlingTarget == PLR then return end
+	if not Char then return end
+	if not FlingTarget.Character then return end
+	if not FlingTarget.Character:FindFirstChild("HumanoidRootPart") then return end
+	if not FlingTarget.Character:FindFirstChild("Humanoid") then return end
+	if FlingTarget.Character.Humanoid.Sit then return end
+	if FlingEnabled then return end
+	
+	FlingEnabled = true
+	
+	if FlingEnabled then
+		
+		local TCharacter = FlingTarget.Character
+		local THumanoid
+		local TRootPart
+		local THead
+		local Accessory
+		local RootPart = Char.HumanoidRootPart
+		local OldPos = RootPart.CFrame
+
+		if TCharacter:FindFirstChildOfClass("Humanoid") then
+			THumanoid = TCharacter:FindFirstChildOfClass("Humanoid")
+		end
+		if THumanoid and THumanoid.RootPart then
+			TRootPart = THumanoid.RootPart
+		end
+		if TCharacter:FindFirstChild("Head") then
+			THead = TCharacter.Head
+		end
+		if TCharacter:FindFirstChildOfClass("Accessory") then
+			Accessory = TCharacter:FindFirstChildOfClass("Accessory")
+		end
+		
+		local FPos = function(BasePart, Pos, Ang)
+			RootPart.CFrame = CFrame.new(BasePart.Position) * Pos * Ang
+			Char:SetPrimaryPartCFrame(CFrame.new(BasePart.Position) * Pos * Ang)
+			RootPart.Velocity = Vector3.new(9e7, 9e7 * 10, 9e7)
+			RootPart.RotVelocity = Vector3.new(9e8, 9e8, 9e8)
+		end
+
+		local SFBasePart = function(BasePart)
+			
+			local TimeToWait = 2
+			local Time = tick()
+			local Angle = 0
+
+			repeat
+				if RootPart and THumanoid then
+					if BasePart.Velocity.Magnitude < 50 then
+						Angle = Angle + 100
+
+						FPos(BasePart, CFrame.new(0, 1.5, 0) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle),0 ,0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, -1.5, 0) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle), 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(2.25, 1.5, -2.25) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle), 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(-2.25, -1.5, 2.25) + THumanoid.MoveDirection * BasePart.Velocity.Magnitude / 1.25, CFrame.Angles(math.rad(Angle), 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, 1.5, 0) + THumanoid.MoveDirection,CFrame.Angles(math.rad(Angle), 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, -1.5, 0) + THumanoid.MoveDirection,CFrame.Angles(math.rad(Angle), 0, 0))
+						task.wait()
+					else
+						FPos(BasePart, CFrame.new(0, 1.5, THumanoid.WalkSpeed), CFrame.Angles(math.rad(90), 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, -1.5, -THumanoid.WalkSpeed), CFrame.Angles(0, 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, 1.5, THumanoid.WalkSpeed), CFrame.Angles(math.rad(90), 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, 1.5, TRootPart.Velocity.Magnitude / 1.25), CFrame.Angles(math.rad(90), 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, -1.5, -TRootPart.Velocity.Magnitude / 1.25), CFrame.Angles(0, 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, 1.5, TRootPart.Velocity.Magnitude / 1.25), CFrame.Angles(math.rad(90), 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, -1.5, 0), CFrame.Angles(math.rad(90), 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, -1.5, 0), CFrame.Angles(0, 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, -1.5 ,0), CFrame.Angles(math.rad(-90), 0, 0))
+						task.wait()
+
+						FPos(BasePart, CFrame.new(0, -1.5, 0), CFrame.Angles(0, 0, 0))
+						task.wait()
+					end
+				else
+					break
+				end
+			until BasePart.Velocity.Magnitude > 500 or BasePart.Parent ~= FlingTarget.Character or FlingTarget.Parent ~= game.Players or THumanoid.Sit or Char.Humanoid.Health <= 0 or tick() > Time + TimeToWait
+		end
+		
+		local BVel = Instance.new("BodyVelocity", Char.HumanoidRootPart)
+
+		BVel.Velocity = Vector3.new(9e8, 9e8, 9e8)
+		BVel.MaxForce = Vector3.new(1/0, 1/0, 1/0)
+
+		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
+		
+		SFBasePart(FlingTarget.Character.HumanoidRootPart)
+		
+		BVel:Destroy()
+		
+		repeat
+			
+			RootPart.CFrame = OldPos * CFrame.new(0, .5, 0)
+			Char:SetPrimaryPartCFrame(OldPos * CFrame.new(0, .5, 0))
+			Char.Humanoid:ChangeState("GettingUp")
+			table.foreach(Char:GetChildren(), function(_, x)
+				if x:IsA("BasePart") then
+					x.Velocity, x.RotVelocity = Vector3.new(), Vector3.new()
+				end
+			end)
+			task.wait()
+			
+		until (RootPart.Position - OldPos.p).Magnitude < 25
+		
+		FlingEnabled = nil
+		
+	end
+	
+end
+
+FlingButton.MouseButton1Down:Connect(Fling)
+
+FlingAllButton.MouseButton1Down:Connect(function()
+	
+	local OldTarget = FlingTarget
+	
+	for i,v in game:GetService("Players"):GetPlayers() do
+		
+		FlingTarget = v
+		
+		Fling()
+		
+	end
+	
+	FlingTarget = OldTarget
+	
+end)
+
+FlingKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	FlingKeybindButton.TextLabel.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			FlingKey = Inp.KeyCode
+			FlingKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until FlingKeybindButton.TextLabel.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+FlingBox.FocusLost:Connect(function(EP)
+
+	if not EP then return end
+
+	local PlayerName = FlingBox.Text
+	local PLayer
+
+	for i,v in game:GetService("Players"):GetPlayers() do
+
+		if PLayer then continue end
+
+		if string.find(string.lower(v.DisplayName), string.lower(PlayerName)) then
+
+			PLayer = v
+			FlingTarget = v
+
+		end
+
+	end
+
+	FlingBox.Text = "Player = " ..FlingTarget.DisplayName
+
+end)
+
+game:GetService("Players").PlayerRemoving:Connect(function(plr)
+
+	if plr == FlingTarget then
+
+		game:GetService("StarterGui"):SetCore("SendNotification", {
+			Title = "Goat Hub",
+			Text = "The targeted player of your fling (" ..FlingTarget.DisplayName.. ") has left changed target to you."
+		})
+
+		FlingTarget = game:GetService("Players"):GetPlayers()[1]
+		FlingBox.TextLabel.Text = "Player = " ..FlingTarget.DisplayName
+
+	end
+
+end)
+
+-- Other
+
 --ESP
 
 local function ESPEnable()
@@ -2625,6 +2876,10 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 
 		AimbotEnable()
 
+	elseif Inp.KeyCode == FlingKey and FlingKeybindButton.Visible then
+		
+		Fling()
+		
 	end
 
 end)
