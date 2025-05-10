@@ -5,18 +5,11 @@ local TW = game.TweenService
 local Key = Enum.KeyCode.H
 local BindingKey = nil
 local Cam = game.Workspace.CurrentCamera
-local Channel
 local MouseBehavior = Enum.MouseBehavior.Default
 local MouseVisible = true
 local CustomCursor = false
 local HoverSound = Instance.new("Sound")
 local ClickSound = Instance.new("Sound")
-
-if game:GetService("TextChatService"):FindFirstChild("TextChannels") then
-
-	Channel = game:GetService("TextChatService"):WaitForChild("TextChannels"):WaitForChild("RBXGeneral")
-
-end
 
 local VineBoom = Instance.new("Sound")
 
@@ -161,6 +154,31 @@ local TTMessages = {
 	"Spec i dont chet"
 }
 
+ChatArtColor = Color3.new(0,0,0)
+ChatArtColorsToText = {
+	[Color3.new(1, 1, 1)] = "⚪",
+	[Color3.new(0, 0, 0)] = "⚫",
+	[Color3.new(1, 0, 0)] = "🔴",
+	[Color3.new(1, 0.5, 0)] = "🟠",
+	[Color3.new(1, 1, 0)] = "🟡",
+	[Color3.new(0, 1, 0)] = "🟢",
+	[Color3.new(0, 0, 1)] = "🔵",
+	[Color3.new(0.666667, 0.333333, 0)] = "🟤",
+	[Color3.new(0.75, 0, 0.5)] = "🟣"
+}
+
+ChatArtColorsToTextFrThisTime = {
+	["1, 1, 1"] = "⚪",
+	["0, 0, 0"] = "⚫",
+	["1, 0, 0"] = "🔴",
+	["1, 0.5, 0"] = "🟠",
+	["1, 1, 0"] = "🟡",
+	["0, 1, 0"] = "🟢",
+	["0, 0, 1"] = "🔵",
+	["0.666667, 0.333333, 0"] = "🟤",
+	["0.75, 0, 0.5"] = "🟣"
+}
+
 -- Creation du hub
 
 MenuUI = Instance.new("ScreenGui")
@@ -208,7 +226,6 @@ FlyFrame = Instance.new("Frame", Options)
 
 FlyCorner = Instance.new("UICorner", FlyFrame)
 FlyOptionLayout = Instance.new("UIListLayout", FlyFrame)
-local FlyEnabledButton
 
 MenuUI.ResetOnSpawn = nil
 MenuUI.Name = "GoatHub UNIVERSAL"
@@ -253,6 +270,45 @@ Options.Name = "Options"
 Options.Position = UDim2.new(0.026,0,0.139,0)
 Options.Size = UDim2.new(0.95, 0,0.783, 0)
 Options.Transparency = 1
+
+ChatArtFrame = MenuFrame:Clone()
+ChatArtFrame.Name = "ChatArtEditor"
+ChatArtFrame.Parent = MenuUI
+ChatArtFrame.UIDragDetector:Destroy()
+ChatArtFrame.Visible  = nil
+ChatArtFrame.NameLabel.Text = "Chat art editor"
+ChatArtRatio = ChatArtFrame.UIAspectRatioConstraint
+
+ChatArtEditFrame = ChatArtFrame.Options
+ChatArtEditFrame.Name = "EditFrame"
+ChatArtEditFrame.AnchorPoint = Vector2.new(0.25, 0.5)
+ChatArtEditFrame.Position = UDim2.fromScale(0.25, 0.5)
+ChatArtEditFrame.Frame:Destroy()
+ChatArtEditFrameLayout = ChatArtEditFrame.UIGridLayout
+ChatArtEditRatio = Instance.new("UIAspectRatioConstraint", ChatArtEditFrame)
+Instance.new("UIAspectRatioConstraint", ChatArtEditFrameLayout)
+ChatArtEditFrameLayout.CellSize = UDim2.fromScale(0.125, 0.125)
+ChatArtEditFrameLayout.SortOrder = Enum.SortOrder.LayoutOrder
+
+ChatArtButtonsFrame = Instance.new("Frame", ChatArtFrame)
+ChatArtButtonsFrame.AnchorPoint = Vector2.new(1,1)
+ChatArtButtonsFrame.Position = UDim2.new(1,0,1,0)
+ChatArtButtonsFrame.Size = UDim2.new(0.2, 0, 0.78,1)
+ChatArtButtonsFrame.BackgroundColor3 = Color3.fromRGB(45,45,45)
+
+ChatArtButtonsFrameLayout = Instance.new("UIGridLayout", ChatArtButtonsFrame)
+ChatArtButtonsFrameLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+ChatArtButtonsFrameLayout.VerticalAlignment = Enum.VerticalAlignment.Top
+ChatArtButtonsFrameLayout.SortOrder = Enum.SortOrder.LayoutOrder
+ChatArtButtonsFrameLayout.FillDirection = Enum.FillDirection.Vertical
+ChatArtButtonsFrameLayout.CellSize = UDim2.fromScale(0.25, 0.25)
+Instance.new("UIAspectRatioConstraint", ChatArtButtonsFrameLayout)
+
+ChatArtSendButton = Instance.new("TextButton", ChatArtFrame)
+ChatArtSendButton.Text = "Send"
+ChatArtSendButton.AnchorPoint = Vector2.new(0.5, 0.5)
+ChatArtSendButton.Position = UDim2.fromScale(0.65, 0.8)
+ChatArtSendButton.Size = UDim2.fromScale(0.1, 0.1)
 
 OptionsLayout.CellSize = UDim2.new(0.25,0,1,0)
 OptionsLayout.HorizontalAlignment = Enum.HorizontalAlignment.Left
@@ -748,21 +804,17 @@ local BangKeybindButton = NewButton("Keybind", BangFrame, "Keybind = B", 2, true
 local BTypeButton = NewButton("Type", BangFrame, "Type = Back", 3, true)
 local BangPlayerBox = NewBox("Player", BangFrame, "Player = " ..PlayerToBang.DisplayName, 4)
 
-local RTEnabledButton = NewButton("Enabled", ChatFrame, "Rizz Talk", 2, true)
-local RTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = K", 3, true)
-local TTEnabledButton = NewButton("Enabled", ChatFrame, "Trash Talk", 5, true)
-local TTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = J", 6, true)
+local RTEnabledButton = NewButton("Enabled", ChatFrame, "Rizz Talk", 1, true)
+local RTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = K", 2, true)
+local TTEnabledButton = NewButton("Enabled", ChatFrame, "Trash Talk", 3, true)
+local TTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = J", 4, true)
+ChatArtButton = NewButton("Art", ChatFrame, "Chat Art", 5, true)
 
 Tabs.Other = {
 	ESPFrame,
-	BangFrame
+	BangFrame,
+	ChatFrame
 }
-
-if Channel then
-
-	table.insert(Tabs.Other, ChatFrame)
-
-end
 
 TabsFrame.Visible = nil
 MenuFrame.BackgroundTransparency = 1
@@ -2604,8 +2656,7 @@ ESPColorBox.FocusLost:Connect(function(EP)
 
 end)
 
-local Tralalelotralala = Instance.new("Frame", TabsFrame)
-
+Tralalelotralala = Instance.new("Frame", TabsFrame)
 Tralalelotralala.Visible = nil
 Tralalelotralala.Name = "AdvancedESP"
 
@@ -2876,13 +2927,25 @@ end)
 
 --Chat
 
+Talk = function(message)
+	
+	if game:GetService('TextChatService').ChatVersion == Enum.ChatVersion.LegacyChatService then
+
+		game:GetService('ReplicatedStorage'):WaitForChild('DefaultChatSystemChatEvents'):WaitForChild('SayMessageRequest'):FireServer(message, 'All')
+
+	else
+
+		game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync(message)
+
+	end
+	
+end
+
 --Rizz talk
 
 local function RTEnable()
 
-	if not Channel then return end
-
-	Channel:SendAsync(RTMessages[math.random(1, #RTMessages)])
+	Talk(RTMessages[math.random(1, #RTMessages)])
 
 end
 
@@ -2920,9 +2983,7 @@ end)
 
 local function TTEnable()
 
-	if not Channel then return end
-
-	Channel:SendAsync(TTMessages[math.random(1, #TTMessages)])
+	Talk(TTMessages[math.random(1, #TTMessages)])
 
 end
 
@@ -2954,6 +3015,116 @@ TTKeybindButton.MouseButton1Down:Connect(function()
 	Connection:Disconnect()
 	BindingKey = nil
 
+end)
+
+--Chat Art
+
+for i,v in ChatArtColorsToText do
+	
+	local Button = Instance.new("TextButton", ChatArtButtonsFrame)
+	local Corner = Instance.new("UICorner", Button)
+	local Ratio = Instance.new("UIAspectRatioConstraint", Button)
+
+	Button.Text = ""
+	Button.Name = tostring(i)
+	Button.BackgroundColor3 = i
+	Button.Size = UDim2.fromScale(0.5, 0.5)
+
+	Corner.CornerRadius = UDim.new(1, 0)
+	
+	Button.MouseButton1Down:Connect(function()
+		
+		ChatArtColor = i
+		
+	end)
+	
+end
+
+for i = 1, 49 do
+	
+	local Button = Instance.new("TextButton", ChatArtEditFrame)
+	local Corner = Instance.new("UICorner", Button)
+	
+	Button.Text = ""
+	Button.Name = i
+	Button.LayoutOrder = i
+	Button.BackgroundColor3 = Color3.new(1,1,1)
+	
+	Corner.CornerRadius = UDim.new(1, 0)
+	
+	Button.MouseButton1Down:Connect(function()
+		
+		if Button.BackgroundColor3 == ChatArtColor then
+			
+			Button.BackgroundColor3 = Color3.new(1,1,1) 
+			
+		else
+			
+			Button.BackgroundColor3 = ChatArtColor
+			
+		end
+		
+	end)
+	
+end
+
+ChatArtButton.MouseButton1Down:Connect(function()
+	
+	ChatArtFrame.Size = UDim2.new(0.5,0,0,0)
+	ChatArtFrame.ExitButton.Visible = nil
+	ChatArtFrame.Visible = true
+	MenuFrame.Visible = nil
+	ChatArtRatio:Remove()
+	
+	local TWCAF = TW:Create(ChatArtFrame, TweenInfo.new(0.5), {Size = UDim2.new(0.5,0,0.5,0)})
+	TWCAF:Play()
+	TWCAF.Completed:Wait()
+	
+	ChatArtRatio.Parent = ChatArtFrame
+	ChatArtFrame.ExitButton.Visible = true
+	
+end)
+
+ChatArtFrame.ExitButton.MouseButton1Down:Connect(function()
+
+	ChatArtRatio:Remove()
+
+	local TWCAF = TW:Create(ChatArtFrame, TweenInfo.new(0.5), {Size = UDim2.new(0.5,0,0,0)})
+	TWCAF:Play()
+	TWCAF.Completed:Wait()
+	
+	ChatArtRatio.Parent = ChatArtFrame
+	ChatArtFrame.Visible = nil
+	MenuFrame.Visible = true
+	
+end)
+
+ChatArtSendButton.MouseButton1Down:Connect(function()
+	
+	local Msg = ""
+	local ThingIg = 0
+	
+	for i,v in ChatArtEditFrame:GetChildren() do
+		
+		if not v:IsA("TextButton") then continue end
+		
+		local Key = Color3.new(v.BackgroundColor3.R, v.BackgroundColor3.G, v.BackgroundColor3.B)
+		
+		ThingIg += 1
+		Msg = Msg..ChatArtColorsToTextFrThisTime[tostring(Key)]
+		
+		if ThingIg == 7 then
+			
+			Talk(Msg)
+			
+			Msg = ""
+			ThingIg = 0
+			task.wait(0.1)
+			
+		end
+		
+	end
+	
 end)
 
 Loaded += 1
