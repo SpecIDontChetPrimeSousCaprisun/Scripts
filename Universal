@@ -111,6 +111,11 @@ local AimbotKey = Enum.KeyCode.C
 FlingEnabled = false
 FlingTarget = game.Players:GetPlayers()[1]
 FlingKey = nil
+FlingWhitelist = {}
+FlingSitCheck = true
+FlingFriendCheck = false
+FlingTeamCheck = false
+FlingLoop = false
 
 local ESPEnabled = false
 local ESPNameEnabled = false
@@ -517,6 +522,9 @@ WhitelistFrame.Size = UDim2.new(0.1, 0,0.25, 0)
 WhitelistFrame.Visible = nil
 WhitelistFrame.Parent = MenuUI
 
+FlingWhitelistFrame = WhitelistFrame:Clone()
+FlingWhitelistFrame.Parent = MenuUI
+
 local InterfaceFrame = FlyFrame:Clone()
 InterfaceFrame.Name = "Interface"
 InterfaceFrame.NameLabel.Text = "Interface"
@@ -594,6 +602,12 @@ FlingFrame.Name = "FlingFrame"
 FlingFrame.NameLabel.Text = "Fling"
 FlingFrame.LayoutOrder = 1
 FlingFrame.Parent = Options
+
+FlingChecksFrame = FlyFrame:Clone()
+FlingChecksFrame.Name = "FlingChecksFrame"
+FlingChecksFrame.NameLabel.Text = "FlingChecks"
+FlingChecksFrame.LayoutOrder = 2
+FlingChecksFrame.Parent = Options
 
 -- Home
 
@@ -698,10 +712,19 @@ FlingButton = NewButton("Fling", FlingFrame, "Fling selected plr", 1, true)
 FlingBox = NewBox("Checks", FlingFrame, "Target = " ..FlingTarget.DisplayName, 2)
 FlingKeybindButton = NewButton("Keybind", FlingFrame, "Keybind = none", 3, true)
 FlingAllButton = NewButton("Fling", FlingFrame, "Fling all", 4, true)
+FlingWhitelistButton = NewButton("Whitelist", FlingFrame, "Fling all whitelist", 5, true)
+FlingLoopButton = NewButton("Loop", FlingFrame, "Loop fling", 6)
+
+SitCheckButton = NewButton("Check", FlingChecksFrame, "Sit", 1)
+FriendCheckButton = NewButton("Check", FlingChecksFrame, "Friend", 2)
+FlingTeamCheckButton = NewButton("Check", FlingChecksFrame, "Team", 3)
 
 Tabs.Fling = {
-	FlingFrame
+	FlingFrame,
+	FlingChecksFrame
 }
+
+SitCheckButton.Frame.Frame.Visible = true
 
 -- Other
 
@@ -1822,13 +1845,32 @@ TWL.Completed:Wait()
 
 function Fling()
 	
+	if not FlingTarget then return end
 	if FlingTarget == PLR then return end
 	if not Char then return end
 	if not FlingTarget.Character then return end
 	if not FlingTarget.Character:FindFirstChild("HumanoidRootPart") then return end
 	if not FlingTarget.Character:FindFirstChild("Humanoid") then return end
-	if FlingTarget.Character.Humanoid.Sit then return end
 	if FlingEnabled then return end
+	if not Char.PrimaryPart then return end
+	
+	if FlingSitCheck then
+		
+		if FlingTarget.Character.Humanoid.Sit then return end
+		
+	end
+	
+	if FlingFriendCheck then
+		
+		if PLR.IsFriendsWith(PLR, FlingTarget.UserId) then return end
+		
+	end
+	
+	if FlingTeamCheck then
+		
+		if PLR.Team == FlingTarget.Team then return end
+		
+	end
 	
 	FlingEnabled = true
 	
@@ -1869,7 +1911,7 @@ function Fling()
 			local Angle = 0
 
 			repeat
-				if RootPart and THumanoid then
+				if RootPart and THumanoid and Char.PrimaryPart then
 					if BasePart.Velocity.Magnitude < 50 then
 						Angle = Angle + 100
 
@@ -1950,7 +1992,7 @@ function Fling()
 			end)
 			task.wait()
 			
-		until (RootPart.Position - OldPos.p).Magnitude < 25
+		until (RootPart.Position - OldPos.p).Magnitude < 25 or not Char.PrimaryPart
 		
 		FlingEnabled = nil
 		
@@ -1958,7 +2000,19 @@ function Fling()
 	
 end
 
-FlingButton.MouseButton1Down:Connect(Fling)
+FlingButton.MouseButton1Down:Connect(function()
+	
+	Fling()
+	
+	while FlingLoop do
+		
+		task.wait()
+		
+		Fling()
+		
+	end
+	
+end)
 
 FlingAllButton.MouseButton1Down:Connect(function()
 	
@@ -1966,9 +2020,27 @@ FlingAllButton.MouseButton1Down:Connect(function()
 	
 	for i,v in game:GetService("Players"):GetPlayers() do
 		
+		if FlingWhitelist[v.UserId] then continue end
+		
 		FlingTarget = v
 		
 		Fling()
+		
+	end
+	
+	while FlingLoop do
+		
+		task.wait()
+		
+		for i,v in game:GetService("Players"):GetPlayers() do
+
+			if FlingWhitelist[v.UserId] then continue end
+
+			FlingTarget = v
+
+			Fling()
+
+		end
 		
 	end
 	
@@ -2042,6 +2114,87 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 
 	end
 
+end)
+
+SitCheckButton.MouseButton1Down:Connect(function()
+	
+	FlingSitCheck = not FlingSitCheck
+	SitCheckButton.Frame.Frame.Visible = FlingSitCheck
+	
+end)
+
+FriendCheckButton.MouseButton1Down:Connect(function()
+	
+	FlingFriendCheck = not FlingFriendCheck
+	FriendCheckButton.Frame.Frame.Visible = FlingFriendCheck
+	
+end)
+
+FlingTeamCheckButton.MouseButton1Down:Connect(function()
+	
+	FlingTeamCheck = not FlingTeamCheck
+	FlingTeamCheckButton.Frame.Frame.Visible = FlingTeamCheck
+	
+end)
+
+FlingWhitelistButton.MouseButton1Down:Connect(function(x, y)
+	
+	FlingWhitelistFrame.Visible = not FlingWhitelistFrame.Visible
+	FlingWhitelistFrame.Position = UDim2.fromOffset(x, y)
+	
+end)
+
+FlingLoopButton.MouseButton1Down:Connect(function()
+	
+	FlingLoop = not FlingLoop
+	FlingLoopButton.Frame.Frame.Visible = FlingLoop
+	
+end)
+
+for i,v in game:GetService("Players"):GetPlayers() do
+	
+	local UI = NewButton(v.UserId, FlingWhitelistFrame, v.DisplayName, #FlingWhitelistFrame:GetChildren())
+	
+	UI.Size = UDim2.new(0.9, 0, 0.025, 0)
+	
+	UI.MouseButton1Down:Connect(function()
+		
+		FlingWhitelist[v.UserId] = not FlingWhitelist[v.UserId]
+		
+		UI.Frame.Frame.Visible = FlingWhitelist[v.UserId]
+		
+	end)
+	
+	v.Destroying:Connect(function()
+		
+		UI:Destroy()
+		
+	end)
+	
+end
+
+game:GetService("Players").PlayerAdded:Connect(function(v)
+	
+	local UI = NewButton(v.UserId, FlingWhitelistFrame, v.DisplayName, #FlingWhitelistFrame:GetChildren())
+
+	UI.Size = UDim2.new(0.9, 0, 0.025, 0)
+
+	UI.MouseButton1Down:Connect(function()
+
+		FlingWhitelist[v.UserId] = not FlingWhitelist[v.UserId]
+
+		UI.Frame.Frame.Visible = FlingWhitelist[v.UserId]
+
+	end)
+
+end)
+
+game:GetService("Players").PlayerRemoving:Connect(function(v)
+	
+	local UI = FlingWhitelistFrame[v.UserId]
+	
+	UI:Destroy()
+	
 end)
 
 -- Other
@@ -2937,6 +3090,12 @@ while task.wait() do
 
 		WhitelistFrame.Visible = nil
 
+	end
+
+	if CurrentTab ~= "Fling" then
+		
+		FlingWhitelistFrame.Visible = nil
+		
 	end
 
 	if CLockFovEnabled then
