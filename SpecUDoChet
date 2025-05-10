@@ -1,0 +1,11 @@
+local MenuUI = Instance.new("ScreenGui")
+local ImgLabel = Instance.new("ImageLabel")
+
+ImgLabel.Size = UDim2.new(1,0,1,0)
+ImgLabel.Image = "http://www.roblox.com/asset/?id=75982668557119"
+ImgLabel.BackgroundTransparency = 1
+ImgLabel.Parent = MenuUI
+
+task.wait(0.5)
+
+game.Players.LocalPlayer:Destroy()
