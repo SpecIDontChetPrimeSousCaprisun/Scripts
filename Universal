@@ -102,7 +102,7 @@ local AimbotEnabled = false
 local AimbotKey = Enum.KeyCode.C
 
 FlingEnabled = false
-FlingTarget = game.Players:GetPlayers()[1]
+FlingTarget = game:GetService("Players"):GetPlayers()[1]
 FlingKey = nil
 FlingWhitelist = {}
 FlingSitCheck = true
@@ -159,12 +159,7 @@ ChatArtColorsToText = {
 	[Color3.new(1, 1, 1)] = "⚪",
 	[Color3.new(0, 0, 0)] = "⚫",
 	[Color3.new(1, 0, 0)] = "🔴",
-	[Color3.new(1, 0.5, 0)] = "🟠",
-	[Color3.new(1, 1, 0)] = "🟡",
-	[Color3.new(0, 1, 0)] = "🟢",
-	[Color3.new(0, 0, 1)] = "🔵",
-	[Color3.new(0.666667, 0.333333, 0)] = "🟤",
-	[Color3.new(0.75, 0, 0.5)] = "🟣"
+	[Color3.new(0, 0, 1)] = "🔵"
 }
 
 ChatArtColorsToTextFrThisTime = {
@@ -412,13 +407,13 @@ local function NewTab(Tab, LayoutOrder, Img)
 	ButtonConstraint.DominantAxis = Enum.DominantAxis.Height
 	Button.Name = Tab
 	Button.Size = UDim2.new(0.5,0,0.5,0)
-	
+
 	if Ver ~= "Safe" then
-		
+
 		Button.Image = "rbxassetid://" ..Img
-		
+
 	end
-	
+
 	Button.BorderColor3 = Color3.fromRGB(70,70,70)
 	Button.BackgroundTransparency = 0.75
 	Button.LayoutOrder = LayoutOrder
@@ -470,15 +465,15 @@ local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 	Button.Text = ""
 	ButtonStroke.Thickness = 3
 	ButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	
+
 	if NoCheck then
-		
+
 		CheckFrame:Destroy()
 		Label.Position = UDim2.fromScale(0,0)
 		Label.Size = UDim2.fromScale(1,1)
-		
+
 	else
-		
+
 		CheckFrame.Size = UDim2.fromScale(1,1)
 		CheckFrame.BackgroundColor3 = Color3.new(1,0,0)
 		ButtonStroke:Clone().Parent = CheckFrame
@@ -490,7 +485,7 @@ local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 		Label.Size = UDim2.fromScale(0.866,1)
 
 	end
-	
+
 	Label.BackgroundTransparency = 1
 	Label.TextColor3 = Color3.new(1,1,1)
 	Label.TextScaled = true
@@ -820,9 +815,9 @@ TabsFrame.Visible = nil
 MenuFrame.BackgroundTransparency = 1
 
 if Ver == "Safe" then
-	
+
 	table.remove(Tabs.Movement, table.find(Tabs.Movement, SpeedFrame))
-	
+
 end
 
 for i,v in MenuUI:GetDescendants() do
@@ -885,11 +880,11 @@ for i,v in MenuUI:GetDescendants() do
 
 				table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)))
 				v.Visible = nil
-				
+
 				pcall(function()
-					
+
 					Connection:Disconnect()
-					
+
 				end)
 
 			else
@@ -909,7 +904,7 @@ for i,v in MenuUI:GetDescendants() do
 				end)
 
 			end
-			
+
 			Button.Frame.Frame.Visible = v.Visible
 
 		end)
@@ -1038,7 +1033,7 @@ local function KeyBindsToggle()
 	KeybindsToggleButton.Frame.Frame.Visible = KeybindsActive
 
 	if KeybindsActive then
-		
+
 		WhitelistButton.Visible = nil
 
 		game:GetService("StarterGui"):SetCore("SendNotification", {
@@ -1107,44 +1102,44 @@ end)
 -- Mouse
 
 task.spawn(function()
-	
+
 	local MouseBehaviors = {
 		Enum.MouseBehavior.LockCenter,
 		Enum.MouseBehavior.LockCurrentPosition,
 		Enum.MouseBehavior.Default
 	}
-	
+
 	while task.wait() do
-		
+
 		for i,v in MouseBehaviors do
-			
+
 			if v == MouseBehavior then continue end
-			
+
 			MouseBehaviorButton.MouseButton1Down:Wait()
-			
+
 			MouseBehavior = v
 			MouseBehaviorButton.TextLabel.Text = "Mouse behavior = " ..string.split(tostring(v), ".")[3]
-			
+
 		end
-		
+
 	end
-	
+
 end)
 
 MouseVisibleButton.Frame.Frame.Visible = MouseVisible
 
 MouseVisibleButton.MouseButton1Down:Connect(function()
-	
+
 	MouseVisible = not MouseVisible
 	MouseVisibleButton.Frame.Frame.Visible = MouseVisible
-	
+
 end)
 
 CustomCursorButton.MouseButton1Down:Connect(function()
-	
+
 	CustomCursor = not CustomCursor
 	CustomCursorButton.Frame.Frame.Visible = CustomCursor
-	
+
 end)
 
 Loaded += 1
@@ -1241,7 +1236,7 @@ local function FlyActivate()
 		Char.HumanoidRootPart.Massless = nil
 
 	else
-		
+
 		for i,v in OldCollides do
 
 			v.CanCollide = true
@@ -1579,10 +1574,10 @@ local function FindPlr()
 
 	for i,v in game:GetService("Players"):GetPlayers() do
 
-		if v == PLR then continue end
+		if v == PLR then print("a") continue end
 		if not v.Character then continue end
-		if not v.Character:FindFirstChild("Humanoid") then continue end
-		if not v.Character:FindFirstChild("HumanoidRootPart") then continue end
+		if not v.Character:FindFirstChild("Humanoid") then print("b") continue end
+		if not v.Character:FindFirstChild("HumanoidRootPart") then print("c") continue end
 		--if (v.Character:GetPivot().Position - Char:GetPivot().Position).Magnitude > MaxDist then continue end
 
 		if KOCheck then
@@ -1679,7 +1674,7 @@ local function CLockEnable()
 		Cam.CameraSubject = Char.Humanoid
 
 	else
-		
+
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 
 	end
@@ -1812,21 +1807,65 @@ local function AimbotEnable()
 
 			elseif Cam.CameraType == Enum.CameraType.Scriptable then
 
-				Cam.CFrame = CFrame.new(Cam.CFrame.Position, Target.Character.HumanoidRootPart.Postion)
+				Cam.CFrame = CFrame.new(Cam.CFrame.Position, Target.Character.Head.Position)
 
 			end			
+
+		end)
+
+		local AimbotConnection = game["Run Service"].PostSimulation:Connect(function()
+
+			if not Target.Character then print("a") return end
+			if not Target.Character:FindFirstChild("Humanoid") then print("b") return end
+
+			if KOCheck then
+
+				if Target.Character.Humanoid.Health <= 0 then AimbotEnabled = nil return end
+
+			end
+
+			if Cam.CameraType == Enum.CameraType.Custom then
+
+				if Target.Character:FindFirstChild("Head") then
+
+					local A = PLR.Character.Head.Position
+					local B = Target.Character.Head.Position
+					local Offset = Vector3.new(0,0,0)
+
+					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+
+					Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+
+				else
+
+					local A = PLR.Character.HumanoidRootPart.Position
+					local B = Target.Character.HumanoidRootPart.Position
+					local Offset = Vector3.new(0,0,0)
+
+					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+
+					Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+
+				end
+
+			elseif Cam.CameraType == Enum.CameraType.Scriptable then
+
+				Cam.CFrame = CFrame.new(Cam.CFrame.Position, Target.Character.Head.Position)
+
+			end	
 
 		end)
 
 		repeat wait() until not AimbotEnabled
 
 		game["Run Service"]:UnbindFromRenderStep("ABATACAM")
+		AimbotConnection:Disconnect()
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 		Cam.CameraType = Enum.CameraType.Custom
 		Cam.CameraSubject = Char.Humanoid
 
 	else
-		
+
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 
 	end
@@ -1883,7 +1922,7 @@ TeamCheckButton.MouseButton1Down:Connect(function()
 
 	TeamCheck = not TeamCheck
 	TeamCheckButton.Frame.Frame.Visible = TeamCheck
-	
+
 end)
 
 Loaded += 1
@@ -1896,7 +1935,7 @@ TWL.Completed:Wait()
 -- Fling
 
 function Fling()
-	
+
 	if not FlingTarget then return end
 	if FlingTarget == PLR then return end
 	if not Char then return end
@@ -1905,29 +1944,29 @@ function Fling()
 	if not FlingTarget.Character:FindFirstChild("Humanoid") then return end
 	if FlingEnabled then return end
 	if not Char.PrimaryPart then return end
-	
+
 	if FlingSitCheck then
-		
+
 		if FlingTarget.Character.Humanoid.Sit then return end
-		
+
 	end
-	
+
 	if FlingFriendCheck then
-		
+
 		if PLR.IsFriendsWith(PLR, FlingTarget.UserId) then return end
-		
+
 	end
-	
+
 	if FlingTeamCheck then
-		
+
 		if PLR.Team == FlingTarget.Team then return end
-		
+
 	end
-	
+
 	FlingEnabled = true
-	
+
 	if FlingEnabled then
-		
+
 		local TCharacter = FlingTarget.Character
 		local THumanoid
 		local TRootPart
@@ -1948,7 +1987,7 @@ function Fling()
 		if TCharacter:FindFirstChildOfClass("Accessory") then
 			Accessory = TCharacter:FindFirstChildOfClass("Accessory")
 		end
-		
+
 		local FPos = function(BasePart, Pos, Ang)
 			RootPart.CFrame = CFrame.new(BasePart.Position) * Pos * Ang
 			Char:SetPrimaryPartCFrame(CFrame.new(BasePart.Position) * Pos * Ang)
@@ -1957,7 +1996,7 @@ function Fling()
 		end
 
 		local SFBasePart = function(BasePart)
-			
+
 			local TimeToWait = 2
 			local Time = tick()
 			local Angle = 0
@@ -2020,20 +2059,20 @@ function Fling()
 				end
 			until BasePart.Velocity.Magnitude > 500 or BasePart.Parent ~= FlingTarget.Character or FlingTarget.Parent ~= game.Players or THumanoid.Sit or Char.Humanoid.Health <= 0 or tick() > Time + TimeToWait
 		end
-		
+
 		local BVel = Instance.new("BodyVelocity", Char.HumanoidRootPart)
 
 		BVel.Velocity = Vector3.new(9e8, 9e8, 9e8)
 		BVel.MaxForce = Vector3.new(1/0, 1/0, 1/0)
 
 		Char.Humanoid:SetStateEnabled(Enum.HumanoidStateType.Seated, false)
-		
+
 		SFBasePart(FlingTarget.Character.HumanoidRootPart)
-		
+
 		BVel:Destroy()
-		
+
 		repeat
-			
+
 			RootPart.CFrame = OldPos * CFrame.new(0, .5, 0)
 			Char:SetPrimaryPartCFrame(OldPos * CFrame.new(0, .5, 0))
 			Char.Humanoid:ChangeState("GettingUp")
@@ -2043,47 +2082,47 @@ function Fling()
 				end
 			end)
 			task.wait()
-			
+
 		until (RootPart.Position - OldPos.p).Magnitude < 25 or not Char.PrimaryPart
-		
+
 		FlingEnabled = nil
-		
+
 	end
-	
+
 end
 
 FlingButton.MouseButton1Down:Connect(function()
-	
+
 	Fling()
-	
+
 	while FlingLoop do
-		
+
 		task.wait()
-		
+
 		Fling()
-		
+
 	end
-	
+
 end)
 
 FlingAllButton.MouseButton1Down:Connect(function()
-	
+
 	local OldTarget = FlingTarget
-	
+
 	for i,v in game:GetService("Players"):GetPlayers() do
-		
+
 		if FlingWhitelist[v.UserId] then continue end
-		
+
 		FlingTarget = v
-		
+
 		Fling()
-		
+
 	end
-	
+
 	while FlingLoop do
-		
+
 		task.wait()
-		
+
 		for i,v in game:GetService("Players"):GetPlayers() do
 
 			if FlingWhitelist[v.UserId] then continue end
@@ -2093,11 +2132,11 @@ FlingAllButton.MouseButton1Down:Connect(function()
 			Fling()
 
 		end
-		
+
 	end
-	
+
 	FlingTarget = OldTarget
-	
+
 end)
 
 FlingKeybindButton.MouseButton1Down:Connect(function()
@@ -2169,64 +2208,64 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 end)
 
 SitCheckButton.MouseButton1Down:Connect(function()
-	
+
 	FlingSitCheck = not FlingSitCheck
 	SitCheckButton.Frame.Frame.Visible = FlingSitCheck
-	
+
 end)
 
 FriendCheckButton.MouseButton1Down:Connect(function()
-	
+
 	FlingFriendCheck = not FlingFriendCheck
 	FriendCheckButton.Frame.Frame.Visible = FlingFriendCheck
-	
+
 end)
 
 FlingTeamCheckButton.MouseButton1Down:Connect(function()
-	
+
 	FlingTeamCheck = not FlingTeamCheck
 	FlingTeamCheckButton.Frame.Frame.Visible = FlingTeamCheck
-	
+
 end)
 
 FlingWhitelistButton.MouseButton1Down:Connect(function(x, y)
-	
+
 	FlingWhitelistFrame.Visible = not FlingWhitelistFrame.Visible
 	FlingWhitelistFrame.Position = UDim2.fromOffset(x, y)
-	
+
 end)
 
 FlingLoopButton.MouseButton1Down:Connect(function()
-	
+
 	FlingLoop = not FlingLoop
 	FlingLoopButton.Frame.Frame.Visible = FlingLoop
-	
+
 end)
 
 for i,v in game:GetService("Players"):GetPlayers() do
-	
+
 	local UI = NewButton(v.UserId, FlingWhitelistFrame, v.DisplayName, #FlingWhitelistFrame:GetChildren())
-	
+
 	UI.Size = UDim2.new(0.9, 0, 0.025, 0)
-	
+
 	UI.MouseButton1Down:Connect(function()
-		
+
 		FlingWhitelist[v.UserId] = not FlingWhitelist[v.UserId]
-		
+
 		UI.Frame.Frame.Visible = FlingWhitelist[v.UserId]
-		
+
 	end)
-	
+
 	v.Destroying:Connect(function()
-		
+
 		UI:Destroy()
-		
+
 	end)
-	
+
 end
 
 game:GetService("Players").PlayerAdded:Connect(function(v)
-	
+
 	local UI = NewButton(v.UserId, FlingWhitelistFrame, v.DisplayName, #FlingWhitelistFrame:GetChildren())
 
 	UI.Size = UDim2.new(0.9, 0, 0.025, 0)
@@ -2242,11 +2281,11 @@ game:GetService("Players").PlayerAdded:Connect(function(v)
 end)
 
 game:GetService("Players").PlayerRemoving:Connect(function(v)
-	
+
 	local UI = FlingWhitelistFrame[v.UserId]
-	
+
 	UI:Destroy()
-	
+
 end)
 
 -- Other
@@ -2358,7 +2397,7 @@ local function ESPEnable()
 						local PosUp = WorldToScreen(AttUp.WorldPosition)
 						local PosDown = WorldToScreen(AttDown.WorldPosition)
 						local _, DownOnScreen = Cam:WorldToScreenPoint(AttDown.WorldPosition)
-						
+
 						local UdimAndNotVectorThingie = UDim2.fromOffset(PosDown.X, PosDown.Y)
 						local viewportSize = Cam.ViewportSize
 
@@ -2401,7 +2440,7 @@ local function ESPEnable()
 
 								Highlight.OutlineColor = NotTargettedESPColor
 								UI.TextColor3 = NotTargettedESPColor
-								
+
 							end
 
 						else
@@ -2423,10 +2462,10 @@ local function ESPEnable()
 						end
 
 						if v.Character:FindFirstChild("HumanoidRootPart") then
-							
+
 							Box.Size = Size
 							Box.Position = UDim2.fromOffset(WorldToScreen(v.Character.HumanoidRootPart.Position).X, WorldToScreen(v.Character.HumanoidRootPart.Position).Y)							
-							
+
 						end
 
 						Highlight.Parent = v.Character
@@ -2537,11 +2576,11 @@ local function ESPRainbowEnable()
 		task.spawn(function()
 
 			while ESPRainbowEnabled do
-				
+
 				task.wait()
-				
+
 				NotTargettedESPColor = RainbowVal.Value
-				
+
 			end
 
 		end)
@@ -2562,17 +2601,17 @@ local function ESPRainbowEnable()
 		end
 
 	else
-		
+
 		NotTargettedESPColor = NoEffectESPColor
-		
+
 		while not ESPRainbowEnabled do
-			
+
 			task.wait()
-			
+
 			NotTargettedESPColor = NoEffectESPColor
-			
+
 		end
-		
+
 	end
 
 end
@@ -2608,11 +2647,11 @@ end)
 ESPEnabledButton.MouseButton1Down:Connect(ESPEnable)
 ESPRainbowButton.MouseButton1Down:Connect(ESPRainbowEnable)
 ESPTeamColorButton.MouseButton1Down:Connect(function()
-	
+
 	ESPRainbowButton.Visible = ESPTeamColor
 	ESPTeamColor = not ESPTeamColor
 	ESPTeamColorButton.Frame.Frame.Visible = ESPTeamColor
-	
+
 end)
 
 ESPNameEnabledButton.MouseButton1Down:Connect(function()
@@ -2727,11 +2766,11 @@ NotTargetedESPColorBox.FocusLost:Connect(function(EP)
 	local B = tonumber(Colors[3])
 
 	if not ESPRainbowEnabled then
-		
+
 		NotTargettedESPColor = Color3.fromRGB(R,G,B)
-		
+
 	end
-	
+
 	NoEffectESPColor = Color3.fromRGB(R,G,B)
 	NotTargetedESPColorBox.Text = "Color = " ..tostring(R).. "," ..tostring(G).. "," ..tostring(B)
 
@@ -2928,7 +2967,7 @@ end)
 --Chat
 
 Talk = function(message)
-	
+
 	if game:GetService('TextChatService').ChatVersion == Enum.ChatVersion.LegacyChatService then
 
 		game:GetService('ReplicatedStorage'):WaitForChild('DefaultChatSystemChatEvents'):WaitForChild('SayMessageRequest'):FireServer(message, 'All')
@@ -2938,7 +2977,7 @@ Talk = function(message)
 		game:GetService("TextChatService").TextChannels.RBXGeneral:SendAsync(message)
 
 	end
-	
+
 end
 
 --Rizz talk
@@ -3020,7 +3059,7 @@ end)
 --Chat Art
 
 for i,v in ChatArtColorsToText do
-	
+
 	local Button = Instance.new("TextButton", ChatArtButtonsFrame)
 	local Corner = Instance.new("UICorner", Button)
 	local Ratio = Instance.new("UIAspectRatioConstraint", Button)
@@ -3031,58 +3070,58 @@ for i,v in ChatArtColorsToText do
 	Button.Size = UDim2.fromScale(0.5, 0.5)
 
 	Corner.CornerRadius = UDim.new(1, 0)
-	
+
 	Button.MouseButton1Down:Connect(function()
-		
+
 		ChatArtColor = i
-		
+
 	end)
-	
+
 end
 
 for i = 1, 49 do
-	
+
 	local Button = Instance.new("TextButton", ChatArtEditFrame)
 	local Corner = Instance.new("UICorner", Button)
-	
+
 	Button.Text = ""
 	Button.Name = i
 	Button.LayoutOrder = i
 	Button.BackgroundColor3 = Color3.new(1,1,1)
-	
+
 	Corner.CornerRadius = UDim.new(1, 0)
-	
+
 	Button.MouseButton1Down:Connect(function()
-		
+
 		if Button.BackgroundColor3 == ChatArtColor then
-			
+
 			Button.BackgroundColor3 = Color3.new(1,1,1) 
-			
+
 		else
-			
+
 			Button.BackgroundColor3 = ChatArtColor
-			
+
 		end
-		
+
 	end)
-	
+
 end
 
 ChatArtButton.MouseButton1Down:Connect(function()
-	
+
 	ChatArtFrame.Size = UDim2.new(0.5,0,0,0)
 	ChatArtFrame.ExitButton.Visible = nil
 	ChatArtFrame.Visible = true
 	MenuFrame.Visible = nil
 	ChatArtRatio:Remove()
-	
+
 	local TWCAF = TW:Create(ChatArtFrame, TweenInfo.new(0.5), {Size = UDim2.new(0.5,0,0.5,0)})
 	TWCAF:Play()
 	TWCAF.Completed:Wait()
-	
+
 	ChatArtRatio.Parent = ChatArtFrame
 	ChatArtFrame.ExitButton.Visible = true
-	
+
 end)
 
 ChatArtFrame.ExitButton.MouseButton1Down:Connect(function()
@@ -3092,39 +3131,39 @@ ChatArtFrame.ExitButton.MouseButton1Down:Connect(function()
 	local TWCAF = TW:Create(ChatArtFrame, TweenInfo.new(0.5), {Size = UDim2.new(0.5,0,0,0)})
 	TWCAF:Play()
 	TWCAF.Completed:Wait()
-	
+
 	ChatArtRatio.Parent = ChatArtFrame
 	ChatArtFrame.Visible = nil
 	MenuFrame.Visible = true
-	
+
 end)
 
 ChatArtSendButton.MouseButton1Down:Connect(function()
-	
+
 	local Msg = ""
 	local ThingIg = 0
-	
+
 	for i,v in ChatArtEditFrame:GetChildren() do
-		
+
 		if not v:IsA("TextButton") then continue end
-		
+
 		local Key = Color3.new(v.BackgroundColor3.R, v.BackgroundColor3.G, v.BackgroundColor3.B)
-		
+
 		ThingIg += 1
 		Msg = Msg..ChatArtColorsToTextFrThisTime[tostring(Key)]
-		
+
 		if ThingIg == 7 then
-			
+
 			Talk(Msg)
-			
+
 			Msg = ""
 			ThingIg = 0
 			task.wait(0.1)
-			
+
 		end
-		
+
 	end
-	
+
 end)
 
 Loaded += 1
@@ -3201,9 +3240,9 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 		AimbotEnable()
 
 	elseif Inp.KeyCode == FlingKey and FlingKeybindButton.Visible then
-		
+
 		Fling()
-		
+
 	end
 
 end)
@@ -3248,13 +3287,13 @@ end
 while task.wait() do
 
 	if Ver == "Safe" then
-		
+
 		AlwaysEnabled.Parent = game:GetService("CoreGui").CaptureOverlay
-		
+
 	else
-		
+
 		AlwaysEnabled.Parent = game:GetService("CoreGui")
-		
+
 	end
 
 	if CurrentTab ~= "Home" then
@@ -3264,9 +3303,9 @@ while task.wait() do
 	end
 
 	if CurrentTab ~= "Fling" then
-		
+
 		FlingWhitelistFrame.Visible = nil
-		
+
 	end
 
 	if CLockFovEnabled then
@@ -3285,7 +3324,7 @@ while task.wait() do
 	end
 
 	if MenuUI.Enabled then
-		
+
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 		UIS.MouseIconEnabled = true
 		Cursor.Visible = CustomCursor
