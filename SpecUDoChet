@@ -1,4 +1,3 @@
-local HS = game:GetService("HttpService")
 local Countries = {
 	BD = "Bangladesh",
 	BE = "Belgium",
