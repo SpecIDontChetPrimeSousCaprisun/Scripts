@@ -1,11 +1,394 @@
+local HS = game:GetService("HttpService")
+local Countries = {
+	BD = "Bangladesh",
+	BE = "Belgium",
+	BF = "Burkina Faso",
+	BG = "Bulgaria",
+	BA = "Bosnia and Herzegovina",
+	BB = "Barbados",
+	WF = "Wallis and Futuna",
+	BL = "Saint Barthelemy",
+	BM = "Bermuda",
+	BN = "Brunei",
+	BO = "Bolivia",
+	BH = "Bahrain",
+	BI = "Burundi",
+	BJ = "Benin",
+	BT = "Bhutan",
+	JM = "Jamaica",
+	BV = "Bouvet Island",
+	BW = "Botswana",
+	WS = "Samoa",
+	BQ = "Bonaire, Saint Eustatius and Saba ",
+	BR = "Brazil",
+	BS = "Bahamas",
+	JE = "Jersey",
+	BY = "Belarus",
+	BZ = "Belize",
+	RU = "Russia",
+	RW = "Rwanda",
+	RS = "Serbia",
+	TL = "East Timor",
+	RE = "Reunion",
+	TM = "Turkmenistan",
+	TJ = "Tajikistan",
+	RO = "Romania",
+	TK = "Tokelau",
+	GW = "Guinea-Bissau",
+	GU = "Guam",
+	GT = "Guatemala",
+	GS = "South Georgia and the South Sandwich Islands",
+	GR = "Greece",
+	GQ = "Equatorial Guinea",
+	GP = "Guadeloupe",
+	JP = "Japan",
+	GY = "Guyana",
+	GG = "Guernsey",
+	GF = "French Guiana",
+	GE = "Georgia",
+	GD = "Grenada",
+	GB = "United Kingdom",
+	GA = "Gabon",
+	SV = "El Salvador",
+	GN = "Guinea",
+	GM = "Gambia",
+	GL = "Greenland",
+	GI = "Gibraltar",
+	GH = "Ghana",
+	OM = "Oman",
+	TN = "Tunisia",
+	JO = "Jordan",
+	HR = "Croatia",
+	HT = "Haiti",
+	HU = "Hungary",
+	HK = "Hong Kong",
+	HN = "Honduras",
+	HM = "Heard Island and McDonald Islands",
+	VE = "Venezuela",
+	PR = "Puerto Rico",
+	PS = "Palestinian Territory",
+	PW = "Palau",
+	PT = "Portugal",
+	SJ = "Svalbard and Jan Mayen",
+	PY = "Paraguay",
+	IQ = "Iraq",
+	PA = "Panama",
+	PF = "French Polynesia",
+	PG = "Papua New Guinea",
+	PE = "Peru",
+	PK = "Pakistan",
+	PH = "Philippines",
+	PN = "Pitcairn",
+	PL = "Poland",
+	PM = "Saint Pierre and Miquelon",
+	ZM = "Zambia",
+	EH = "Western Sahara",
+	EE = "Estonia",
+	EG = "Egypt",
+	ZA = "South Africa",
+	EC = "Ecuador",
+	IT = "Italy",
+	VN = "Vietnam",
+	SB = "Solomon Islands",
+	ET = "Ethiopia",
+	SO = "Somalia",
+	ZW = "Zimbabwe",
+	SA = "Saudi Arabia",
+	ES = "Spain",
+	ER = "Eritrea",
+	ME = "Montenegro",
+	MD = "Moldova",
+	MG = "Madagascar",
+	MF = "Saint Martin",
+	MA = "Morocco",
+	MC = "Monaco",
+	UZ = "Uzbekistan",
+	MM = "Myanmar",
+	ML = "Mali",
+	MO = "Macao",
+	MN = "Mongolia",
+	MH = "Marshall Islands",
+	MK = "Macedonia",
+	MU = "Mauritius",
+	MT = "Malta",
+	MW = "Malawi",
+	MV = "Maldives",
+	MQ = "Martinique",
+	MP = "Northern Mariana Islands",
+	MS = "Montserrat",
+	MR = "Mauritania",
+	IM = "Isle of Man",
+	UG = "Uganda",
+	TZ = "Tanzania",
+	MY = "Malaysia",
+	MX = "Mexico",
+	IL = "Israel",
+	FR = "France",
+	IO = "British Indian Ocean Territory",
+	SH = "Saint Helena",
+	FI = "Finland",
+	FJ = "Fiji",
+	FK = "Falkland Islands",
+	FM = "Micronesia",
+	FO = "Faroe Islands",
+	NI = "Nicaragua",
+	NL = "Netherlands",
+	NO = "Norway",
+	NA = "Namibia",
+	VU = "Vanuatu",
+	NC = "New Caledonia",
+	NE = "Niger",
+	NF = "Norfolk Island",
+	NG = "Nigeria",
+	NZ = "New Zealand",
+	NP = "Nepal",
+	NR = "Nauru",
+	NU = "Niue",
+	CK = "Cook Islands",
+	XK = "Kosovo",
+	CI = "Ivory Coast",
+	CH = "Switzerland",
+	CO = "Colombia",
+	CN = "China",
+	CM = "Cameroon",
+	CL = "Chile",
+	CC = "Cocos Islands",
+	CA = "Canada",
+	CG = "Republic of the Congo",
+	CF = "Central African Republic",
+	CD = "Democratic Republic of the Congo",
+	CZ = "Czech Republic",
+	CY = "Cyprus",
+	CX = "Christmas Island",
+	CR = "Costa Rica",
+	CW = "Curacao",
+	CV = "Cape Verde",
+	CU = "Cuba",
+	SZ = "Swaziland",
+	SY = "Syria",
+	SX = "Sint Maarten",
+	KG = "Kyrgyzstan",
+	KE = "Kenya",
+	SS = "South Sudan",
+	SR = "Suriname",
+	KI = "Kiribati",
+	KH = "Cambodia",
+	KN = "Saint Kitts and Nevis",
+	KM = "Comoros",
+	ST = "Sao Tome and Principe",
+	SK = "Slovakia",
+	KR = "South Korea",
+	SI = "Slovenia",
+	KP = "North Korea",
+	KW = "Kuwait",
+	SN = "Senegal",
+	SM = "San Marino",
+	SL = "Sierra Leone",
+	SC = "Seychelles",
+	KZ = "Kazakhstan",
+	KY = "Cayman Islands",
+	SG = "Singapore",
+	SE = "Sweden",
+	SD = "Sudan",
+	DO = "Dominican Republic",
+	DM = "Dominica",
+	DJ = "Djibouti",
+	DK = "Denmark",
+	VG = "British Virgin Islands",
+	DE = "Germany",
+	YE = "Yemen",
+	DZ = "Algeria",
+	US = "United States",
+	UY = "Uruguay",
+	YT = "Mayotte",
+	UM = "United States Minor Outlying Islands",
+	LB = "Lebanon",
+	LC = "Saint Lucia",
+	LA = "Laos",
+	TV = "Tuvalu",
+	TW = "Taiwan",
+	TT = "Trinidad and Tobago",
+	TR = "Turkey",
+	LK = "Sri Lanka",
+	LI = "Liechtenstein",
+	LV = "Latvia",
+	TO = "Tonga",
+	LT = "Lithuania",
+	LU = "Luxembourg",
+	LR = "Liberia",
+	LS = "Lesotho",
+	TH = "Thailand",
+	TF = "French Southern Territories",
+	TG = "Togo",
+	TD = "Chad",
+	TC = "Turks and Caicos Islands",
+	LY = "Libya",
+	VA = "Vatican",
+	VC = "Saint Vincent and the Grenadines",
+	AE = "United Arab Emirates",
+	AD = "Andorra",
+	AG = "Antigua and Barbuda",
+	AF = "Afghanistan",
+	AI = "Anguilla",
+	VI = "U.S. Virgin Islands",
+	IS = "Iceland",
+	IR = "Iran",
+	AM = "Armenia",
+	AL = "Albania",
+	AO = "Angola",
+	AQ = "Antarctica",
+	AS = "American Samoa",
+	AR = "Argentina",
+	AU = "Australia",
+	AT = "Austria",
+	AW = "Aruba",
+	IN = "India",
+	AX = "Aland Islands",
+	AZ = "Azerbaijan",
+	IE = "Ireland",
+	ID = "Indonesia",
+	UA = "Ukraine",
+	QA = "Qatar",
+	MZ = "Mozambique",
+}
+
+task.wait(3)
+
 local MenuUI = Instance.new("ScreenGui")
-local ImgLabel = Instance.new("ImageLabel")
+local CountryLabel = Instance.new("TextLabel")
+local Kakma = Instance.new("Sound", game:GetService("SoundService"))
+local NextbotVfx = Instance.new("ColorCorrectionEffect", game:GetService("Lighting"))
+local Images = {
+	"http://www.roblox.com/asset/?id=94170543550958",
+	"http://www.roblox.com/asset/?id=70933148320433",
+	"http://www.roblox.com/asset/?id=95935865169900",
+	"http://www.roblox.com/asset/?id=116784038558452",
+	"http://www.roblox.com/asset/?id=73983314739620"
+}
 
-ImgLabel.Size = UDim2.new(1,0,1,0)
-ImgLabel.Image = "http://www.roblox.com/asset/?id=75982668557119"
-ImgLabel.BackgroundTransparency = 1
-ImgLabel.Parent = MenuUI
+local Labels = {}
 
-task.wait(0.5)
+for i,v in Images do
 
-game.Players.LocalPlayer:Destroy()
+	game.ContentProvider:PreloadAsync({v})
+
+	local ImgLabel = Instance.new("ImageLabel", MenuUI)
+
+	ImgLabel.Size = UDim2.new(1,0,1,0)
+	ImgLabel.BackgroundTransparency = 1
+	ImgLabel.Parent = MenuUI
+	ImgLabel.Image = v
+	ImgLabel.Visible = nil
+	ImgLabel.ZIndex = i
+	Labels[i] = ImgLabel
+
+end
+
+CountryLabel.Size = UDim2.fromScale(1, 1)
+CountryLabel.BackgroundTransparency = 1
+CountryLabel.TextScaled = true
+CountryLabel.TextColor3 = Color3.new(1, 1, 1)
+CountryLabel.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Light, Enum.FontStyle.Normal)
+CountryLabel.TextStrokeTransparency = 0
+CountryLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
+CountryLabel.Text = "You live in : " ..Countries[game:GetService("LocalizationService"):GetCountryRegionForPlayerAsync(game:GetService("Players").LocalPlayer)]
+CountryLabel.Parent = MenuUI
+CountryLabel.ZIndex = 2147483647
+Kakma.Volume = 2147483647
+Kakma.Looped = true
+Kakma.SoundId = "rbxassetid://137824321987203"
+Kakma:Play()
+MenuUI.ResetOnSpawn = nil
+MenuUI.IgnoreGuiInset = true
+MenuUI.DisplayOrder = 2147483647
+
+NextbotVfx.Name = "SpecYouDoChet"
+NextbotVfx.Brightness = -1
+NextbotVfx.Saturation = -50
+NextbotVfx.TintColor = Color3.fromRGB(17, 0, 0)
+
+local Modifier = Vector3.new(math.random(0, 1000) / 1000, 0, math.random(0, 1000) / 1000)
+local Dist = 300
+local Pos = Vector3.zero
+local PLR = game:GetService("Players").LocalPlayer
+local Char = PLR.Character
+local Nextbot = Instance.new("Part", workspace)
+local NextbotSfx = Instance.new("Sound", game:GetService("SoundService"))
+local Bill = Instance.new("BillboardGui", Nextbot)
+local BillImg = Instance.new("ImageLabel", Bill)
+local Cam = workspace.CurrentCamera
+
+Cam.CameraType = Enum.CameraType.Custom
+PLR.CameraMaxZoomDistance = 0.5
+
+Bill.Size = UDim2.new(10,0,10,0)
+Bill.StudsOffset = Vector3.new(0, 3, 0)
+BillImg.Size = UDim2.new(1,0,1,0)
+BillImg.BackgroundTransparency = 1
+BillImg.Image = Images[1]
+BillImg.ScaleType = Enum.ScaleType.Fit
+
+Nextbot.Anchored = true
+Nextbot.Transparency = 1
+Nextbot.CanCollide = nil
+NextbotSfx.Looped = true
+NextbotSfx.SoundId = "rbxassetid://18929141493"
+NextbotSfx:Play()
+
+game:GetService("RunService").RenderStepped:Connect(function()
+	
+	Pos = Char:GetPivot().Position + Modifier.Unit * Dist
+	Nextbot.Position = Pos
+	NextbotSfx.Volume = 301 - Dist
+	NextbotVfx.Saturation = -50 - (150 - (Dist / 2))
+	
+end)
+
+task.wait(3)
+
+Cam.CameraType = Enum.CameraType.Scriptable
+Char.HumanoidRootPart.Anchored = true
+Bill.AlwaysOnTop = true
+
+game:GetService("RunService").RenderStepped:Connect(function()
+	
+	Cam.CFrame = CFrame.lookAt(Char.Head.Position, Nextbot.Position)
+	
+end)
+
+while Dist > 0 do
+	
+	task.wait()
+	
+	Dist -= 10
+	
+end
+
+Nextbot:Destroy()
+MenuUI.Parent = game:GetService("Players").LocalPlayer.PlayerGui
+
+for i,v in Labels do
+
+	task.wait(0.25)
+
+	v.Visible = true
+
+end
+
+while task.wait() do
+
+	task.spawn(function()
+		
+		pcall(function()
+
+			while true do
+
+				print("Spec you do chet")
+
+			end
+
+		end)
+		
+	end)
+
+end
