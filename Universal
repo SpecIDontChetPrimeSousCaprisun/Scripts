@@ -2073,15 +2073,19 @@ function Fling()
 
 		repeat
 
-			RootPart.CFrame = OldPos * CFrame.new(0, .5, 0)
-			Char:SetPrimaryPartCFrame(OldPos * CFrame.new(0, .5, 0))
-			Char.Humanoid:ChangeState("GettingUp")
-			table.foreach(Char:GetChildren(), function(_, x)
-				if x:IsA("BasePart") then
-					x.Velocity, x.RotVelocity = Vector3.new(), Vector3.new()
-				end
+			pcall(function()
+				
+				RootPart.CFrame = OldPos * CFrame.new(0, .5, 0)
+				Char:SetPrimaryPartCFrame(OldPos * CFrame.new(0, .5, 0))
+				Char.Humanoid:ChangeState("GettingUp")
+				table.foreach(Char:GetChildren(), function(_, x)
+					if x:IsA("BasePart") then
+						x.Velocity, x.RotVelocity = Vector3.new(), Vector3.new()
+					end
+				end)
+				task.wait()
+				
 			end)
-			task.wait()
 
 		until (RootPart.Position - OldPos.p).Magnitude < 25 or not Char.PrimaryPart
 
