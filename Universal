@@ -94,6 +94,7 @@ local CLockKey = Enum.KeyCode.V
 local CLockFovEnabled = nil
 local FovVisible = nil
 local FovSize = 100  
+FovRainbowEnabled = nil
 local KOCheck = nil
 local WallCheck = nil
 local TeamCheck = nil
@@ -648,6 +649,12 @@ CLockChecksFrame.NameLabel.Text = "Checks"
 CLockChecksFrame.LayoutOrder = 3
 CLockChecksFrame.Parent = Options
 
+AdvancedFovFrame = FlyFrame:Clone()
+AdvancedFovFrame.Name = "AdvancedFov"
+AdvancedFovFrame.NameLabel.Text = "Fov"
+AdvancedFovFrame.LayoutOrder = 3
+AdvancedFovFrame.Parent = Options
+
 FlingFrame = FlyFrame:Clone()
 FlingFrame.Name = "FlingFrame"
 FlingFrame.NameLabel.Text = "Fling"
@@ -735,8 +742,12 @@ Tabs.Movement = {
 local CLockEnabledButton = NewButton("Enabled", CLockFrame, "CLock", 1)
 local CLockKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = V", 2, true)
 local CLockFovEnableButton = NewButton("Fov", CLockChecksFrame, "Fov", 4)
-local CLockFovVisibleButton = NewButton("FovVisible", CLockChecksFrame, "Fov visible", 5)
-local CLockFovSizeBox = NewBox("Checks", CLockChecksFrame, "Fov size = 100", 6, true)
+AdvancedFovButton = NewButton("AdvancedOptions", CLockChecksFrame, "Advanced options", 5, true)
+
+CLockFovSizeBox = NewBox("Checks", AdvancedFovFrame, "Fov size = 100", 1)
+CLockFovVisibleButton = NewButton("FovVisible", AdvancedFovFrame, "Fov visible", 2)
+FovRainbowButton = NewButton("Rainbow", AdvancedFovFrame, "LGBTQ+", 3)
+
 local FovFrame = Instance.new("Frame", AlwaysEnabled)
 local FovFrameCorner = Instance.new("UICorner", FovFrame)
 local FovFrameBorder = Instance.new("UIStroke", FovFrame)
@@ -748,6 +759,10 @@ FovFrame.Visible = nil
 CLockFovVisibleButton.Visible = nil
 CLockFovSizeBox.Visible = nil
 
+AdvancedFovFix = Instance.new("Frame", TabsFrame)
+AdvancedFovFix.Transparency = 1
+AdvancedFovFix.Name = "AdvancedFov"
+
 local AimbotEnabledButton = NewButton("Enabled", AimbotFrame, "Aimbot", 3)
 local AimbotKeybindButton = NewButton("Keybind", AimbotFrame, "Keybind = C", 4, true)
 
@@ -755,6 +770,10 @@ Tabs.Aimbot = {
 	CLockFrame,
 	AimbotFrame,
 	CLockChecksFrame
+}
+
+Tabs.AdvancedFov = {
+	AdvancedFovFrame
 }
 
 -- Fling
@@ -1711,12 +1730,15 @@ CLockKeybindButton.MouseButton1Down:Connect(function()
 
 end)
 
+AdvancedFovButton.Visible = CLockFovEnabled
+
 CLockFovEnableButton.MouseButton1Down:Connect(function()
 
 	CLockFovEnabled = not CLockFovEnabled
 	CLockFovEnableButton.Frame.Frame.Visible = CLockFovEnabled
 	CLockFovVisibleButton.Visible = CLockFovEnabled
 	CLockFovSizeBox.Visible = CLockFovEnabled
+	AdvancedFovButton.Visible = CLockFovEnabled
 
 end)
 
@@ -1735,6 +1757,79 @@ CLockFovSizeBox.FocusLost:Connect(function(EP)
 	FovSize = tonumber(CLockFovSizeBox.Text)
 	CLockFovSizeBox.Text = "Fov size = " ..FovSize
 
+end)
+
+AdvancedFovButton.MouseButton1Down:Connect(function()
+
+	if CurrentTab == "AdvancedFov" then return end
+
+	TabsFrame[CurrentTab].BackgroundColor3 = Color3.fromRGB(70,70,70)
+
+	for i,v in Tabs[CurrentTab] do
+
+		v.Visible = nil
+
+	end
+
+	for i,v in Tabs["AdvancedFov"] do
+
+		v.Visible = true
+
+	end
+
+	CurrentTab = "AdvancedFov"
+
+end)
+
+FovRainbowButton.MouseButton1Down:Connect(function()
+	
+	FovRainbowEnabled = not FovRainbowEnabled
+	FovRainbowButton.Frame.Frame.Visible = FovRainbowEnabled
+
+	if FovRainbowEnabled then
+
+		local RainbowVal = Instance.new("Color3Value")
+		local ColorTbl = {
+			BrickColor.Red().Color,
+			BrickColor.Yellow().Color,
+			BrickColor.Blue().Color,
+			Color3.new(1,0,1),
+			Color3.new(0.5,0,1)
+		}
+
+		task.spawn(function()
+
+			while FovRainbowEnabled do
+
+				task.wait()
+
+				FovFrameBorder.Color = RainbowVal.Value
+
+			end
+
+		end)
+
+		while FovRainbowEnabled do
+
+			task.wait()
+
+			for i,v in ColorTbl do
+
+				local TWER = TW:Create(RainbowVal, TweenInfo.new(1, Enum.EasingStyle.Linear), {Value = v})
+
+				TWER:Play()
+				TWER.Completed:Wait()
+
+			end
+
+		end
+
+	else
+
+		FovFrameBorder.Color = Color3.new(0, 0, 0)
+		
+	end
+	
 end)
 
 -- Aimbot
