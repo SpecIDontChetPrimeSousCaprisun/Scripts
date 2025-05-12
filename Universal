@@ -89,18 +89,26 @@ local PTPKey = Enum.KeyCode.L
 local PlayerToTP = game:GetService("Players"):GetPlayers()[1]
 local OldPTPConnection
 
-local CLockEnabled = false
-local CLockKey = Enum.KeyCode.V
-local CLockFovEnabled = nil
-local FovVisible = nil
-local FovSize = 100  
+CLockEnabled = false
+CLockKey = nil
+CLockFovEnabled = nil
+FovVisible = nil
+FovSize = 100  
 FovRainbowEnabled = nil
-local KOCheck = nil
-local WallCheck = nil
-local TeamCheck = nil
+KOCheck = nil
+WallCheck = nil
+TeamCheck = nil
 
-local AimbotEnabled = false
-local AimbotKey = Enum.KeyCode.C
+TriggerbotEnabled = nil
+TriggerbotKeybind = Enum.KeyCode.V
+TriggerbotMode = "OnM1"
+TriggerbotModes = {
+	"Auto",
+	"OnM1"
+}
+
+AimbotEnabled = false
+AimbotKey = Enum.KeyCode.C
 
 FlingEnabled = false
 FlingTarget = game:GetService("Players"):GetPlayers()[1]
@@ -661,8 +669,14 @@ CLockChecksFrame.Parent = Options
 AdvancedFovFrame = FlyFrame:Clone()
 AdvancedFovFrame.Name = "AdvancedFov"
 AdvancedFovFrame.NameLabel.Text = "Fov"
-AdvancedFovFrame.LayoutOrder = 3
+AdvancedFovFrame.LayoutOrder = 1
 AdvancedFovFrame.Parent = Options
+
+TriggerBotFrame = FlyFrame:Clone()
+TriggerBotFrame.Name = "Triggerbot"
+TriggerBotFrame.NameLabel.Text = "Triggerbot"
+TriggerBotFrame.LayoutOrder = 2
+TriggerBotFrame.Parent = Options
 
 FlingFrame = FlyFrame:Clone()
 FlingFrame.Name = "FlingFrame"
@@ -749,7 +763,7 @@ Tabs.Movement = {
 -- Aimbot
 
 local CLockEnabledButton = NewButton("Enabled", CLockFrame, "CLock", 1)
-local CLockKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = V", 2, true)
+local CLockKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = none", 2, true)
 local CLockFovEnableButton = NewButton("Fov", CLockChecksFrame, "Fov", 4)
 AdvancedFovButton = NewButton("AdvancedOptions", CLockChecksFrame, "Advanced options", 5, true)
 
@@ -772,6 +786,10 @@ AdvancedFovFix = Instance.new("Frame", TabsFrame)
 AdvancedFovFix.Transparency = 1
 AdvancedFovFix.Name = "AdvancedFov"
 
+TriggerbotButton = NewButton("Enabled", TriggerBotFrame, "Triggerbot", 1)
+TriggerbotKeybindButton = NewButton("Keybind", TriggerBotFrame, "Keybind = V", 2, true)
+TriggerbotModeButton = NewButton("Mode", TriggerBotFrame, "Mode = " ..TriggerbotMode, 3, true)
+
 local AimbotEnabledButton = NewButton("Enabled", AimbotFrame, "Aimbot", 3)
 local AimbotKeybindButton = NewButton("Keybind", AimbotFrame, "Keybind = C", 4, true)
 
@@ -782,7 +800,8 @@ Tabs.Aimbot = {
 }
 
 Tabs.AdvancedFov = {
-	AdvancedFovFrame
+	AdvancedFovFrame,
+	TriggerBotFrame
 }
 
 -- Fling
@@ -1844,6 +1863,55 @@ end)
 
 -- Aimbot
 
+Extra = (Cam.CFrame.Position - PLR.Character.Head.Position).Magnitude
+
+function CenterCamOnTarget(Target)
+	
+	if not Target.Character then return end
+	if not Target.Character:FindFirstChild("Humanoid") then return end
+
+	if KOCheck then
+
+		if Target.Character.Humanoid.Health <= 0 then AimbotEnabled = nil return end
+
+	end
+
+	if Cam.CameraType == Enum.CameraType.Custom then
+
+		if Target.Character:FindFirstChild("Head") then
+
+			local A = PLR.Character.Head.Position
+			local B = Target.Character.Head.Position
+			local Offset = Vector3.new(0,0,0)
+
+			--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+
+			Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+
+		else
+
+			local A = PLR.Character.HumanoidRootPart.Position
+			local B = Target.Character.HumanoidRootPart.Position
+			local Offset = Vector3.new(0,0,0)
+
+			--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+
+			Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+
+		end
+
+	elseif Cam.CameraType == Enum.CameraType.Scriptable then
+
+		Cam.CFrame = CFrame.new(Cam.CFrame.Position, Target.Character.Head.Position)
+
+	end			
+	
+	repeat task.wait() UIS.MouseBehavior = Enum.MouseBehavior.LockCenter until UIS:GetMouseLocation().X == Cam.ViewportSize.X / 2 and UIS:GetMouseLocation().Y == Cam.ViewportSize.Y / 2
+	
+	UIS.MouseBehavior = Enum.MouseBehavior.Default
+	
+end
+
 local function AimbotEnable()
 
 	AimbotEnabled = not AimbotEnabled
@@ -1858,8 +1926,6 @@ local function AimbotEnable()
 		if not Target then AimbotEnabled = nil return end
 
 		UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
-
-		local Extra = (Cam.CFrame.Position - PLR.Character.Head.Position).Magnitude
 
 		UIS.InputChanged:Connect(function(Inp, GPE)
 
@@ -1877,87 +1943,13 @@ local function AimbotEnable()
 
 			task.wait()
 
-			if not Target.Character then return end
-			if not Target.Character:FindFirstChild("Humanoid") then return end
-
-			if KOCheck then
-
-				if Target.Character.Humanoid.Health <= 0 then AimbotEnabled = nil return end
-
-			end
-
-			if Cam.CameraType == Enum.CameraType.Custom then
-
-				if Target.Character:FindFirstChild("Head") then
-
-					local A = PLR.Character.Head.Position
-					local B = Target.Character.Head.Position
-					local Offset = Vector3.new(0,0,0)
-
-					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
-
-					Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
-
-				else
-
-					local A = PLR.Character.HumanoidRootPart.Position
-					local B = Target.Character.HumanoidRootPart.Position
-					local Offset = Vector3.new(0,0,0)
-
-					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
-
-					Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
-
-				end
-
-			elseif Cam.CameraType == Enum.CameraType.Scriptable then
-
-				Cam.CFrame = CFrame.new(Cam.CFrame.Position, Target.Character.Head.Position)
-
-			end			
+			CenterCamOnTarget(Target)
 
 		end)
 
 		local AimbotConnection = game["Run Service"].PostSimulation:Connect(function()
 
-			if not Target.Character then print("a") return end
-			if not Target.Character:FindFirstChild("Humanoid") then print("b") return end
-
-			if KOCheck then
-
-				if Target.Character.Humanoid.Health <= 0 then AimbotEnabled = nil return end
-
-			end
-
-			if Cam.CameraType == Enum.CameraType.Custom then
-
-				if Target.Character:FindFirstChild("Head") then
-
-					local A = PLR.Character.Head.Position
-					local B = Target.Character.Head.Position
-					local Offset = Vector3.new(0,0,0)
-
-					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
-
-					Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
-
-				else
-
-					local A = PLR.Character.HumanoidRootPart.Position
-					local B = Target.Character.HumanoidRootPart.Position
-					local Offset = Vector3.new(0,0,0)
-
-					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
-
-					Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
-
-				end
-
-			elseif Cam.CameraType == Enum.CameraType.Scriptable then
-
-				Cam.CFrame = CFrame.new(Cam.CFrame.Position, Target.Character.Head.Position)
-
-			end	
+			CenterCamOnTarget(Target)
 
 		end)
 
@@ -2001,6 +1993,97 @@ AimbotKeybindButton.MouseButton1Down:Connect(function()
 	end)
 
 	repeat wait() until AimbotKeybindButton.TextLabel.Text ~= "..."
+
+	Connection:Disconnect()
+	BindingKey = nil
+
+end)
+
+function TriggerbotEnable()
+	
+	TriggerbotEnabled = not TriggerbotEnabled
+	TriggerbotButton.Frame.Frame.Visible = TriggerbotEnabled
+	AimbotEnabledButton.Visible = TriggerbotEnabled
+
+	if TriggerbotEnabled then
+
+		AimbotEnabled = true
+		AimbotEnable()
+
+		UIS.InputBegan:Connect(function(Inp, GPE)
+
+			if GPE then return end
+
+			if Inp.UserInputType == Enum.UserInputType.MouseButton1 and TriggerbotMode == "OnM1" then
+
+				local Target = FindPlr()
+
+				if Target and not AimbotEnabled then
+
+					CenterCamOnTarget(Target)
+
+				end
+
+			end
+
+		end)
+
+		while TriggerbotEnabled do
+
+			task.wait()
+
+			if not CLockFovEnabled then continue end
+			if TriggerbotMode ~= "Auto" then continue end
+
+			local Target = FindPlr()
+
+			if Target and not AimbotEnabled then
+
+				CenterCamOnTarget(Target)
+
+			end
+
+		end
+
+	end
+	
+end
+
+TriggerbotButton.MouseButton1Down:Connect(TriggerbotEnable)
+
+TriggerbotModeButton.MouseButton1Down:Connect(function()
+	
+	local Num = table.find(TriggerbotModes, TriggerbotMode) + 1
+	
+	if Num > #TriggerbotModes then Num = 1 end
+	
+	TriggerbotMode = TriggerbotModes[Num]
+	TriggerbotModeButton.Text = "Mode = " ..TriggerbotMode
+	
+end)
+
+TriggerbotKeybindButton.MouseButton1Down:Connect(function()
+
+	if BindingKey then return end
+
+	BindingKey = true
+	TriggerbotKeybindButton.TextLabel.Text = "..."
+
+	local Connection = UIS.InputBegan:Connect(function(Inp, GPE)
+
+		if GPE then return end
+
+		if Inp.UserInputType == Enum.UserInputType.Keyboard then
+
+			TriggerbotKeybind = Inp.KeyCode
+			TriggerbotKeybindButton.TextLabel.Text = "Keybind = " ..string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), -1)
+
+		end
+
+
+	end)
+
+	repeat wait() until TriggerbotKeybindButton.TextLabel.Text ~= "..."
 
 	Connection:Disconnect()
 	BindingKey = nil
@@ -3390,7 +3473,7 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 
 		CLockEnable()
 
-	elseif Inp.KeyCode == AimbotKey and AimbotKeybindButton.Visible then
+	elseif Inp.KeyCode == AimbotKey and AimbotKeybindButton.Visible and not TriggerbotEnabled then
 
 		AimbotEnable()
 
@@ -3398,6 +3481,10 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 
 		Fling()
 
+	elseif Inp.KeyCode == TriggerbotKeybind and TriggerbotKeybindButton.Visible then
+		
+		TriggerbotEnable()
+		
 	end
 
 end)
