@@ -110,6 +110,15 @@ FlingSitCheck = true
 FlingFriendCheck = false
 FlingTeamCheck = false
 FlingLoop = false
+FlingTool = Instance.new("Tool")
+
+FlingTool.CanBeDropped = nil
+FlingTool.RequiresHandle = nil
+FlingTool.Name = "FlingTool"
+FlingTool.ToolTip = "A tool used to fling people. Have fun !!!"
+FlingToolParams = RaycastParams.new()
+FlingToolParams.FilterType = Enum.RaycastFilterType.Exclude
+FlingToolParamsWhitelist = {}
 
 local ESPEnabled = false
 local ESPNameEnabled = false
@@ -784,6 +793,7 @@ FlingKeybindButton = NewButton("Keybind", FlingFrame, "Keybind = none", 3, true)
 FlingAllButton = NewButton("Fling", FlingFrame, "Fling all", 4, true)
 FlingWhitelistButton = NewButton("Whitelist", FlingFrame, "Fling all whitelist", 5, true)
 FlingLoopButton = NewButton("Loop", FlingFrame, "Loop fling", 6)
+FlingToolButton = NewButton("Tool", FlingFrame, "Fling tool", 7)
 
 SitCheckButton = NewButton("Check", FlingChecksFrame, "Sit", 1)
 FriendCheckButton = NewButton("Check", FlingChecksFrame, "Friend", 2)
@@ -2300,7 +2310,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 		})
 
 		FlingTarget = game:GetService("Players"):GetPlayers()[1]
-		FlingBox.TextLabel.Text = "Player = " ..FlingTarget.DisplayName
+		FlingBox.Text = "Player = " ..FlingTarget.DisplayName
 
 	end
 
@@ -2343,6 +2353,8 @@ end)
 
 for i,v in game:GetService("Players"):GetPlayers() do
 
+	table.insert(FlingToolParamsWhitelist, v)
+
 	local UI = NewButton(v.UserId, FlingWhitelistFrame, v.DisplayName, #FlingWhitelistFrame:GetChildren())
 
 	UI.Size = UDim2.new(0.9, 0, 0.025, 0)
@@ -2365,6 +2377,8 @@ end
 
 game:GetService("Players").PlayerAdded:Connect(function(v)
 
+	table.insert(FlingToolParamsWhitelist, v)
+
 	local UI = NewButton(v.UserId, FlingWhitelistFrame, v.DisplayName, #FlingWhitelistFrame:GetChildren())
 
 	UI.Size = UDim2.new(0.9, 0, 0.025, 0)
@@ -2381,10 +2395,52 @@ end)
 
 game:GetService("Players").PlayerRemoving:Connect(function(v)
 
+	table.remove(FlingToolParamsWhitelist, table.find(FlingToolParamsWhitelist, v))
+
 	local UI = FlingWhitelistFrame[v.UserId]
 
 	UI:Destroy()
 
+end)
+
+FlingToolButton.MouseButton1Down:Connect(function()
+	
+	if FlingTool.Parent then
+		
+		FlingTool.Parent = nil
+		FlingToolButton.Frame.Frame.Visible = nil
+		
+	else
+		
+		FlingTool.Parent = PLR.Backpack
+		FlingToolButton.Frame.Frame.Visible = true
+		print(FlingTool.Parent)
+		
+	end
+	
+end)
+
+FlingTool.Activated:Connect(function()
+	
+	local MP = UIS:GetMouseLocation()
+	local MR = Cam:ViewportPointToRay(MP.X, MP.Y)
+	local Result = workspace:Raycast(MR.Origin, MR.Direction * 100000, FlingToolParams)
+	
+	if Result then
+		
+		if not Result.Instance:GetRootPart() then return end
+		if not Result.Instance:GetRootPart().Parent then return end
+		
+		local plr = game:GetService("Players"):GetPlayerFromCharacter(Result.Instance:GetRootPart().Parent)
+		
+		if not plr then return end
+		
+		FlingTarget = plr
+		FlingBox.Text = "Player = " ..FlingTarget.DisplayName
+		Fling()
+		
+	end
+	
 end)
 
 -- Other
@@ -3384,6 +3440,8 @@ end
 
 
 while task.wait() do
+
+	FlingToolParams.FilterDescendantsInstances = FlingToolParamsWhitelist
 
 	if Ver == "Safe" then
 
