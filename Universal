@@ -470,19 +470,18 @@ NewTab("Home", 1, 109306454828475)
 local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 
 	local Button = Instance.new("TextButton", Parent)
-	local ButtonStroke = Instance.new("UIStroke", Button)
 	local CheckFrame = Instance.new("Frame", Button)
 	local GreenFrame = Instance.new("Frame", CheckFrame)
+	local CheckStroke = Instance.new("UIStroke", CheckFrame)
 	local Label = Instance.new("TextLabel", Button)
 
 	Button.Name = Name
 	Button.Size = UDim2.new(0.9, 0,0.075, 0)
-	Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
+	Button.BackgroundColor3 = Color3.fromRGB(45,45,45)
 	Button.BackgroundTransparency = 0
+	Button.BorderSizePixel = 0
 	Button.LayoutOrder = LayoutOrder
 	Button.Text = ""
-	ButtonStroke.Thickness = 3
-	ButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
 
 	if NoCheck then
 
@@ -493,13 +492,13 @@ local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 	else
 
 		CheckFrame.Size = UDim2.fromScale(1,1)
-		CheckFrame.BackgroundColor3 = Color3.new(1,0,0)
-		ButtonStroke:Clone().Parent = CheckFrame
+		CheckFrame.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+		CheckFrame.AnchorPoint = Vector2.new(1, 0)
+		CheckFrame.Position = UDim2.fromScale(1, 0)
+		CheckStroke.Thickness = 3
 		GreenFrame.Visible = nil
 		GreenFrame.Size = UDim2.fromScale(1,1)
-		GreenFrame.BackgroundColor3 = Color3.new(0,1,0)
-		Label.AnchorPoint = Vector2.new(1,0)
-		Label.Position = UDim2.fromScale(1,0)
+		GreenFrame.BackgroundColor3 = Color3.fromRGB(255, 162, 0)
 		Label.Size = UDim2.fromScale(0.866,1)
 
 	end
@@ -509,6 +508,8 @@ local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 	Label.TextScaled = true
 	Label.Font = Enum.Font.FredokaOne
 	Label.Text = Text
+	Label.TextXAlignment = Enum.TextXAlignment.Left
+	
 	Instance.new("UIAspectRatioConstraint", CheckFrame)
 
 	return Button
@@ -518,20 +519,18 @@ end
 local function NewBox(Name, Parent, Text, LayoutOrder)
 
 	local Button = Instance.new("TextBox", Parent)
-	local ButtonStroke = Instance.new("UIStroke", Button)
 
 	Button.Name = Name
 	Button.Size = UDim2.new(0.9, 0,0.1, 0)
-	Button.BackgroundColor3 = Color3.fromRGB(63, 63, 63)
+	Button.BackgroundColor3 = Color3.fromRGB(45,45,45)
 	Button.BackgroundTransparency = 0
+	Button.BorderSizePixel = 0
 	Button.TextColor3 = Color3.new(1,1,1)
 	Button.TextScaled = true
 	Button.Font = Enum.Font.FredokaOne
 	Button.Text = Text
 	Button.LayoutOrder = LayoutOrder
-	ButtonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
-	ButtonStroke.Thickness = 3
-
+	Button.TextXAlignment = Enum.TextXAlignment.Left
 	return Button
 
 end
@@ -567,7 +566,9 @@ LoadingBar.BackgroundColor3 = Color3.fromRGB(0,150,255)
 LoadingBar.ZIndex = 20
 LoadingFrameCorner:Clone().Parent = LoadingBar
 
-local FlyName = NameLabel:Clone()
+FlyName = NameLabel:Clone()
+FlyNameStroke = Instance.new("UIStroke", FlyName)
+FlyNameStrokeGradient = Instance.new("UIGradient", FlyNameStroke)
 
 FlyCorner.CornerRadius = UDim.new(0.1,0)
 FlyOptionLayout.Padding = UDim.new(0.025)
@@ -578,6 +579,15 @@ FlyName.Parent = FlyFrame
 FlyName.Text = "Fly"
 FlyName.Name = "NameLabel"
 FlyName.TextXAlignment = Enum.TextXAlignment.Center
+FlyNameStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+FlyNameStroke.Color = Color3.fromRGB(255, 162, 0)
+FlyNameStroke.Thickness = 3
+FlyNameStrokeGradient.Rotation = 90
+FlyNameStrokeGradient.Transparency = NumberSequence.new{
+	NumberSequenceKeypoint.new(0, 1),
+	NumberSequenceKeypoint.new(0.906, 1),
+	NumberSequenceKeypoint.new(1, 0)
+}
 
 local WhitelistFrame = Instance.new("ScrollingFrame")
 local WhitelistCorner = Instance.new("UICorner", WhitelistFrame)
@@ -689,6 +699,170 @@ FlingChecksFrame.Name = "FlingChecksFrame"
 FlingChecksFrame.NameLabel.Text = "FlingChecks"
 FlingChecksFrame.LayoutOrder = 2
 FlingChecksFrame.Parent = Options
+
+if game.GameId == 3808081382 then --Tsbite
+
+	VoidDB = nil
+	VoidTarget = PlayerToTP
+	VoidTool = FlingTool:Clone()
+
+	VoidTool.Name = "Void tool"
+	VoidTool.ToolTip = "Used to void ppl"
+
+	NewTab("Tsb", 9, 0)
+
+	VoidFrame = FlyFrame:Clone()
+	VoidFrame.Name = "Void"
+	VoidFrame.NameLabel.Text = "Void"
+	VoidFrame.LayoutOrder = 1
+	VoidFrame.Parent = Options
+
+	VoidButton = NewButton("Enabled", VoidFrame, "Void selected plr", 1, true)
+	VoidTargetBox = NewBox("Target", VoidFrame, "Target = " ..VoidTarget.DisplayName, 2)
+	VoidToolButton = NewButton("Tool", VoidFrame, "VoidToolGiver", 3, true)
+
+	Tabs.Tsb = {
+		VoidFrame
+	}
+
+	function Void()
+
+		if not PLR.Backpack:FindFirstChild("Flowing Water") then return end
+		if VoidDB then return end 
+
+		VoidDB = true
+
+		local Start = tick()
+		local Attack = PLR.Backpack["Flowing Water"]
+
+		local OldPos = Char.HumanoidRootPart.CFrame
+
+		Attack.Parent = Char
+		Attack:Activate()
+
+		while tick() - Start < 1 do
+
+			task.wait()
+
+			Char.HumanoidRootPart.CFrame = VoidTarget.Character:GetPivot() * CFrame.new(0,0,Char.HumanoidRootPart.Size.Z)
+
+		end
+
+		local TWV = TW:Create(Char.HumanoidRootPart, TweenInfo.new(0.25), {["CFrame"] = CFrame.new(Char.HumanoidRootPart.Position.X, 216.95181274414062, Char.HumanoidRootPart.Position.Z)}) 
+
+		TWV:Play()
+		TWV.Completed:Wait()
+		
+		local VoidConnection = game:GetService("RunService").RenderStepped:Connect(function()
+			
+			Char.HumanoidRootPart.CFrame = CFrame.new(Char.HumanoidRootPart.Position.X, 216.95181274414062, Char.HumanoidRootPart.Position.Z)
+			
+		end)
+
+		task.delay(5, function()
+			
+			if Attack.Parent ~= PLR.Backpack then
+				
+				VoidConnection:Disconnect()
+
+				Attack.Parent = PLR.Backpack
+				Char.HumanoidRootPart.Anchored = nil
+				Char.HumanoidRootPart.CFrame = OldPos
+
+				VoidDB = nil
+				
+				return
+				
+			end
+			
+		end)
+
+		VoidTarget.Character.Destroying:Wait()
+
+		VoidConnection:Disconnect()
+
+		Attack.Parent = PLR.Backpack
+		Char.HumanoidRootPart.Anchored = nil
+		Char.HumanoidRootPart.CFrame = OldPos
+
+		VoidDB = nil
+
+	end
+
+	VoidButton.MouseButton1Down:Connect(Void)
+
+	game:GetService("Players").PlayerRemoving:Connect(function(plr)
+
+		if plr == VoidTarget then
+
+			game:GetService("StarterGui"):SetCore("SendNotification", {
+				Title = "Goat Hub",
+				Text = "The targeted player of your void (" ..VoidTarget.DisplayName.. ") has left changed target to you."
+			})
+
+			VoidTarget = game:GetService("Players"):GetPlayers()[1]
+			VoidTargetBox.Text = "Player = " ..VoidTarget.DisplayName
+
+		end
+
+	end)
+
+	VoidTargetBox.FocusLost:Connect(function(EP)
+
+		if not EP then return end
+
+		local PlayerName = VoidTargetBox.Text
+		local PLayer
+
+		for i,v in game:GetService("Players"):GetPlayers() do
+
+			if PLayer then continue end
+
+			if string.find(string.lower(v.DisplayName), string.lower(PlayerName)) then
+
+				PLayer = v
+				VoidTarget = v
+
+			end
+
+		end
+
+		VoidTargetBox.Text = "Player = " ..VoidTarget.DisplayName
+
+	end)
+
+	VoidToolButton.MouseButton1Down:Connect(function()
+		
+		local Tool = VoidTool:Clone()
+		
+		Tool.Parent = PLR.Backpack
+		
+		Tool.Activated:Connect(function()
+			
+			local MP = UIS:GetMouseLocation()
+			local MR = Cam:ViewportPointToRay(MP.X, MP.Y)
+			local Result = workspace:Raycast(MR.Origin, MR.Direction * 100000, FlingToolParams)
+
+			if Result then
+
+				if not Result.Instance:GetRootPart() then return end
+				if not Result.Instance:GetRootPart().Parent then return end
+
+				local plr = game:GetService("Players"):GetPlayerFromCharacter(Result.Instance:GetRootPart().Parent)
+
+				if not plr then return end
+
+				VoidTarget = plr
+				VoidTargetBox.Text = "Player = " ..VoidTarget.DisplayName
+				Void()
+
+			end
+			
+		end)
+		
+	end)
+
+end
 
 -- Home
 
