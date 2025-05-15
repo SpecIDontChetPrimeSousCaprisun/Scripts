@@ -473,6 +473,7 @@ local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 	local CheckFrame = Instance.new("Frame", Button)
 	local GreenFrame = Instance.new("Frame", CheckFrame)
 	local CheckStroke = Instance.new("UIStroke", CheckFrame)
+	local CheckBorder = Instance.new("UICorner", CheckFrame)
 	local Label = Instance.new("TextLabel", Button)
 
 	Button.Name = Name
@@ -495,6 +496,7 @@ local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 		CheckFrame.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 		CheckFrame.AnchorPoint = Vector2.new(1, 0)
 		CheckFrame.Position = UDim2.fromScale(1, 0)
+		CheckBorder.CornerRadius = UDim.new(0.2, 0)
 		CheckStroke.Thickness = 3
 		GreenFrame.Visible = nil
 		GreenFrame.Size = UDim2.fromScale(1,1)
