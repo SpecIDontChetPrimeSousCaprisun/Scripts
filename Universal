@@ -1,17 +1,17 @@
-local PLR = game:GetService("Players").LocalPlayer
-local Char = PLR.Character or PLR.CharacterAdded:Wait()
-local UIS = game:GetService("UserInputService")
-local TW = game.TweenService
-local Key = Enum.KeyCode.H
-local BindingKey = nil
-local Cam = game.Workspace.CurrentCamera
-local MouseBehavior = Enum.MouseBehavior.Default
-local MouseVisible = true
-local CustomCursor = false
-local HoverSound = Instance.new("Sound")
-local ClickSound = Instance.new("Sound")
+PLR = game:GetService("Players").LocalPlayer
+Char = PLR.Character or PLR.CharacterAdded:Wait()
+UIS = game:GetService("UserInputService")
+TW = game.TweenService
+Key = Enum.KeyCode.H
+BindingKey = nil
+Cam = game.Workspace.CurrentCamera
+MouseBehavior = Enum.MouseBehavior.Default
+MouseVisible = true
+CustomCursor = false
+HoverSound = Instance.new("Sound")
+ClickSound = Instance.new("Sound")
 
-local VineBoom = Instance.new("Sound")
+VineBoom = Instance.new("Sound")
 
 VineBoom.SoundId = "rbxassetid://5178876770"
 VineBoom.Parent = game.SoundService
@@ -20,14 +20,14 @@ HoverSound.SoundId = "rbxassetid://92876108656319"
 ClickSound.Parent = game.SoundService
 ClickSound.SoundId = "rbxassetid://6042053626"
 
-local Tabs = {
+Tabs = {
 	Home = {},
 	Movement = {},
 	Aimbot = {},
 	Other = {},
 	None = {}
 }
-local CurrentTab = "None"
+CurrentTab = "None"
 
 if PLR:HasTag("GoatUHubed") then
 
@@ -60,33 +60,33 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
 PLR:AddTag("GoatUHubed")
 
 -- Varibles pour la chaise gaming
-local KeybindsActive = true
-local KDB = false
-local KeybindsWhitelist = {}
+KeybindsActive = true
+KDB = false
+KeybindsWhitelist = {}
 
-local OldCollides = {}
-local FlyEnabled = false
-local FlyKey = Enum.KeyCode.F
-local FlySpeed = 0
-local NoclipEnabled = false
+OldCollides = {}
+FlyEnabled = false
+FlyKey = Enum.KeyCode.F
+FlySpeed = 0
+NoclipEnabled = false
 local OldWS
-local DefaultGrav = workspace.Gravity
-local InfJumpEnabled = false
-local InfJumpKey = Enum.KeyCode.M
+DefaultGrav = workspace.Gravity
+InfJumpEnabled = false
+InfJumpKey = Enum.KeyCode.M
 
-local SpeedEnabled = false
-local SpeedKey = Enum.KeyCode.G
-local SpeedSpeed = 0
+SpeedEnabled = false
+SpeedKey = Enum.KeyCode.G
+SpeedSpeed = 0
 
-local CTPEnabled = false
-local CTPKey = Enum.KeyCode.P
-local CTPParams = RaycastParams.new()
+CTPEnabled = false
+CTPKey = Enum.KeyCode.P
+CTPParams = RaycastParams.new()
 CTPParams.FilterDescendantsInstances = {Char}
 CTPParams.RespectCanCollide = false
 CTPParams.IgnoreWater = true
 
-local PTPKey = Enum.KeyCode.L
-local PlayerToTP = game:GetService("Players"):GetPlayers()[1]
+PTPKey = Enum.KeyCode.L
+PlayerToTP = game:GetService("Players"):GetPlayers()[1]
 local OldPTPConnection
 
 CLockEnabled = false
@@ -1798,10 +1798,10 @@ local function FindPlr()
 
 	for i,v in game:GetService("Players"):GetPlayers() do
 
-		if v == PLR then print("a") continue end
+		if v == PLR then continue end
 		if not v.Character then continue end
-		if not v.Character:FindFirstChild("Humanoid") then print("b") continue end
-		if not v.Character:FindFirstChild("HumanoidRootPart") then print("c") continue end
+		if not v.Character:FindFirstChild("Humanoid") then continue end
+		if not v.Character:FindFirstChild("HumanoidRootPart") then continue end
 		--if (v.Character:GetPivot().Position - Char:GetPivot().Position).Magnitude > MaxDist then continue end
 
 		if KOCheck then
@@ -1843,8 +1843,6 @@ local function FindPlr()
 			Params.FilterType = Enum.RaycastFilterType.Exclude
 
 			local Result = workspace:Raycast(Origin, Direction, Params)
-
-			print(Result, Result.Instance.Parent, Result.Instance.Parent.Parent, v)
 
 			if not Result then continue end
 			--if not Result.Instance:GetRootPart() then continue end
@@ -2175,6 +2173,21 @@ AimbotKeybindButton.MouseButton1Down:Connect(function()
 
 end)
 
+function GetKeyPressed()
+
+	local Keys = UIS:GetKeysPressed()
+	local JSP = {}
+
+	for i,v in Keys do
+
+		table.insert(JSP, v.Keycode)
+
+	end
+
+	return JSP
+
+end
+
 function TriggerbotEnable()
 	
 	TriggerbotEnabled = not TriggerbotEnabled
@@ -2186,32 +2199,21 @@ function TriggerbotEnable()
 		AimbotEnabled = true
 		AimbotEnable()
 
-		UIS.InputBegan:Connect(function(Inp, GPE)
-
-			if GPE then return end
-
-			if Inp.UserInputType == Enum.UserInputType.MouseButton1 and TriggerbotMode == "OnM1" then
-
-				local Target = FindPlr()
-
-				if Target and not AimbotEnabled then
-
-					CenterCamOnTarget(Target)
-
-				end
-
-			end
-
-		end)
-
 		while TriggerbotEnabled do
 
 			task.wait()
 
+			local Target = FindPlr()
+			local Keys = GetKeyPressed()
+			
+			if Target and TriggerbotMode == "OnM1" and Keys then
+				
+				CenterCamOnTarget(Target)
+				
+			end
+
 			if not CLockFovEnabled then continue end
 			if TriggerbotMode ~= "Auto" then continue end
-
-			local Target = FindPlr()
 
 			if Target and not AimbotEnabled then
 
@@ -2673,7 +2675,6 @@ FlingToolButton.MouseButton1Down:Connect(function()
 		
 		FlingTool.Parent = PLR.Backpack
 		FlingToolButton.Frame.Frame.Visible = true
-		print(FlingTool.Parent)
 		
 	end
 	
