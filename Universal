@@ -2180,7 +2180,7 @@ function GetKeyPressed()
 
 	for i,v in Keys do
 
-		table.insert(JSP, v.Keycode)
+		table.insert(JSP, v.KeyCode)
 
 	end
 
