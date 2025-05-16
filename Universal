@@ -2173,21 +2173,6 @@ AimbotKeybindButton.MouseButton1Down:Connect(function()
 
 end)
 
-function GetKeyPressed()
-
-	local Keys = UIS:GetKeysPressed()
-	local JSP = {}
-
-	for i,v in Keys do
-
-		table.insert(JSP, v.KeyCode)
-
-	end
-
-	return JSP
-
-end
-
 function TriggerbotEnable()
 	
 	TriggerbotEnabled = not TriggerbotEnabled
@@ -2199,14 +2184,38 @@ function TriggerbotEnable()
 		AimbotEnabled = true
 		AimbotEnable()
 
+		local M1 = nil
+		
+		UIS.InputBegan:Connect(function(Inp, GPE)
+			
+			if GPE then return end
+			
+			if Inp.UserInputType == Enum.UserInputType.MouseButton1 then
+				
+				M1 = true
+				
+			end
+			
+		end)
+		
+		UIS.InputEnded:Connect(function(Inp, GPE)
+
+			if Inp.UserInputType == Enum.UserInputType.MouseButton1 then
+
+				M1 = nil
+
+			end
+
+		end)
+
 		while TriggerbotEnabled do
 
 			task.wait()
 
 			local Target = FindPlr()
-			local Keys = GetKeyPressed()
 			
-			if Target and TriggerbotMode == "OnM1" and Keys then
+			
+			if Target and TriggerbotMode == "OnM1" and M1 then
 				
 				CenterCamOnTarget(Target)
 				
@@ -2222,6 +2231,8 @@ function TriggerbotEnable()
 			end
 
 		end
+		
+		M1 = nil
 
 	end
 	
