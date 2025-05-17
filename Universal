@@ -109,6 +109,7 @@ TriggerbotModes = {
 
 AimbotEnabled = false
 AimbotKey = Enum.KeyCode.C
+AimbotSmoothness = 0
 
 FlingEnabled = false
 FlingTarget = game:GetService("Players"):GetPlayers()[1]
@@ -128,24 +129,24 @@ FlingToolParams = RaycastParams.new()
 FlingToolParams.FilterType = Enum.RaycastFilterType.Exclude
 FlingToolParamsWhitelist = {}
 
-local ESPEnabled = false
-local ESPNameEnabled = false
-local ESPColorEnabled = false
-local ESPRainbowEnabled = false
-local ESPLinesEnabled = false
-local ESPTeamColor = false
-local ESPKey = Enum.KeyCode.N
-local ESPGui = Instance.new("ScreenGui", game:GetService("CoreGui").CaptureOverlay)
-local ESPColor = Color3.fromRGB(255,255,0)
-local ESPOutlineType = "None"
-local ESPTypeNum = 1
-local NotTargettedESPColor = Color3.new(1,1,1)
-local NoEffectESPColor = Color3.new(1,1,1)
+ESPEnabled = false
+ESPNameEnabled = false
+ESPColorEnabled = false
+ESPRainbowEnabled = false
+ESPLinesEnabled = false
+ESPTeamColor = false
+ESPKey = Enum.KeyCode.N
+ESPGui = Instance.new("ScreenGui", game:GetService("CoreGui").CaptureOverlay)
+ESPColor = Color3.fromRGB(255,255,0)
+ESPOutlineType = "None"
+ESPTypeNum = 1
+NotTargettedESPColor = Color3.new(1,1,1)
+NoEffectESPColor = Color3.new(1,1,1)
 ESPGui.ResetOnSpawn = nil
 ESPGui.Name = "EspGui"
 ESPGui.IgnoreGuiInset = true
 
-local ESPOutlineTypes = {[1] = "None", [2] = "Highlight", [3] = "Box"}
+ESPOutlineTypes = {[1] = "None", [2] = "Highlight", [3] = "Box"}
 
 local BangEnabled = false
 local BangKey = Enum.KeyCode.B
@@ -470,7 +471,7 @@ NewTab("Home", 1, 109306454828475)
 local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 
 	local Button = Instance.new("TextButton", Parent)
-	local CheckFrame = Instance.new("Frame", Button)
+	local CheckFrame = Instance.new("CanvasGroup", Button)
 	local GreenFrame = Instance.new("Frame", CheckFrame)
 	local CheckStroke = Instance.new("UIStroke", CheckFrame)
 	local CheckBorder = Instance.new("UICorner", CheckFrame)
@@ -492,11 +493,13 @@ local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 
 	else
 
+		CheckFrame.Name = "Frame"
 		CheckFrame.Size = UDim2.fromScale(1,1)
 		CheckFrame.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
 		CheckFrame.AnchorPoint = Vector2.new(1, 0)
 		CheckFrame.Position = UDim2.fromScale(1, 0)
 		CheckBorder.CornerRadius = UDim.new(0.2, 0)
+		CheckBorder:Clone().Parent = GreenFrame
 		CheckStroke.Thickness = 3
 		GreenFrame.Visible = nil
 		GreenFrame.Size = UDim2.fromScale(1,1)
@@ -947,9 +950,9 @@ CLockFovSizeBox = NewBox("Checks", AdvancedFovFrame, "Fov size = 100", 1)
 CLockFovVisibleButton = NewButton("FovVisible", AdvancedFovFrame, "Fov visible", 2)
 FovRainbowButton = NewButton("Rainbow", AdvancedFovFrame, "LGBTQ+", 3)
 
-local FovFrame = Instance.new("Frame", AlwaysEnabled)
-local FovFrameCorner = Instance.new("UICorner", FovFrame)
-local FovFrameBorder = Instance.new("UIStroke", FovFrame)
+FovFrame = Instance.new("Frame", AlwaysEnabled)
+FovFrameCorner = Instance.new("UICorner", FovFrame)
+FovFrameBorder = Instance.new("UIStroke", FovFrame)
 
 FovFrame.BackgroundTransparency = 1
 FovFrameCorner.CornerRadius = UDim.new(1,0)
@@ -966,8 +969,9 @@ TriggerbotButton = NewButton("Enabled", TriggerBotFrame, "Triggerbot", 1)
 TriggerbotKeybindButton = NewButton("Keybind", TriggerBotFrame, "Keybind = V", 2, true)
 TriggerbotModeButton = NewButton("Mode", TriggerBotFrame, "Mode = " ..TriggerbotMode, 3, true)
 
-local AimbotEnabledButton = NewButton("Enabled", AimbotFrame, "Aimbot", 3)
-local AimbotKeybindButton = NewButton("Keybind", AimbotFrame, "Keybind = C", 4, true)
+AimbotEnabledButton = NewButton("Enabled", AimbotFrame, "Aimbot", 3)
+AimbotKeybindButton = NewButton("Keybind", AimbotFrame, "Keybind = C", 4, true)
+AimbotSmoothnessBox = NewBox("Smoothness", AimbotFrame, "Smoothness = 0", 5, true)
 
 Tabs.Aimbot = {
 	CLockFrame,
@@ -2043,6 +2047,23 @@ function CenterCamOnTarget(Target)
 	
 	if not Target.Character then return end
 	if not Target.Character:FindFirstChild("Humanoid") then return end
+	if not Char then return end
+	if not Char:FindFirstChild("Head") then return end
+
+	local NewCFrame
+	local TPart
+	
+	if Target.Character:FindFirstChild("Head") then
+		
+		TPart = Target.Character.Head
+		
+	elseif Target.Character:FindFirstChild("HumanoidRootPart") then
+		
+		TPart = Target.Character.HumanoidRootPart
+		
+	end
+	
+	if not TPart then return end
 
 	if KOCheck then
 
@@ -2054,31 +2075,83 @@ function CenterCamOnTarget(Target)
 
 		if Target.Character:FindFirstChild("Head") then
 
-			local A = PLR.Character.Head.Position
-			local B = Target.Character.Head.Position
+			local A = Char.Head.Position
+			local B = TPart.Position
 			local Offset = Vector3.new(0,0,0)
 
 			--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
 
-			Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+			NewCFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
 
 		else
 
-			local A = PLR.Character.HumanoidRootPart.Position
-			local B = Target.Character.HumanoidRootPart.Position
+			local A = Char.HumanoidRootPart.Position
+			local B = TPart.Position
 			local Offset = Vector3.new(0,0,0)
 
 			--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
 
-			Cam.CFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+			NewCFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
 
 		end
 
 	elseif Cam.CameraType == Enum.CameraType.Scriptable then
 
-		Cam.CFrame = CFrame.new(Cam.CFrame.Position, Target.Character.Head.Position)
+		NewCFrame = CFrame.new(Cam.CFrame.Position, TPart.Position)
 
 	end			
+	
+	if AimbotSmoothness > 0 then
+		
+		local TWA = TW:Create(Cam, TweenInfo.new(AimbotSmoothness), {["CFrame"] = NewCFrame})
+		local Start = tick()
+			
+		while tick() - Start < AimbotSmoothness do
+				
+			task.wait()
+			
+			if Cam.CameraType == Enum.CameraType.Custom then
+
+				if Target.Character:FindFirstChild("Head") then
+
+					local A = Char.Head.Position
+					local B = TPart.Position
+					local Offset = Vector3.new(0,0,0)
+
+					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+
+					NewCFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+
+				else
+
+					local A = Char.HumanoidRootPart.Position
+					local B = TPart.Position
+					local Offset = Vector3.new(0,0,0)
+
+					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
+
+					NewCFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
+
+				end
+
+			elseif Cam.CameraType == Enum.CameraType.Scriptable then
+
+				NewCFrame = CFrame.new(Cam.CFrame.Position, TPart.Position)
+
+			end	
+			
+			TWA = TW:Create(Cam, TweenInfo.new(AimbotSmoothness - (tick() - Start)), {["CFrame"] = NewCFrame})
+			TWA:Play()
+				
+		end
+		
+		Cam.CFrame = NewCFrame
+		
+	else
+		
+		Cam.CFrame = NewCFrame
+		
+	end
 	
 	repeat task.wait() UIS.MouseBehavior = Enum.MouseBehavior.LockCenter until UIS:GetMouseLocation().X == Cam.ViewportSize.X / 2 and UIS:GetMouseLocation().Y == Cam.ViewportSize.Y / 2
 	
@@ -2171,6 +2244,16 @@ AimbotKeybindButton.MouseButton1Down:Connect(function()
 	Connection:Disconnect()
 	BindingKey = nil
 
+end)
+
+AimbotSmoothnessBox.FocusLost:Connect(function(EP)
+	
+	if not EP then return end
+	if not tonumber(AimbotSmoothnessBox.Text) then AimbotSmoothnessBox.Text = "Smoothness = " ..AimbotSmoothness return end
+	
+	AimbotSmoothness = tonumber(AimbotSmoothnessBox.Text)
+	AimbotSmoothnessBox.Text = "Smoothness = " ..AimbotSmoothness
+	
 end)
 
 function TriggerbotEnable()
