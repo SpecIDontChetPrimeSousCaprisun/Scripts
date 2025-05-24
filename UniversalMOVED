@@ -253,6 +253,8 @@ local Countries = {
 
 task.wait(3)
 
+print("a")
+
 local MenuUI = Instance.new("ScreenGui")
 local CountryLabel = Instance.new("TextLabel")
 local Kakma = Instance.new("Sound", game:GetService("SoundService"))
@@ -264,6 +266,8 @@ local Images = {
 	"http://www.roblox.com/asset/?id=116784038558452",
 	"http://www.roblox.com/asset/?id=73983314739620"
 }
+
+print("b")
 
 local Labels = {}
 
@@ -290,9 +294,21 @@ CountryLabel.TextColor3 = Color3.new(1, 1, 1)
 CountryLabel.FontFace = Font.new("rbxasset://fonts/families/PressStart2P.json", Enum.FontWeight.Light, Enum.FontStyle.Normal)
 CountryLabel.TextStrokeTransparency = 0
 CountryLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
-CountryLabel.Text = "You live in : " ..Countries[game:GetService("LocalizationService"):GetCountryRegionForPlayerAsync(game:GetService("Players").LocalPlayer)]
+CountryLabel.Text = "You live in " ..Countries[game:GetService("LocalizationService"):GetCountryRegionForPlayerAsync(game:GetService("Players").LocalPlayer)]
 CountryLabel.Parent = MenuUI
 CountryLabel.ZIndex = 2147483647
+
+print("c")
+
+local DoorsLabel = CountryLabel:Clone()
+
+DoorsLabel.TextColor3 = Color3.new(1, 0, 0)
+DoorsLabel.Text = "Close your doors"
+DoorsLabel.Size = UDim2.fromScale(1, 0.05)
+DoorsLabel.AnchorPoint = Vector2.new(0.5, 1)
+DoorsLabel.Position = UDim2.fromScale(0.5, 1)
+DoorsLabel.Parent = MenuUI
+
 Kakma.Volume = 2147483647
 Kakma.Looped = true
 Kakma.SoundId = "rbxassetid://137824321987203"
@@ -307,7 +323,8 @@ NextbotVfx.Saturation = -50
 NextbotVfx.TintColor = Color3.fromRGB(17, 0, 0)
 
 local Modifier = Vector3.new(math.random(0, 1000) / 1000, 0, math.random(0, 1000) / 1000)
-local Dist = 300
+local Dist = 500
+local Speed = 1
 local Pos = Vector3.zero
 local PLR = game:GetService("Players").LocalPlayer
 local Char = PLR.Character
@@ -316,6 +333,23 @@ local NextbotSfx = Instance.new("Sound", game:GetService("SoundService"))
 local Bill = Instance.new("BillboardGui", Nextbot)
 local BillImg = Instance.new("ImageLabel", Bill)
 local Cam = workspace.CurrentCamera
+
+for i,v in game.Players:GetPlayers() do
+
+	if v == PLR then continue end
+	if not v.Character then continue end
+	
+	for ii, vv in v.Character:GetDescendants() do
+		
+		if vv:IsA("BasePart") then
+			
+			vv.LocalTransparencyModifier = 1
+			
+		end
+		
+	end
+
+end
 
 Cam.CameraType = Enum.CameraType.Custom
 PLR.CameraMaxZoomDistance = 0.5
@@ -338,7 +372,7 @@ game:GetService("RunService").RenderStepped:Connect(function()
 	
 	Pos = Char:GetPivot().Position + Modifier.Unit * Dist
 	Nextbot.Position = Pos
-	NextbotSfx.Volume = 301 - Dist
+	NextbotSfx.Volume = (501 - Dist) / 10
 	NextbotVfx.Saturation = -50 - (150 - (Dist / 2))
 	
 end)
@@ -359,7 +393,8 @@ while Dist > 0 do
 	
 	task.wait()
 	
-	Dist -= 10
+	Dist -= Speed
+	Speed += 0.01
 	
 end
 
