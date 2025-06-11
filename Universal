@@ -867,6 +867,139 @@ if game.GameId == 3808081382 then --Tsbite
 		
 	end)
 
+elseif game.GameId == 7828766934 then --Anime girl thingie
+
+	NewTab("Steal", 9, 0)
+
+	StealTarget = 1
+	InstantSteal = true
+	InfStealReach = true
+	StealNoClip = true
+	Focused = nil
+
+	StealFrame = FlyFrame:Clone()
+	StealFrame.Name = "Steal"
+	StealFrame.NameLabel.Text = "Steal"
+	StealFrame.LayoutOrder = 1
+	StealFrame.Parent = Options
+	
+	for i,v in workspace.PLOTS:GetChildren() do
+		
+		if not v:FindFirstChild("Owner") then continue end
+		
+		StealTarget = v.Name
+		
+	end
+	
+	local StealButton = NewButton("Enabled", StealFrame, "Steal selected plr", 1, true)
+	local StealTargetBox = NewBox("Enabled", StealFrame, "Steal target : " ..workspace.PLOTS[StealTarget].Owner.Value.DisplayName, 2)
+	local InstantStealButton = NewButton("Enabled", StealFrame, "Instant steal", 3)
+	local InfStealReachButton = NewButton("Enabled", StealFrame, "Inf steal reach", 4)
+	local StealNoClipButton = NewButton("Enabled", StealFrame, "Steal trough walls", 5)
+	
+	Tabs.Steal = {StealFrame}
+	
+	local function Steal()
+		
+		print(StealTarget)
+		
+		for i,v in workspace.PLOTS[StealTarget]:GetChildren() do
+			
+			print(v)
+			
+			if not v:IsA("Model") then continue end
+			
+			print("a")
+			
+			if not v:FindFirstChild("GrabPrompt") then continue end
+			
+			print("b")
+			
+			if InstantSteal then
+				
+				v.GrabPrompt.HoldDuration = 0
+				
+			end
+			
+			if InfStealReach then
+				
+				v.GrabPrompt.MaxActivationDistance = 99999999999
+				
+			end
+			
+			if StealNoClip then
+				
+				v.GrabPrompt.RequiresLineOfSight = nil
+				
+			end
+			
+		end
+		
+	end
+	
+	StealButton.MouseButton1Down:Connect(function()
+		
+		Steal()
+		
+	end)
+	
+	StealTargetBox.FocusLost:Connect(function()
+		
+		Focused = nil
+		
+		for i,v in workspace.PLOTS:GetChildren() do
+			
+			if not v:FindFirstChild("Owner") then continue end
+			
+			if string.find(v.Owner.Value.DisplayName, StealTargetBox.Text) then
+				
+				StealTarget = v.Name
+				
+			end
+			
+		end
+		
+	end)
+	
+	InstantStealButton.MouseButton1Down:Connect(function()
+		
+		InstantSteal = not InstantSteal
+		InstantStealButton.Frame.Frame.Visible = InstantSteal
+		
+	end)
+	
+	InfStealReachButton.MouseButton1Down:Connect(function()
+
+		InfStealReach = not InfStealReach
+		InfStealReachButton.Frame.Frame.Visible = InfStealReach
+		
+	end)
+	
+	StealNoClipButton.MouseButton1Down:Connect(function()
+
+		StealNoClip = not StealNoClip
+		StealNoClipButton.Frame.Frame.Visible = StealNoClip
+
+	end)
+	
+	InstantStealButton.Frame.Frame.Visible = InstantSteal
+	InfStealReachButton.Frame.Frame.Visible = InfStealReach
+	StealNoClipButton.Frame.Frame.Visible = StealNoClip
+	
+	StealTargetBox.Focused:Connect(function()
+		
+		Focused = true
+		
+	end)
+	
+	game["Run Service"].RenderStepped:Connect(function()
+		
+		if Focused then return end
+		
+		StealTargetBox.Text = "Steal target : " ..workspace.PLOTS[StealTarget].Owner.Value.DisplayName
+		
+	end)
+	
 end
 
 -- Home
@@ -3906,4 +4039,3 @@ while task.wait() do
 	end
 
 end
-
