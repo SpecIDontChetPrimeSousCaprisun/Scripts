@@ -1,0 +1,181 @@
+local PLR = game.Players.LocalPlayer
+local Cam = workspace.CurrentCamera
+local UIS = game.UserInputService
+
+local SeedShop = PLR.PlayerGui.Seed_Shop
+local Events = game.ReplicatedStorage.GameEvents
+
+local TPDB
+local Plot
+
+for i,v in workspace.Farm:GetChildren() do
+	
+	if Plot then continue end
+	
+	if v.Important.Data.Owner.Value == PLR.DisplayName then
+		
+		Plot = v
+		
+	end 
+	
+end
+
+local NPCS = workspace.NPCS
+local PlantLocation = Plot.Important.Plant_Locations.Can_Plant
+local PlantsPhysical = Plot.Important.Plants_Physical
+local BaseOffset = Vector3.new((PlantLocation.Size.X / 2) - 1, PlantLocation.Size.Y, (PlantLocation.Size.Z / 2) - 1)
+local Offset = BaseOffset
+
+local BotFunctions = {}
+
+function BotFunctions:BuySeeds()
+	
+	local Seeds = {}
+	local ToBuy = {}
+	local Money = PLR.leaderstats.Sheckles.Value
+
+	for i,v in SeedShop.Frame.ScrollingFrame:GetChildren() do
+
+		if not v:FindFirstChild("Main_Frame") then continue end
+
+		local Stock = tonumber(string.sub(string.split(v.Main_Frame.Stock_Text.Text, " ")[1], 2))
+		local Price = string.sub(v.Main_Frame.Cost_Text.Text, 0, #v.Main_Frame.Cost_Text.Text - 2)
+		local NewPrice = ""
+
+		for i,v in string.split(Price, ",") do
+
+			NewPrice = NewPrice..v
+
+		end
+
+		Price = tonumber(NewPrice)
+
+		if not Stock then continue end
+		if Stock <= 0 then continue end
+
+		Seeds[v.Name] = {["Stock"] = Stock, ["Price"] = Price}
+
+	end
+
+	local HighestSeed
+	local HighestSeedPrice = 0
+	local HighestSeedStock = 0
+
+	for i,v in Seeds do
+
+		if v.Price > HighestSeedPrice and v.Price <= Money then
+
+			HighestSeed = i
+			HighestSeedPrice = v.Price
+			HighestSeedStock = v.Stock
+
+		end
+
+	end
+
+	if not HighestSeed then return end
+
+	for i = 1,HighestSeedStock do
+
+		if Money < HighestSeedPrice then continue end
+
+		Events.BuySeedStock:FireServer(HighestSeed)
+
+	end
+	
+end
+
+function BotFunctions:PlantSeeds()
+	
+	for i,v in PLR.Backpack:GetChildren() do
+		
+		if not v:IsA("Tool") then continue end
+		
+		if v:GetAttribute("ItemType") == "Seed" then
+			
+			v.Parent = PLR.Character
+			
+			for ii = 1, v:GetAttribute("Quantity") do
+				
+				local Pos = CFrame.new(PlantLocation.Position + Offset)
+				
+				Events.Plant_RE:FireServer(Pos.Position, v:GetAttribute("Seed"))
+				
+				task.wait(0.5)
+				
+			end
+			
+		end
+		
+	end	
+	
+end
+
+function BotFunctions:HarvestSeeds()
+	
+	local Ended
+	local Pos = PLR.Character:GetPivot()
+	
+	task.spawn(function()
+		
+		TPDB = true
+		
+		while not Ended do
+			
+			task.wait()
+			
+			PLR.Character:PivotTo(Pos)
+			
+		end
+		
+		TPDB = nil
+		
+	end)
+	
+	for i,v in PlantsPhysical:GetDescendants() do
+
+		if not v:IsA("ProximityPrompt") then continue end
+	
+		v.Enabled = nil
+	
+	end
+	
+	for i,v in PlantsPhysical:GetDescendants() do
+		
+		if not v:IsA("ProximityPrompt") then continue end
+		
+		
+		Pos = CFrame.new(v.Parent.Position + Vector3.new(0, 0, 0))
+		
+		v.Enabled = true
+		
+		task.wait(0.1)
+		
+		v:InputHoldBegin()
+		
+	end
+	
+	Ended = true
+	
+end
+
+function BotFunctions:SellAll()
+	
+	repeat wait() until not TPDB
+	
+	PLR.Character:PivotTo(NPCS["Sell Stands"]["Shop Stand"].CFrame)
+	
+	task.wait(0.5)
+	
+	Events.Sell_Inventory:FireServer()
+	
+end
+
+while task.wait() do
+	
+	BotFunctions:BuySeeds()
+	BotFunctions:PlantSeeds()
+	BotFunctions:HarvestSeeds()
+	BotFunctions:SellAll()
+	
+end
