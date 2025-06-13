@@ -1,9 +1,145 @@
-local PLR = game.Players.LocalPlayer
-local Cam = workspace.CurrentCamera
-local UIS = game.UserInputService
+PLR = game.Players.LocalPlayer
+Cam = workspace.CurrentCamera
+UIS = game.UserInputService
+TW = game.TweenService
 
-local SeedShop = PLR.PlayerGui.Seed_Shop
-local Events = game.ReplicatedStorage.GameEvents
+SeedShop = PLR.PlayerGui.Seed_Shop
+Events = game.ReplicatedStorage.GameEvents
+
+MenuUI = Instance.new("ScreenGui")
+MenuUI.IgnoreGuiInset = true
+
+MenuFrame = Instance.new("Frame", MenuUI)
+MenuFrameGradient = Instance.new("UIGradient", MenuFrame)
+MenuFrameStroke = Instance.new("UIStroke", MenuFrame)
+
+MenuFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+MenuFrame.Position = UDim2.fromScale(0.5, 0.5)
+MenuFrame.Size = UDim2.fromScale(0.5, 0.5)
+MenuFrameStroke.LineJoinMode = Enum.LineJoinMode.Miter
+MenuFrameStroke.Thickness = 5
+MenuFrameGradient.Rotation = 45
+MenuFrameGradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(2, 0, 72)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(2, 0, 117))
+}
+
+MenuFrameStrokeGradient = MenuFrameGradient:Clone()
+
+MenuFrameStrokeGradient.Rotation = -115
+MenuFrameStrokeGradient.Parent = MenuFrameStroke
+
+BotFunctionsFrame = Instance.new("Frame", MenuFrame)
+BotFunctionsFrameStroke = Instance.new("UIStroke", BotFunctionsFrame)
+BotFunctionsFrameLayout = Instance.new("UIListLayout", BotFunctionsFrame)
+
+BotFunctionsFrame.AnchorPoint = Vector2.new(1, 0.5)
+BotFunctionsFrame.Position = UDim2.fromScale(0.99, 0.5)
+BotFunctionsFrame.Size = UDim2.fromScale(0.25, 0.95)
+BotFunctionsFrame.BackgroundTransparency = 1
+BotFunctionsFrameStroke.Color = Color3.fromRGB(1, 0, 48)
+BotFunctionsFrameStroke.LineJoinMode = Enum.LineJoinMode.Miter
+BotFunctionsFrameStroke.Thickness = 5
+BotFunctionsFrameLayout.Padding = UDim.new(0, 10)
+
+TimelineFrame = Instance.new("ScrollingFrame", MenuFrame)
+TimelineFrameStroke = BotFunctionsFrameStroke:Clone()
+
+TimelineFrame.AnchorPoint = Vector2.new(0, 0.5)
+TimelineFrame.Position = UDim2.fromScale(0.01, 0.5)
+TimelineFrame.Size = UDim2.fromScale(0.7, 0.95)
+TimelineFrame.BackgroundTransparency = 1
+TimelineFrameStroke.Parent = TimelineFrame
+
+function Resize_Offset(UI)
+	
+	local AB_Size = UI.Parent.AbsoluteSize
+	local LB_Size = UI.AbsoluteSize
+	
+	UI.Size = UDim2.new(0, LB_Size.X, 0, LB_Size.Y) -- newer method which just reads a value and then sets the UDim2
+	
+end
+
+local function NewBotFunction(Name)
+	
+	local UI = Instance.new("TextButton", BotFunctionsFrame)
+	local Gradient = Instance.new("UIGradient", UI)
+	local TextLabel = Instance.new("TextLabel", UI)
+	local LabelStroke = Instance.new("UIStroke", TextLabel)
+	local MouseDown
+	local PlaceHolderFrame = Instance.new("Frame")
+	local PlaceholderStroke = Instance.new("UIStroke", PlaceHolderFrame)
+	
+	local TWR = TW:Create(UI, TweenInfo.new(0.1, Enum.EasingStyle.Linear), {Rotation = 20})
+	local TWUR = TW:Create(UI, TweenInfo.new(0.1, Enum.EasingStyle.Linear), {Rotation = 0})
+	
+	UI.LayoutOrder = #BotFunctionsFrame:GetChildren()
+	UI.Size = UDim2.fromScale(1, 0.125)
+	UI.Name = Name
+	UI.TextColor3 = Color3.new(1, 1, 1)
+	UI.BackgroundColor3 = Color3.new(1, 1, 1)
+	UI.AnchorPoint = Vector2.new(0.5, 0.5)
+	Gradient.Color = ColorSequence.new{
+		ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 255, 0)),
+		ColorSequenceKeypoint.new(1, Color3.new(0.87451, 0.74902, 0.0470588))
+	}
+	Gradient.Rotation = 45
+	TextLabel.Text = Name
+	TextLabel.TextColor3 = Color3.new(1, 1, 1)
+	TextLabel.TextSize = 25
+	TextLabel.Size = UDim2.fromScale(1, 1)
+	TextLabel.BackgroundTransparency = 1
+	LabelStroke.Thickness = 2
+	
+	Resize_Offset(UI)
+	
+	PlaceHolderFrame.BackgroundTransparency = 0.5
+	PlaceHolderFrame.BackgroundColor3 = Color3.new(0, 0.5, 1)
+	PlaceHolderFrame.Size = UI.Size
+	PlaceHolderFrame.LayoutOrder = UI.LayoutOrder
+	PlaceholderStroke.Color = Color3.new(0, 0.5, 1)
+	PlaceholderStroke.Thickness = 5
+	PlaceholderStroke.LineJoinMode = Enum.LineJoinMode.Miter
+	
+	UI.MouseButton1Down:Connect(function()
+		
+		TWUR:Cancel()
+		TWR:Play()
+		UI.Parent = MenuUI
+		PlaceHolderFrame.Parent = BotFunctionsFrame
+		MouseDown = true
+		
+	end)
+	
+	UI.MouseButton1Up:Connect(function()
+		
+		TWR:Cancel()
+		TWUR:Play()
+		UI.Parent = BotFunctionsFrame
+		PlaceHolderFrame.Parent = nil
+		MouseDown = nil
+
+	end)
+	
+	game["Run Service"].RenderStepped:Connect(function()
+		
+		if not MouseDown then return end
+		
+		local MP = UIS:GetMouseLocation()
+		
+		UI.Position = UDim2.fromOffset(MP.X, MP.Y)
+		
+	end)
+	
+end
+
+for i = 1, 15 do
+	
+	
+	
+end
+
+MenuUI.Parent = game:GetService("CoreGui").CaptureOverlay
 
 local TPDB
 local Plot
@@ -20,13 +156,13 @@ for i,v in workspace.Farm:GetChildren() do
 	
 end
 
-local NPCS = workspace.NPCS
-local PlantLocation = Plot.Important.Plant_Locations.Can_Plant
-local PlantsPhysical = Plot.Important.Plants_Physical
-local BaseOffset = Vector3.new((PlantLocation.Size.X / 2) - 1, PlantLocation.Size.Y, (PlantLocation.Size.Z / 2) - 1)
-local Offset = BaseOffset
+NPCS = workspace.NPCS
+PlantLocation = Plot.Important.Plant_Locations.Can_Plant
+PlantsPhysical = Plot.Important.Plants_Physical
+BaseOffset = Vector3.new((PlantLocation.Size.X / 2) - 1, PlantLocation.Size.Y, (PlantLocation.Size.Z / 2) - 1)
+Offset = BaseOffset
 
-local BotFunctions = {}
+BotFunctions = {}
 
 function BotFunctions:BuySeeds()
 	
@@ -171,11 +307,29 @@ function BotFunctions:SellAll()
 	
 end
 
-while task.wait() do
+for i,v in BotFunctions do
 	
-	BotFunctions:BuySeeds()
-	BotFunctions:PlantSeeds()
-	BotFunctions:HarvestSeeds()
-	BotFunctions:SellAll()
+	NewBotFunction(i)
 	
 end
+
+game.UserInputService.InputBegan:Connect(function(Inp, GPE)
+	
+	if GPE then return end
+	
+	if Inp.KeyCode == Enum.KeyCode.H then
+		
+		MenuFrame.Visible = not MenuFrame.Visible
+		
+	end
+	
+end)
+
+--while task.wait() do
+	
+--	BotFunctions:BuySeeds()
+--	BotFunctions:PlantSeeds()
+--	BotFunctions:HarvestSeeds()
+--	BotFunctions:SellAll()
+	
+--end
