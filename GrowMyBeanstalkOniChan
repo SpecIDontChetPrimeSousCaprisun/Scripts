@@ -3,6 +3,11 @@ Cam = workspace.CurrentCamera
 UIS = game.UserInputService
 TW = game.TweenService
 
+Focused = nil
+SelectedPosition = nil
+Selected = nil
+Running = nil
+
 SeedShop = PLR.PlayerGui.Seed_Shop
 Events = game.ReplicatedStorage.GameEvents
 
@@ -41,24 +46,180 @@ BotFunctionsFrameStroke.Color = Color3.fromRGB(1, 0, 48)
 BotFunctionsFrameStroke.LineJoinMode = Enum.LineJoinMode.Miter
 BotFunctionsFrameStroke.Thickness = 5
 BotFunctionsFrameLayout.Padding = UDim.new(0, 10)
+BotFunctionsFrameLayout.SortOrder = Enum.SortOrder.LayoutOrder
 
 TimelineFrame = Instance.new("ScrollingFrame", MenuFrame)
 TimelineFrameStroke = BotFunctionsFrameStroke:Clone()
+TimelineFrameLayout = BotFunctionsFrameLayout:Clone()
 
 TimelineFrame.AnchorPoint = Vector2.new(0, 0.5)
 TimelineFrame.Position = UDim2.fromScale(0.01, 0.5)
 TimelineFrame.Size = UDim2.fromScale(0.7, 0.95)
 TimelineFrame.BackgroundTransparency = 1
 TimelineFrameStroke.Parent = TimelineFrame
+TimelineFrameLayout.Parent = TimelineFrame
 
-function Resize_Offset(UI)
+StartButton = Instance.new("TextButton", MenuFrame)
+StartButtonGradient = Instance.new("UIGradient", StartButton)
+StopButtonGradient = Instance.new("UIGradient", StartButton)
+StartButtonLabel = Instance.new("TextLabel", StartButton)
+StartButtonStroke = Instance.new("UIStroke", StartButtonLabel)
+
+StartButton.AnchorPoint = Vector2.new(0.5, 0)
+StartButton.Size = UDim2.fromScale(0.25, 0.1)
+StartButton.Position = UDim2.fromScale(0.5, 1.1)
+StartButton.TextTransparency = 1
+StartButtonStroke.Thickness = 3
+StartButtonLabel.TextScaled = true
+StartButtonLabel.Size = UDim2.fromScale(1, 1)
+StartButtonLabel.BackgroundTransparency = 1
+StartButtonLabel.Text = "Start"
+StartButtonLabel.TextColor3 = Color3.new(1, 1, 1)
+StartButtonLabel.Font = Enum.Font.FredokaOne
+
+StartButtonGradient.Rotation = 45
+StartButtonGradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.new(0, 1, 0)),
+	ColorSequenceKeypoint.new(1, Color3.new(0.278431, 0.52549, 0.0117647))
+}
+
+StopButtonGradient.Enabled = nil
+StopButtonGradient.Rotation = 45
+StopButtonGradient.Color = ColorSequence.new{
+	ColorSequenceKeypoint.new(0, Color3.new(1, 0, 0)),
+	ColorSequenceKeypoint.new(1, Color3.new(0.74902, 0.305882, 0.00784314))
+}
+
+StartButton.MouseButton1Down:Connect(function()
+	
+	Running = not Running
+	
+	StartButtonGradient.Enabled = not Running
+	StopButtonGradient.Enabled = Running
+	
+	if Running then
+		
+		StartButtonLabel.Text = "Stop"
+		
+	else
+		
+		StartButtonLabel.Text = "Start"
+		
+	end
+	
+end)
+
+local function Resize_Offset(UI)
 	
 	local AB_Size = UI.Parent.AbsoluteSize
 	local LB_Size = UI.AbsoluteSize
 	
-	UI.Size = UDim2.new(0, LB_Size.X, 0, LB_Size.Y) -- newer method which just reads a value and then sets the UDim2
+	UI.Size = UDim2.new(0, LB_Size.X, 0, LB_Size.Y) 
 	
 end
+
+for i = 1, 15 do
+
+	local Pos = Instance.new("Frame", TimelineFrame)
+
+	Pos.LayoutOrder = i
+	Pos.Size = UDim2.fromScale(1, 0.075)
+	Pos.Transparency = 1
+	Pos.Name = i
+
+	Pos.MouseEnter:Connect(function()
+		
+		if not Selected then return end
+		
+		local NewPos = Pos
+		local Found
+		
+		if not Pos:HasTag("Occupied") then
+			
+			for ii, v in TimelineFrame:GetChildren() do
+
+				if not v:IsA("Frame") then continue end
+				if v:HasTag("Occupied") then continue end
+				if Found then continue end
+
+				Found = true
+				NewPos = v
+
+			end
+			
+		else
+			
+			local OldPoses = {}
+			local Fixed
+			
+			Pos.MouseLeave:Connect(function()
+
+				if Fixed then return end
+				
+				Fixed = true
+				
+				if Pos:FindFirstChild("BotFunction") then return end
+				
+				for ii,v in OldPoses do
+
+					ii.Parent:RemoveTag("Occupied")
+					v:AddTag("Occupied")
+					ii.Parent = v.Pos
+					v.Pos:SetAttribute("BotFunction", v.Function)
+					
+				end
+				
+			end)
+			
+			for ii, v in TimelineFrame:GetChildren() do
+
+				if not v:IsA("Frame") then continue end
+				if v.LayoutOrder < Pos.LayoutOrder then continue end
+				if not v:HasTag("Occupied") then continue end
+				if not v:FindFirstChild("BotFunction") then continue end
+				
+				local BotFunction = v.BotFunction
+				
+				OldPoses[BotFunction] = {Pos = v, Function = v:GetAttribute("BotFunction")}
+				
+				v:RemoveTag("Occupied")
+				TimelineFrame[tostring(v.LayoutOrder + 1)]:AddTag("Occupied")
+				BotFunction.Name = "NewBotFunction"
+				BotFunction.Parent = TimelineFrame[tostring(v.LayoutOrder + 1)]
+				TimelineFrame[tostring(v.LayoutOrder + 1)]:SetAttribute("BotFunction", v:GetAttribute("BotFunction"))
+
+			end
+			
+			for ii, v in TimelineFrame:GetChildren() do
+
+				if not v:IsA("Frame") then continue end
+				if not v:HasTag("Occupied") then continue end
+
+				v.NewBotFunction.Name = "BotFunction"
+
+			end
+			
+			NewPos = Pos
+			
+		end
+		
+		SelectedPosition = NewPos
+		
+	end)
+
+end
+
+TimelineFrame.MouseEnter:Connect(function()
+	
+	Focused = true
+	
+end)
+
+TimelineFrame.MouseLeave:Connect(function()
+
+	Focused = nil
+
+end)
 
 local function NewBotFunction(Name)
 	
@@ -89,6 +250,7 @@ local function NewBotFunction(Name)
 	TextLabel.TextSize = 25
 	TextLabel.Size = UDim2.fromScale(1, 1)
 	TextLabel.BackgroundTransparency = 1
+	TextLabel.Font = Enum.Font.FredokaOne
 	LabelStroke.Thickness = 2
 	
 	Resize_Offset(UI)
@@ -101,7 +263,17 @@ local function NewBotFunction(Name)
 	PlaceholderStroke.Thickness = 5
 	PlaceholderStroke.LineJoinMode = Enum.LineJoinMode.Miter
 	
+	local TimelinePlaceholder = PlaceHolderFrame:Clone()
+	
+	TimelinePlaceholder.BackgroundColor3 = Color3.new(1, 1, 1)
+	TimelinePlaceholder.UIStroke.Color = Color3.new(1, 1, 1)
+	TimelinePlaceholder.Size = UDim2.fromScale(0.9, 1)
+	TimelinePlaceholder.Position = UDim2.fromScale(0.5, 0)
+	TimelinePlaceholder.AnchorPoint = Vector2.new(0.5, 0)
+	
 	UI.MouseButton1Down:Connect(function()
+		
+		Selected = true
 		
 		TWUR:Cancel()
 		TWR:Play()
@@ -113,29 +285,57 @@ local function NewBotFunction(Name)
 	
 	UI.MouseButton1Up:Connect(function()
 		
+		Selected = nil
+		
 		TWR:Cancel()
 		TWUR:Play()
 		UI.Parent = BotFunctionsFrame
 		PlaceHolderFrame.Parent = nil
 		MouseDown = nil
+		
+		if TimelinePlaceholder.Parent then
+			
+			local TimelineUI = UI:Clone()
+			
+			SelectedPosition:SetAttribute("Function", Name)
+			TimelineUI.Name = "BotFunction"
+			TimelineUI.Position = UDim2.fromScale(0.5, 0.5)
+			TimelineUI.Size = UDim2.fromScale(0.9, 1)
+			TimelineUI.AnchorPoint = Vector2.new(0.5, 0.5)
+			TimelineUI.Rotation = 0
+			TimelineUI.Parent = SelectedPosition
+			
+			SelectedPosition:AddTag("Occupied")
+			
+		end
 
 	end)
 	
 	game["Run Service"].RenderStepped:Connect(function()
 		
-		if not MouseDown then return end
+		if not MouseDown then
+			
+			TimelinePlaceholder.Parent = nil
+			
+			return
+				
+		end
 		
 		local MP = UIS:GetMouseLocation()
 		
 		UI.Position = UDim2.fromOffset(MP.X, MP.Y)
 		
+		if Focused and SelectedPosition then
+			
+			TimelinePlaceholder.Parent = SelectedPosition
+			
+		else
+			
+			TimelinePlaceholder.Parent = nil
+			
+		end
+		
 	end)
-	
-end
-
-for i = 1, 15 do
-	
-	
 	
 end
 
@@ -325,11 +525,16 @@ game.UserInputService.InputBegan:Connect(function(Inp, GPE)
 	
 end)
 
---while task.wait() do
+while task.wait() do
 	
---	BotFunctions:BuySeeds()
---	BotFunctions:PlantSeeds()
---	BotFunctions:HarvestSeeds()
---	BotFunctions:SellAll()
+	if not Running then continue end
 	
---end
+	for i,v in TimelineFrame:GetChildren() do
+		
+		if not v:GetAttribute("Function") then continue end
+		
+		BotFunctions[v:GetAttribute("Function")]()
+		
+	end
+	
+end
