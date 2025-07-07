@@ -714,6 +714,9 @@ if game.GameId == 3808081382 then --Tsbite
 	VoidTool.Name = "Void tool"
 	VoidTool.ToolTip = "Used to void ppl"
 
+	TrashcanTarget = PlayerToTP
+	Trashcaning = nil
+
 	NewTab("Tsb", 9, 0)
 
 	VoidFrame = FlyFrame:Clone()
@@ -722,15 +725,32 @@ if game.GameId == 3808081382 then --Tsbite
 	VoidFrame.LayoutOrder = 1
 	VoidFrame.Parent = Options
 
+	TrascanFrame = FlyFrame:Clone()
+	TrascanFrame.Name = "Trascan"
+	TrascanFrame.NameLabel.Text = "Trashcan spamming"
+	TrascanFrame.LayoutOrder = 1
+	TrascanFrame.Parent = Options
+
 	VoidButton = NewButton("Enabled", VoidFrame, "Void selected plr", 1, true)
 	VoidTargetBox = NewBox("Target", VoidFrame, "Target = " ..VoidTarget.DisplayName, 2)
 	VoidToolButton = NewButton("Tool", VoidFrame, "VoidToolGiver", 3, true)
 
+	TrashcanFrame = FlyFrame:Clone()
+	TrashcanFrame.Name = "Trascan"
+	TrashcanFrame.NameLabel.Text = "Trashcan spamming"
+	TrashcanFrame.LayoutOrder = 1
+	TrashcanFrame.Parent = Options
+
+	TrashcanButton = NewButton("Enabled", TrascanFrame, "Spam selected plr", 1, true)
+	TrashcanTargetBox = NewBox("Target", TrascanFrame, "Target = " ..TrashcanTarget.DisplayName, 2)
+	TrashcanToolButton = NewButton("Tool", TrascanFrame, "TrashcanToolGiver", 3, true)
+
 	Tabs.Tsb = {
-		VoidFrame
+		VoidFrame,
+		TrascanFrame
 	}
 
-	function Void()
+	function Void() -- Void
 
 		if not PLR.Backpack:FindFirstChild("Flowing Water") then return end
 		if VoidDB then return end 
@@ -865,6 +885,137 @@ if game.GameId == 3808081382 then --Tsbite
 			
 		end)
 		
+	end)
+
+	--TrashCan
+
+	local function Trashcan()
+		
+		Trashcaning = not Trashcaning
+		
+		while Trashcaning do
+			
+			local Found
+			
+			task.wait()
+			
+			for i,v in workspace.Map.Trash:GetChildren() do
+
+				if Found then continue end
+
+				if not v:GetAttribute("Broken") then
+
+					Found = true
+
+					PLR.Character.HumanoidRootPart.CFrame = v.Trashcan.CFrame + Vector3.new(0, 0, 2)
+
+					PLR.Character:FindFirstChild("Communicate"):FireServer({
+						Goal = "LeftClick";
+					})
+
+					local OnChildAdded
+					local IDK
+
+					OnChildAdded = PLR.Character.ChildAdded:Connect(function(Child)
+
+						if not Child:IsA("StringValue") then return end
+						if Child.Value ~= "Trashcan" then return end
+
+						PLR.Character:FindFirstChild("Communicate"):FireServer({
+							Goal = "LeftClickRelease";
+						})
+
+						Child.Destroying:Wait()
+
+						task.wait(0.5)
+
+						PLR.Character.HumanoidRootPart.CFrame = CFrame.lookAt(TrashcanTarget.Character.HumanoidRootPart.Position + Vector3.new(0, 0, 10), TrashcanTarget.Character.HumanoidRootPart.Position)
+
+						PLR.Character:FindFirstChild("Communicate"):FireServer({
+							Goal = "LeftClick";
+						})
+						
+						IDK = true
+
+					end)
+
+					repeat wait() until IDK
+					
+					OnChildAdded:Disconnect()
+					
+					IDK = nil
+					
+					PLR.Character.ChildAdded:Connect(function(Child)
+						
+						if not Child:IsA("StringValue") then return end
+						if Child.Value ~= "Trashcan" then return end
+						
+						PLR.Character:FindFirstChild("Communicate"):FireServer({
+							Goal = "LeftClickRelease";
+						})
+						
+						task.wait(0.75)
+						
+						IDK = true
+						
+					end)
+
+					while not IDK do
+						
+						task.wait()
+						
+						PLR.Character.HumanoidRootPart.CFrame = CFrame.lookAt(TrashcanTarget.Character.HumanoidRootPart.Position + Vector3.new(0, 0, 10), TrashcanTarget.Character.HumanoidRootPart.Position)
+
+					end
+
+				end
+
+			end
+			
+		end
+		
+	end
+
+	TrashcanButton.MouseButton1Down:Connect(Trashcan)
+
+	game:GetService("Players").PlayerRemoving:Connect(function(plr)
+
+		if plr == TrashcanTarget then
+
+			game:GetService("StarterGui"):SetCore("SendNotification", {
+				Title = "Goat Hub",
+				Text = "The targeted player of your void (" ..TrashcanTarget.DisplayName.. ") has left changed target to you."
+			})
+
+			TrashcanTarget = game:GetService("Players"):GetPlayers()[1]
+			TrashcanTargetBox.Text = "Player = " ..TrashcanTarget.DisplayName
+
+		end
+
+	end)
+
+	TrashcanTargetBox.FocusLost:Connect(function(EP)
+
+		if not EP then return end
+
+		local PlayerName = TrashcanTargetBox.Text
+		local PLayer
+
+		for i,v in game:GetService("Players"):GetPlayers() do
+
+			if PLayer then continue end
+
+			if string.find(string.lower(v.DisplayName), string.lower(PlayerName)) then
+
+				PLayer = v
+				TrashcanTarget = v
+
+			end
+
+		end
+
+		TrashcanTargetBox.Text = "Player = " ..TrashcanTarget.DisplayName
+
 	end)
 
 elseif game.GameId == 7828766934 then --Anime girl thingie
