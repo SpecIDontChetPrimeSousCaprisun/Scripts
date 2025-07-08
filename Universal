@@ -4,7 +4,7 @@ UIS = game:GetService("UserInputService")
 TW = game.TweenService
 Key = Enum.KeyCode.H
 BindingKey = nil
-Cam = game.Workspace.CurrentCamera
+Cam = workspace.CurrentCamera
 MouseBehavior = Enum.MouseBehavior.Default
 MouseVisible = true
 CustomCursor = false
@@ -725,11 +725,11 @@ if game.GameId == 3808081382 then --Tsbite
 	VoidFrame.LayoutOrder = 1
 	VoidFrame.Parent = Options
 
-	TrascanFrame = FlyFrame:Clone()
-	TrascanFrame.Name = "Trascan"
-	TrascanFrame.NameLabel.Text = "Trashcan spamming"
-	TrascanFrame.LayoutOrder = 1
-	TrascanFrame.Parent = Options
+	TrashcanFrame = FlyFrame:Clone()
+	TrashcanFrame.Name = "Trascan"
+	TrashcanFrame.NameLabel.Text = "Trashcan spamming"
+	TrashcanFrame.LayoutOrder = 1
+	TrashcanFrame.Parent = Options
 
 	VoidButton = NewButton("Enabled", VoidFrame, "Void selected plr", 1, true)
 	VoidTargetBox = NewBox("Target", VoidFrame, "Target = " ..VoidTarget.DisplayName, 2)
@@ -741,13 +741,13 @@ if game.GameId == 3808081382 then --Tsbite
 	TrashcanFrame.LayoutOrder = 1
 	TrashcanFrame.Parent = Options
 
-	TrashcanButton = NewButton("Enabled", TrascanFrame, "Spam selected plr", 1, true)
-	TrashcanTargetBox = NewBox("Target", TrascanFrame, "Target = " ..TrashcanTarget.DisplayName, 2)
-	TrashcanToolButton = NewButton("Tool", TrascanFrame, "TrashcanToolGiver", 3, true)
+	TrashcanButton = NewButton("Enabled", TrashcanFrame, "Spam selected plr", 1)
+	TrashcanTargetBox = NewBox("Target", TrashcanFrame, "Target = " ..TrashcanTarget.DisplayName, 2)
+	TrashcanToolButton = NewButton("Tool", TrashcanFrame, "TrashcanToolGiver", 3, true)
 
 	Tabs.Tsb = {
 		VoidFrame,
-		TrascanFrame
+		TrashcanFrame
 	}
 
 	function Void() -- Void
@@ -889,11 +889,23 @@ if game.GameId == 3808081382 then --Tsbite
 
 	--TrashCan
 
+	print(PLR.Character.HumanoidRootPart.RootJoint.C1.Rotation)
+
 	local function Trashcan()
 		
 		Trashcaning = not Trashcaning
 		
+		TrashcanButton.Frame.Frame.Visible = Trashcaning
+		
+		if not Trashcaning then return end
+		
+		local BaseC1 = PLR.Character.HumanoidRootPart.RootJoint.C1
+		
+		PLR.Character.HumanoidRootPart.RootJoint.C1 += Vector3.new(0, -50 , 0)
+		
 		while Trashcaning do
+			
+			Cam.CameraSubject = TrashcanTarget.Character.Humanoid
 			
 			local Found
 			
@@ -939,7 +951,13 @@ if game.GameId == 3808081382 then --Tsbite
 
 					end)
 
-					repeat wait() until IDK
+					while not IDK do
+						
+						task.wait()
+						
+						PLR.Character.HumanoidRootPart.CFrame = v.Trashcan.CFrame + Vector3.new(0, 0, 2)
+						
+					end
 					
 					OnChildAdded:Disconnect()
 					
@@ -960,6 +978,16 @@ if game.GameId == 3808081382 then --Tsbite
 						
 					end)
 
+					task.delay(2, function()
+						
+						if not IDK then
+							
+							IDK = true
+							
+						end
+						
+					end)
+
 					while not IDK do
 						
 						task.wait()
@@ -973,6 +1001,9 @@ if game.GameId == 3808081382 then --Tsbite
 			end
 			
 		end
+		
+		PLR.Character.HumanoidRootPart.RootJoint.C1 = BaseC1
+		Cam.CameraSubject = PLR.Character.Humanoid
 		
 	end
 
