@@ -901,7 +901,7 @@ if game.GameId == 3808081382 then --Tsbite
 		
 		local BaseC1 = PLR.Character.HumanoidRootPart.RootJoint.C1
 		
-		PLR.Character.HumanoidRootPart.RootJoint.C1 += Vector3.new(0, -50 , 0)
+		--PLR.Character.HumanoidRootPart.RootJoint.C1 += Vector3.new(0, -50 , 0)
 		
 		while Trashcaning do
 			
@@ -992,7 +992,7 @@ if game.GameId == 3808081382 then --Tsbite
 						
 						task.wait()
 						
-						PLR.Character.HumanoidRootPart.CFrame = CFrame.lookAt(TrashcanTarget.Character.HumanoidRootPart.Position + Vector3.new(0, 0, 10), TrashcanTarget.Character.HumanoidRootPart.Position)
+						PLR.Character.HumanoidRootPart.CFrame = CFrame.lookAt((TrashcanTarget.Character.HumanoidRootPart.Position + (TrashcanTarget.Character.HumanoidRootPart.AssemblyLinearVelocity * 0.5)) + Vector3.new(0, 0, 10), TrashcanTarget.Character.HumanoidRootPart.Position)
 
 					end
 
