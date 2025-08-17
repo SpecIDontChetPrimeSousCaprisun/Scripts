@@ -68,6 +68,7 @@ OldCollides = {}
 FlyEnabled = false
 FlyKey = Enum.KeyCode.F
 FlySpeed = 0
+FlyPart = Instance.new("Part")
 NoclipEnabled = false
 local OldWS
 DefaultGrav = workspace.Gravity
@@ -514,7 +515,7 @@ local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 	Label.Font = Enum.Font.FredokaOne
 	Label.Text = Text
 	Label.TextXAlignment = Enum.TextXAlignment.Left
-	
+
 	Instance.new("UIAspectRatioConstraint", CheckFrame)
 
 	return Button
@@ -777,17 +778,17 @@ if game.GameId == 3808081382 then --Tsbite
 
 		TWV:Play()
 		TWV.Completed:Wait()
-		
+
 		local VoidConnection = game:GetService("RunService").RenderStepped:Connect(function()
-			
+
 			Char.HumanoidRootPart.CFrame = CFrame.new(Char.HumanoidRootPart.Position.X, 216.95181274414062, Char.HumanoidRootPart.Position.Z)
-			
+
 		end)
 
 		task.delay(5, function()
-			
+
 			if Attack.Parent ~= PLR.Backpack then
-				
+
 				VoidConnection:Disconnect()
 
 				Attack.Parent = PLR.Backpack
@@ -795,11 +796,11 @@ if game.GameId == 3808081382 then --Tsbite
 				Char.HumanoidRootPart.CFrame = OldPos
 
 				VoidDB = nil
-				
+
 				return
-				
+
 			end
-			
+
 		end)
 
 		VoidTarget.Character.Destroying:Wait()
@@ -857,13 +858,13 @@ if game.GameId == 3808081382 then --Tsbite
 	end)
 
 	VoidToolButton.MouseButton1Down:Connect(function()
-		
+
 		local Tool = VoidTool:Clone()
-		
+
 		Tool.Parent = PLR.Backpack
-		
+
 		Tool.Activated:Connect(function()
-			
+
 			local MP = UIS:GetMouseLocation()
 			local MR = Cam:ViewportPointToRay(MP.X, MP.Y)
 			local Result = workspace:Raycast(MR.Origin, MR.Direction * 100000, FlingToolParams)
@@ -882,9 +883,9 @@ if game.GameId == 3808081382 then --Tsbite
 				Void()
 
 			end
-			
+
 		end)
-		
+
 	end)
 
 	--TrashCan
@@ -892,25 +893,25 @@ if game.GameId == 3808081382 then --Tsbite
 	print(PLR.Character.HumanoidRootPart.RootJoint.C1.Rotation)
 
 	local function Trashcan()
-		
+
 		Trashcaning = not Trashcaning
-		
+
 		TrashcanButton.Frame.Frame.Visible = Trashcaning
-		
+
 		if not Trashcaning then return end
-		
+
 		local BaseC1 = PLR.Character.HumanoidRootPart.RootJoint.C1
-		
+
 		--PLR.Character.HumanoidRootPart.RootJoint.C1 += Vector3.new(0, -50 , 0)
-		
+
 		while Trashcaning do
-			
+
 			Cam.CameraSubject = TrashcanTarget.Character.Humanoid
-			
+
 			local Found
-			
+
 			task.wait()
-			
+
 			for i,v in workspace.Map.Trash:GetChildren() do
 
 				if Found then continue end
@@ -946,52 +947,52 @@ if game.GameId == 3808081382 then --Tsbite
 						PLR.Character:FindFirstChild("Communicate"):FireServer({
 							Goal = "LeftClick";
 						})
-						
+
 						IDK = true
 
 					end)
 
 					while not IDK do
-						
+
 						task.wait()
-						
+
 						PLR.Character.HumanoidRootPart.CFrame = v.Trashcan.CFrame + Vector3.new(0, 0, 2)
-						
+
 					end
-					
+
 					OnChildAdded:Disconnect()
-					
+
 					IDK = nil
-					
+
 					PLR.Character.ChildAdded:Connect(function(Child)
-						
+
 						if not Child:IsA("StringValue") then return end
 						if Child.Value ~= "Trashcan" then return end
-						
+
 						PLR.Character:FindFirstChild("Communicate"):FireServer({
 							Goal = "LeftClickRelease";
 						})
-						
+
 						task.wait(0.75)
-						
+
 						IDK = true
-						
+
 					end)
 
 					task.delay(2, function()
-						
+
 						if not IDK then
-							
+
 							IDK = true
-							
+
 						end
-						
+
 					end)
 
 					while not IDK do
-						
+
 						task.wait()
-						
+
 						PLR.Character.HumanoidRootPart.CFrame = CFrame.lookAt((TrashcanTarget.Character.HumanoidRootPart.Position + (TrashcanTarget.Character.HumanoidRootPart.AssemblyLinearVelocity * 0.5)) + Vector3.new(0, 0, 10), TrashcanTarget.Character.HumanoidRootPart.Position)
 
 					end
@@ -999,12 +1000,12 @@ if game.GameId == 3808081382 then --Tsbite
 				end
 
 			end
-			
+
 		end
-		
+
 		PLR.Character.HumanoidRootPart.RootJoint.C1 = BaseC1
 		Cam.CameraSubject = PLR.Character.Humanoid
-		
+
 	end
 
 	TrashcanButton.MouseButton1Down:Connect(Trashcan)
@@ -1064,124 +1065,124 @@ elseif game.GameId == 7828766934 then --Anime girl thingie
 	StealFrame.NameLabel.Text = "Steal"
 	StealFrame.LayoutOrder = 1
 	StealFrame.Parent = Options
-	
+
 	for i,v in workspace.PLOTS:GetChildren() do
-		
+
 		if not v:FindFirstChild("Owner") then continue end
-		
+
 		StealTarget = v.Name
-		
+
 	end
-	
+
 	local StealButton = NewButton("Enabled", StealFrame, "Steal selected plr", 1, true)
 	local StealTargetBox = NewBox("Enabled", StealFrame, "Steal target : " ..workspace.PLOTS[StealTarget].Owner.Value.DisplayName, 2)
 	local InstantStealButton = NewButton("Enabled", StealFrame, "Instant steal", 3)
 	local InfStealReachButton = NewButton("Enabled", StealFrame, "Inf steal reach", 4)
 	local StealNoClipButton = NewButton("Enabled", StealFrame, "Steal trough walls", 5)
-	
+
 	Tabs.Steal = {StealFrame}
-	
+
 	local function Steal()
-		
+
 		print(StealTarget)
-		
+
 		for i,v in workspace.PLOTS[StealTarget]:GetChildren() do
-			
+
 			print(v)
-			
+
 			if not v:IsA("Model") then continue end
-			
+
 			print("a")
-			
+
 			if not v:FindFirstChild("GrabPrompt") then continue end
-			
+
 			print("b")
-			
+
 			if InstantSteal then
-				
+
 				v.GrabPrompt.HoldDuration = 0
-				
+
 			end
-			
+
 			if InfStealReach then
-				
+
 				v.GrabPrompt.MaxActivationDistance = 99999999999
-				
+
 			end
-			
+
 			if StealNoClip then
-				
+
 				v.GrabPrompt.RequiresLineOfSight = nil
-				
+
 			end
-			
+
 		end
-		
+
 	end
-	
+
 	StealButton.MouseButton1Down:Connect(function()
-		
+
 		Steal()
-		
+
 	end)
-	
+
 	StealTargetBox.FocusLost:Connect(function()
-		
+
 		Focused = nil
-		
+
 		for i,v in workspace.PLOTS:GetChildren() do
-			
+
 			if not v:FindFirstChild("Owner") then continue end
-			
+
 			if string.find(v.Owner.Value.DisplayName, StealTargetBox.Text) then
-				
+
 				StealTarget = v.Name
-				
+
 			end
-			
+
 		end
-		
+
 	end)
-	
+
 	InstantStealButton.MouseButton1Down:Connect(function()
-		
+
 		InstantSteal = not InstantSteal
 		InstantStealButton.Frame.Frame.Visible = InstantSteal
-		
+
 	end)
-	
+
 	InfStealReachButton.MouseButton1Down:Connect(function()
 
 		InfStealReach = not InfStealReach
 		InfStealReachButton.Frame.Frame.Visible = InfStealReach
-		
+
 	end)
-	
+
 	StealNoClipButton.MouseButton1Down:Connect(function()
 
 		StealNoClip = not StealNoClip
 		StealNoClipButton.Frame.Frame.Visible = StealNoClip
 
 	end)
-	
+
 	InstantStealButton.Frame.Frame.Visible = InstantSteal
 	InfStealReachButton.Frame.Frame.Visible = InfStealReach
 	StealNoClipButton.Frame.Frame.Visible = StealNoClip
-	
+
 	StealTargetBox.Focused:Connect(function()
-		
+
 		Focused = true
-		
+
 	end)
-	
+
 	game["Run Service"].RenderStepped:Connect(function()
-		
+
 		if Focused then return end
-		
+
 		StealTargetBox.Text = "Steal target : " ..workspace.PLOTS[StealTarget].Owner.Value.DisplayName
-		
+
 	end)
-	
+
 end
 
 -- Home
@@ -1687,9 +1688,9 @@ CustomCursorButton.MouseButton1Down:Connect(function()
 end)
 
 ForceResetButton.MouseButton1Down:Connect(function()
-	
+
 	PLR:LoadCharacter()
-	
+
 end)
 
 Loaded += 1
@@ -1702,6 +1703,9 @@ TWL.Completed:Wait()
 
 --Fly
 
+FlyPart.Transparency = 1
+FlyPart.Size = Vector3.new(10, 1, 10)
+
 local function FlyActivate()
 
 	FlyEnabled = not FlyEnabled
@@ -1711,6 +1715,8 @@ local function FlyActivate()
 
 		local FlyCFrame = Char.HumanoidRootPart.CFrame
 
+		FlyPart.Parent = workspace
+
 		while FlyEnabled do
 
 			task.wait()
@@ -1718,34 +1724,7 @@ local function FlyActivate()
 			if not Char then continue end
 			if not Char:FindFirstChild("HumanoidRootPart") then continue end
 
-			if NoclipEnabled then
-
-				for i,v in Char:GetDescendants() do
-
-					if v:IsA("BasePart") then
-
-						if v.CanCollide then
-
-							v.CanCollide = false
-							table.insert(OldCollides, v)
-
-						end
-
-					end
-
-				end
-
-			else
-
-				for i,v in OldCollides do
-
-					v.CanCollide = true
-
-				end
-
-				table.clear(OldCollides)
-
-			end
+			FlyPart.Position = PLR.Character.HumanoidRootPart.Position - Vector3.new(0, 5, 0)
 
 			local Inps = {}
 			local KKInps = UIS:GetKeysPressed()
@@ -1794,6 +1773,8 @@ local function FlyActivate()
 		end
 
 		table.clear(OldCollides)
+
+		FlyPart:Remove()
 
 	end
 end
@@ -2314,7 +2295,7 @@ AdvancedFovButton.MouseButton1Down:Connect(function()
 end)
 
 FovRainbowButton.MouseButton1Down:Connect(function()
-	
+
 	FovRainbowEnabled = not FovRainbowEnabled
 	FovRainbowButton.Frame.Frame.Visible = FovRainbowEnabled
 
@@ -2359,25 +2340,25 @@ FovRainbowButton.MouseButton1Down:Connect(function()
 	else
 
 		FovFrameBorder.Color = Color3.new(0, 0, 0)
-		
+
 	end
-	
+
 end)
 
 -- Aimbot
 
 if not Char:FindFirstChild("Head") then
-	
+
 	Extra = (Cam.CFrame.Position - PLR.Character.HumanoidRootPart.Position).Magnitude
-	
+
 else
-	
+
 	Extra = (Cam.CFrame.Position - PLR.Character.Head.Position).Magnitude
-	
+
 end
 
 function CenterCamOnTarget(Target)
-	
+
 	if not Target.Character then return end
 	if not Target.Character:FindFirstChild("Humanoid") then return end
 	if not Char then return end
@@ -2385,17 +2366,17 @@ function CenterCamOnTarget(Target)
 
 	local NewCFrame
 	local TPart
-	
+
 	if Target.Character:FindFirstChild("Head") then
-		
+
 		TPart = Target.Character.Head
-		
+
 	elseif Target.Character:FindFirstChild("HumanoidRootPart") then
-		
+
 		TPart = Target.Character.HumanoidRootPart
-		
+
 	end
-	
+
 	if not TPart then return end
 
 	if KOCheck then
@@ -2433,16 +2414,16 @@ function CenterCamOnTarget(Target)
 		NewCFrame = CFrame.new(Cam.CFrame.Position, TPart.Position)
 
 	end			
-	
+
 	if AimbotSmoothness > 0 then
-		
+
 		local TWA = TW:Create(Cam, TweenInfo.new(AimbotSmoothness), {["CFrame"] = NewCFrame})
 		local Start = tick()
-			
+
 		while tick() - Start < AimbotSmoothness do
-				
+
 			task.wait()
-			
+
 			if Cam.CameraType == Enum.CameraType.Custom then
 
 				if Target.Character:FindFirstChild("Head") then
@@ -2472,24 +2453,24 @@ function CenterCamOnTarget(Target)
 				NewCFrame = CFrame.new(Cam.CFrame.Position, TPart.Position)
 
 			end	
-			
+
 			TWA = TW:Create(Cam, TweenInfo.new(AimbotSmoothness - (tick() - Start)), {["CFrame"] = NewCFrame})
 			TWA:Play()
-				
+
 		end
-		
+
 		Cam.CFrame = NewCFrame
-		
+
 	else
-		
+
 		Cam.CFrame = NewCFrame
-		
+
 	end
-	
+
 	repeat task.wait() UIS.MouseBehavior = Enum.MouseBehavior.LockCenter until UIS:GetMouseLocation().X == Cam.ViewportSize.X / 2 and UIS:GetMouseLocation().Y == Cam.ViewportSize.Y / 2
-	
+
 	UIS.MouseBehavior = Enum.MouseBehavior.Default
-	
+
 end
 
 local function AimbotEnable()
@@ -2580,17 +2561,17 @@ AimbotKeybindButton.MouseButton1Down:Connect(function()
 end)
 
 AimbotSmoothnessBox.FocusLost:Connect(function(EP)
-	
+
 	if not EP then return end
 	if not tonumber(AimbotSmoothnessBox.Text) then AimbotSmoothnessBox.Text = "Smoothness = " ..AimbotSmoothness return end
-	
+
 	AimbotSmoothness = tonumber(AimbotSmoothnessBox.Text)
 	AimbotSmoothnessBox.Text = "Smoothness = " ..AimbotSmoothness
-	
+
 end)
 
 function TriggerbotEnable()
-	
+
 	TriggerbotEnabled = not TriggerbotEnabled
 	TriggerbotButton.Frame.Frame.Visible = TriggerbotEnabled
 	AimbotEnabledButton.Visible = TriggerbotEnabled
@@ -2601,19 +2582,19 @@ function TriggerbotEnable()
 		AimbotEnable()
 
 		local M1 = nil
-		
+
 		UIS.InputBegan:Connect(function(Inp, GPE)
-			
+
 			if GPE then return end
-			
+
 			if Inp.UserInputType == Enum.UserInputType.MouseButton1 then
-				
+
 				M1 = true
-				
+
 			end
-			
+
 		end)
-		
+
 		UIS.InputEnded:Connect(function(Inp, GPE)
 
 			if Inp.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -2629,12 +2610,12 @@ function TriggerbotEnable()
 			task.wait()
 
 			local Target = FindPlr()
-			
-			
+
+
 			if Target and TriggerbotMode == "OnM1" and M1 then
-				
+
 				CenterCamOnTarget(Target)
-				
+
 			end
 
 			if not CLockFovEnabled then continue end
@@ -2647,24 +2628,24 @@ function TriggerbotEnable()
 			end
 
 		end
-		
+
 		M1 = nil
 
 	end
-	
+
 end
 
 TriggerbotButton.MouseButton1Down:Connect(TriggerbotEnable)
 
 TriggerbotModeButton.MouseButton1Down:Connect(function()
-	
+
 	local Num = table.find(TriggerbotModes, TriggerbotMode) + 1
-	
+
 	if Num > #TriggerbotModes then Num = 1 end
-	
+
 	TriggerbotMode = TriggerbotModes[Num]
 	TriggerbotModeButton.Text = "Mode = " ..TriggerbotMode
-	
+
 end)
 
 TriggerbotKeybindButton.MouseButton1Down:Connect(function()
@@ -2867,7 +2848,7 @@ function Fling()
 		repeat
 
 			pcall(function()
-				
+
 				RootPart.CFrame = OldPos * CFrame.new(0, .5, 0)
 				Char:SetPrimaryPartCFrame(OldPos * CFrame.new(0, .5, 0))
 				Char.Humanoid:ChangeState("GettingUp")
@@ -2877,7 +2858,7 @@ function Fling()
 					end
 				end)
 				task.wait()
-				
+
 			end)
 
 		until (RootPart.Position - OldPos.p).Magnitude < 25 or not Char.PrimaryPart
@@ -3092,10 +3073,10 @@ game:GetService("Players").PlayerRemoving:Connect(function(v)
 end)
 
 FlingToolButton.MouseButton1Down:Connect(function()
-	
+
 	local Tool = FlingTool:Clone()
 	local Highlight = Instance.new("Highlight")
-	
+
 	Highlight.FillTransparency = 0.5
 	Highlight.FillColor = Color3.new(1, 0.580392, 0.0666667)	
 	Highlight.OutlineColor = Color3.new(1, 0.580392, 0.0666667)	
@@ -3121,11 +3102,11 @@ FlingToolButton.MouseButton1Down:Connect(function()
 			Fling()
 
 		end
-		
+
 	end)
-	
+
 	local function FindGuyIg()
-		
+
 		local Found
 
 		if Tool.Parent == PLR.Character then
@@ -3151,21 +3132,21 @@ FlingToolButton.MouseButton1Down:Connect(function()
 		end
 
 		return Found
-		
+
 	end
-	
+
 	while Tool.Parent do
-		
+
 		task.wait()
-		
+
 		local Found = FindGuyIg()
-		
+
 		if not Found then
-			
+
 			Highlight:Remove()
-			
+
 		end
-		
+
 	end
 
 end)
@@ -4126,9 +4107,9 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 		Fling()
 
 	elseif Inp.KeyCode == TriggerbotKeybind and TriggerbotKeybindButton.Visible then
-		
+
 		TriggerbotEnable()
-		
+
 	end
 
 end)
