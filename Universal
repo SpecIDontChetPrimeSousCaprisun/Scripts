@@ -68,7 +68,6 @@ OldCollides = {}
 FlyEnabled = false
 FlyKey = Enum.KeyCode.F
 FlySpeed = 0
-FlyPart = Instance.new("Part")
 NoclipEnabled = false
 local OldWS
 DefaultGrav = workspace.Gravity
@@ -146,6 +145,11 @@ NoEffectESPColor = Color3.new(1,1,1)
 ESPGui.ResetOnSpawn = nil
 ESPGui.Name = "EspGui"
 ESPGui.IgnoreGuiInset = true
+
+DeleteTool = Instance.new("Tool")
+DeleteTool.RequiresHandle = false
+DeleteTool.Name = "DeleteTool"
+FlingTool.ToolTip = "Delete things ig"
 
 ESPOutlineTypes = {[1] = "None", [2] = "Highlight", [3] = "Box"}
 
@@ -1349,6 +1353,7 @@ local RTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = K", 2, true)
 local TTEnabledButton = NewButton("Enabled", ChatFrame, "Trash Talk", 3, true)
 local TTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = J", 4, true)
 ChatArtButton = NewButton("Art", ChatFrame, "Chat Art", 5, true)
+DeleteToolButton = NewButton("Tool", ChatFrame, "Give delete tool", 5, true)
 
 Tabs.Other = {
 	ESPFrame,
@@ -1703,9 +1708,6 @@ TWL.Completed:Wait()
 
 --Fly
 
-FlyPart.Transparency = 1
-FlyPart.Size = Vector3.new(10, 1, 10)
-
 local function FlyActivate()
 
 	FlyEnabled = not FlyEnabled
@@ -1715,16 +1717,12 @@ local function FlyActivate()
 
 		local FlyCFrame = Char.HumanoidRootPart.CFrame
 
-		FlyPart.Parent = workspace
-
 		while FlyEnabled do
 
 			task.wait()
 
 			if not Char then continue end
 			if not Char:FindFirstChild("HumanoidRootPart") then continue end
-
-			FlyPart.Position = PLR.Character.HumanoidRootPart.Position - Vector3.new(0, 5, 0)
 
 			local Inps = {}
 			local KKInps = UIS:GetKeysPressed()
@@ -1773,8 +1771,6 @@ local function FlyActivate()
 		end
 
 		table.clear(OldCollides)
-
-		FlyPart:Remove()
 
 	end
 end
@@ -2357,117 +2353,44 @@ else
 
 end
 
-function CenterCamOnTarget(Target)
+local function CenterCamOnTarget(Target)
 
-	if not Target.Character then return end
+	if not Target or not Target.Character then return end
 	if not Target.Character:FindFirstChild("Humanoid") then return end
-	if not Char then return end
-	if not Char:FindFirstChild("Head") then return end
+	if not Char or not Char:FindFirstChild("Head") then return end
 
-	local NewCFrame
-	local TPart
+	local Humanoid = Target.Character:FindFirstChild("Humanoid")
+	if KOCheck and (not Humanoid or Humanoid.Health <= 0) then return end
 
-	if Target.Character:FindFirstChild("Head") then
-
-		TPart = Target.Character.Head
-
-	elseif Target.Character:FindFirstChild("HumanoidRootPart") then
-
-		TPart = Target.Character.HumanoidRootPart
-
-	end
-
+	local TPart = Target.Character:FindFirstChild("Head") or Target.Character:FindFirstChild("HumanoidRootPart")
 	if not TPart then return end
 
-	if KOCheck then
+	local Extra = Extra or 0
 
-		if Target.Character.Humanoid.Health <= 0 then AimbotEnabled = nil return end
+	local fromPos = Char:FindFirstChild("Head") and Char.Head.Position or Char.HumanoidRootPart.Position
+	local goalCFrame = CFrame.lookAt(fromPos, TPart.Position)
 
-	end
-
-	if Cam.CameraType == Enum.CameraType.Custom then
-
-		if Target.Character:FindFirstChild("Head") then
-
-			local A = Char.Head.Position
-			local B = TPart.Position
-			local Offset = Vector3.new(0,0,0)
-
-			--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
-
-			NewCFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
-
-		else
-
-			local A = Char.HumanoidRootPart.Position
-			local B = TPart.Position
-			local Offset = Vector3.new(0,0,0)
-
-			--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
-
-			NewCFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
-
-		end
-
-	elseif Cam.CameraType == Enum.CameraType.Scriptable then
-
-		NewCFrame = CFrame.new(Cam.CFrame.Position, TPart.Position)
-
-	end			
-
-	if AimbotSmoothness > 0 then
-
-		local TWA = TW:Create(Cam, TweenInfo.new(AimbotSmoothness), {["CFrame"] = NewCFrame})
-		local Start = tick()
-
-		while tick() - Start < AimbotSmoothness do
-
-			task.wait()
-
-			if Cam.CameraType == Enum.CameraType.Custom then
-
-				if Target.Character:FindFirstChild("Head") then
-
-					local A = Char.Head.Position
-					local B = TPart.Position
-					local Offset = Vector3.new(0,0,0)
-
-					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
-
-					NewCFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
-
-				else
-
-					local A = Char.HumanoidRootPart.Position
-					local B = TPart.Position
-					local Offset = Vector3.new(0,0,0)
-
-					--Cam.CFrame = CFrame.lookAt(Char.Head.Position, Target.Character.HumanoidRootPart.Position)
-
-					NewCFrame = CFrame.new(B + ((A + Offset) - B).Unit * ((A - B).Magnitude + Extra), B)
-
-				end
-
-			elseif Cam.CameraType == Enum.CameraType.Scriptable then
-
-				NewCFrame = CFrame.new(Cam.CFrame.Position, TPart.Position)
-
-			end	
-
-			TWA = TW:Create(Cam, TweenInfo.new(AimbotSmoothness - (tick() - Start)), {["CFrame"] = NewCFrame})
-			TWA:Play()
-
-		end
-
-		Cam.CFrame = NewCFrame
-
+	if AimbotSmoothness and AimbotSmoothness > 0 then
+		
+		local tween = TW:Create(
+			Cam,
+			TweenInfo.new(AimbotSmoothness, Enum.EasingStyle.Linear, Enum.EasingDirection.Out),
+			{CFrame = goalCFrame}
+		)
+		tween:Play()
+		tween.Completed:Wait()
+		
 	else
-
-		Cam.CFrame = NewCFrame
-
+		
+		Cam.CFrame = goalCFrame
+		
 	end
 
-	repeat task.wait() UIS.MouseBehavior = Enum.MouseBehavior.LockCenter until UIS:GetMouseLocation().X == Cam.ViewportSize.X / 2 and UIS:GetMouseLocation().Y == Cam.ViewportSize.Y / 2
+	repeat
+		task.wait()
+		UIS.MouseBehavior = Enum.MouseBehavior.LockCenter
+	until math.abs(UIS:GetMouseLocation().X - Cam.ViewportSize.X/2) < 1
+		and math.abs(UIS:GetMouseLocation().Y - Cam.ViewportSize.Y/2) < 1
 
 	UIS.MouseBehavior = Enum.MouseBehavior.Default
 
@@ -2500,15 +2423,13 @@ local function AimbotEnable()
 
 		end)
 
-		game["Run Service"]:BindToRenderStep("ABATACAM", 999999999999999, function()
+		game["Run Service"]:BindToRenderStep("AutoAimStep", Enum.RenderPriority.Camera.Value + 100, function(dt)
 
 			task.wait()
 
-			CenterCamOnTarget(Target)
+			if not Target then AimbotEnabled = nil return end
 
-		end)
-
-		local AimbotConnection = game["Run Service"].PostSimulation:Connect(function()
+			print(Target)
 
 			CenterCamOnTarget(Target)
 
@@ -2516,8 +2437,7 @@ local function AimbotEnable()
 
 		repeat wait() until not AimbotEnabled
 
-		game["Run Service"]:UnbindFromRenderStep("ABATACAM")
-		AimbotConnection:Disconnect()
+		game["Run Service"]:UnbindFromRenderStep("AutoAimStep")
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 		Cam.CameraType = Enum.CameraType.Custom
 		Cam.CameraSubject = Char.Humanoid
@@ -3151,6 +3071,49 @@ FlingToolButton.MouseButton1Down:Connect(function()
 
 end)
 
+DeleteToolButton.MouseButton1Down:Connect(function()
+
+	local Tool = DeleteTool:Clone()
+	local Highlight = Instance.new("Highlight")
+
+	Highlight.FillTransparency = 0.5
+	Highlight.FillColor = Color3.new(1, 0.580392, 0.0666667)	
+	Highlight.OutlineColor = Color3.new(1, 0.580392, 0.0666667)	
+	Tool.Parent = PLR.Backpack
+
+	Tool.Activated:Connect(function()
+
+		local MP = UIS:GetMouseLocation()
+		local MR = Cam:ViewportPointToRay(MP.X, MP.Y)
+		local Result = workspace:Raycast(MR.Origin, MR.Direction * 100000)
+
+		if Result then
+			
+			print(Result.Instance.Parent)
+			
+			Result.Instance.Parent = nil
+			Result.Instance:Destroy()
+			
+		end
+		
+	end)
+
+	while task.wait() do
+		
+		local MP = UIS:GetMouseLocation()
+		local MR = Cam:ViewportPointToRay(MP.X, MP.Y)
+		local Result = workspace:Raycast(MR.Origin, MR.Direction * 100000)
+
+		if Result then
+
+			Highlight.Parent = Result.Instance
+
+		end
+		
+	end
+
+end)
+
 -- Other
 
 --ESP
@@ -3207,7 +3170,7 @@ local function ESPEnable()
 
 				local UI = Instance.new("TextLabel")
 
-				while ESPEnabled and v.Parent == game.Players do
+				while ESPEnabled and v.Parent == game:GetService("Players") do
 
 					task.wait()
 
