@@ -3236,11 +3236,11 @@ local function ESPEnable()
 						local UdimAndNotVectorThingie = UDim2.fromOffset(PosDown.X, PosDown.Y)
 						local viewportSize = Cam.ViewportSize
 
-						Line.Position = UDim2.new(0.5,0,1,0)
-						Line.Position = UDim2.fromOffset(
-							Line.Position.X.Scale * viewportSize.X,
-							Line.Position.Y.Scale * viewportSize.Y
-						)
+						Line.Position = UDim2.fromOffset(UIS:GetMouseLocation().X, UIS:GetMouseLocation().Y):Lerp(UDim2.fromOffset(PosDown.X, PosDown.Y), 0.5)
+						--Line.Position = UDim2.fromOffset(
+						--	Line.Position.X.Scale * viewportSize.X,
+						--	Line.Position.Y.Scale * viewportSize.Y
+						--)
 						Line.Size = UDim2.new(0, 0, 0, (Vector2.new(Line.Position.X.Offset,Line.Position.Y.Offset) - PosDown).Magnitude * 2)
 
 						local Diff = UdimAndNotVectorThingie - Line.Position
@@ -3250,7 +3250,7 @@ local function ESPEnable()
 						if not DownOnScreen then Line.Visible = nil end
 						if not IsOnScreen then Box.Visible = nil end
 
-						local Size = UDim2.new(0, (PosLeft - PosRight).Magnitude, 0, (PosUp - PosDown).Magnitude)
+						local Size = UDim2.new(0, (PosLeft - PosRight).Magnitude, 0, (PosUp - PosDown).Magnitude * 2)
 
 						if Target == v and ESPColorEnabled then
 
@@ -4026,8 +4026,7 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 		end
 
 	end
-
-	if GPE then return end
+	
 	if not KeybindsActive and not table.find(KeybindsWhitelist, string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), #tostring(Inp.KeyCode))) then return end
 
 	if Inp.KeyCode == FlyKey and FlyKeybindButton.Visible then
