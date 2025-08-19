@@ -2423,9 +2423,7 @@ local function AimbotEnable()
 
 		end)
 
-		game["Run Service"]:BindToRenderStep("AutoAimStep", Enum.RenderPriority.Camera.Value + 100, function(dt)
-
-			task.wait()
+		game["Run Service"]:BindToRenderStep("AutoAimStep", Enum.RenderPriority.Camera.Value + 101, function(dt)
 
 			if not Target then AimbotEnabled = nil return end
 
@@ -2435,9 +2433,20 @@ local function AimbotEnable()
 
 		end)
 
+		local Connection = game["Run Service"].PostSimulation:Connect(function()
+
+			if not Target then AimbotEnabled = nil return end
+
+			print(Target)
+
+			CenterCamOnTarget(Target)
+			
+		end)
+
 		repeat wait() until not AimbotEnabled
 
 		game["Run Service"]:UnbindFromRenderStep("AutoAimStep")
+		Connection:Disconnect()
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
 		Cam.CameraType = Enum.CameraType.Custom
 		Cam.CameraSubject = Char.Humanoid
