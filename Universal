@@ -2360,7 +2360,7 @@ local function CenterCamOnTarget(Target)
 	if not Char or not Char:FindFirstChild("Head") then return end
 
 	local Humanoid = Target.Character:FindFirstChild("Humanoid")
-	if KOCheck and (not Humanoid or Humanoid.Health <= 0) then return end
+	if KOCheck and (not Humanoid or Humanoid.Health <= 0) then AimbotEnabled = nil return end
 
 	local TPart = Target.Character:FindFirstChild("Head") or Target.Character:FindFirstChild("HumanoidRootPart")
 	if not TPart then return end
@@ -2371,7 +2371,7 @@ local function CenterCamOnTarget(Target)
 	local goalCFrame = CFrame.lookAt(fromPos, TPart.Position)
 
 	if AimbotSmoothness and AimbotSmoothness > 0 then
-		
+
 		local tween = TW:Create(
 			Cam,
 			TweenInfo.new(AimbotSmoothness, Enum.EasingStyle.Linear, Enum.EasingDirection.Out),
@@ -2379,11 +2379,11 @@ local function CenterCamOnTarget(Target)
 		)
 		tween:Play()
 		tween.Completed:Wait()
-		
+
 	else
-		
+
 		Cam.CFrame = goalCFrame
-		
+
 	end
 
 	repeat
@@ -2440,7 +2440,7 @@ local function AimbotEnable()
 			print(Target)
 
 			CenterCamOnTarget(Target)
-			
+
 		end)
 
 		repeat wait() until not AimbotEnabled
@@ -3097,18 +3097,18 @@ DeleteToolButton.MouseButton1Down:Connect(function()
 		local Result = workspace:Raycast(MR.Origin, MR.Direction * 100000)
 
 		if Result then
-			
+
 			print(Result.Instance.Parent)
-			
+
 			Result.Instance.Parent = nil
 			Result.Instance:Destroy()
-			
+
 		end
-		
+
 	end)
 
 	while task.wait() do
-		
+
 		local MP = UIS:GetMouseLocation()
 		local MR = Cam:ViewportPointToRay(MP.X, MP.Y)
 		local Result = workspace:Raycast(MR.Origin, MR.Direction * 100000)
@@ -3118,7 +3118,7 @@ DeleteToolButton.MouseButton1Down:Connect(function()
 			Highlight.Parent = Result.Instance
 
 		end
-		
+
 	end
 
 end)
@@ -4026,7 +4026,7 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 		end
 
 	end
-	
+
 	if not KeybindsActive and not table.find(KeybindsWhitelist, string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), #tostring(Inp.KeyCode))) then return end
 
 	if Inp.KeyCode == FlyKey and FlyKeybindButton.Visible then
