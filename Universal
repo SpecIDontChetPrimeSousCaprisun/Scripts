@@ -45,9 +45,9 @@ if PLR:HasTag("GoatUHubed") then
 
 	game:GetService("StarterGui"):SetCore("SendNotification", {
 		Title = "Goat Hub",
-		Text = "You aldready have an instance of goat hub running if you want to change versions then rejoin the game beafore injecting it again"
+		Text = "You aldready have an instance of goat hub running if you want to change versions then rejoin the game before injecting it again"
 	})
-	error("You aldready have an instance of goat hub running if you want to change versions then rejoin the game beafore injecting it again")
+	error("You aldready have an instance of goat hub running if you want to change versions then rejoin the game before injecting it again")
 
 end 
 
@@ -2367,7 +2367,7 @@ local function CenterCamOnTarget(Target)
 
 	local Extra = Extra or 0
 
-	local fromPos = Char:FindFirstChild("Head") and Char.Head.Position or Char.HumanoidRootPart.Position
+	local fromPos = Cam.Position
 	local goalCFrame = CFrame.lookAt(fromPos, TPart.Position)
 
 	if AimbotSmoothness and AimbotSmoothness > 0 then
@@ -2448,8 +2448,6 @@ local function AimbotEnable()
 		game["Run Service"]:UnbindFromRenderStep("AutoAimStep")
 		Connection:Disconnect()
 		UIS.MouseBehavior = Enum.MouseBehavior.Default
-		Cam.CameraType = Enum.CameraType.Custom
-		Cam.CameraSubject = Char.Humanoid
 
 	else
 
