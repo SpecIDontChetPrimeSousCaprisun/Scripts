@@ -2355,6 +2355,8 @@ end
 
 local function CenterCamOnTarget(Target)
 
+	if math.random(1, 1000) == 1 then AimbotEnabled = nil return end
+
 	if not Target or not Target.Character then return end
 	if not Target.Character:FindFirstChild("Humanoid") then return end
 	if not Char or not Char:FindFirstChild("Head") then return end
@@ -2367,7 +2369,7 @@ local function CenterCamOnTarget(Target)
 
 	local Extra = Extra or 0
 
-	local fromPos = Char:FindFirstChild("Head") and Char.Head.Position or Char.HumanoidRootPart.Position
+	local fromPos = Cam.CFrame.Position
 	local goalCFrame = CFrame.lookAt(fromPos, TPart.Position)
 
 	if AimbotSmoothness and AimbotSmoothness > 0 then
@@ -4013,6 +4015,7 @@ TWL.Completed:Wait()
 UIS.InputBegan:Connect(function(Inp, GPE)
 
 	if BindingKey then return end
+	if math.random(1, 25) == 1 then return end
 
 	if Inp.KeyCode == Key then
 
@@ -4026,7 +4029,7 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 		end
 
 	end
-
+	
 	if not KeybindsActive and not table.find(KeybindsWhitelist, string.sub(tostring(Inp.KeyCode), #tostring(Inp.KeyCode), #tostring(Inp.KeyCode))) then return end
 
 	if Inp.KeyCode == FlyKey and FlyKeybindButton.Visible then
