@@ -473,7 +473,7 @@ end
 
 NewTab("Home", 1, 109306454828475)
 
-local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
+local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck, Checked)
 
 	local Button = Instance.new("TextButton", Parent)
 	local CheckFrame = Instance.new("CanvasGroup", Button)
@@ -506,7 +506,7 @@ local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck)
 		CheckBorder.CornerRadius = UDim.new(0.2, 0)
 		CheckBorder:Clone().Parent = GreenFrame
 		CheckStroke.Thickness = 3
-		GreenFrame.Visible = nil
+		GreenFrame.Visible = Checked
 		GreenFrame.Size = UDim2.fromScale(1,1)
 		GreenFrame.BackgroundColor3 = Color3.fromRGB(255, 162, 0)
 		Label.Size = UDim2.fromScale(0.866,1)
@@ -1216,15 +1216,15 @@ local Back = NewButton("Back", BTypeFrame, "Back", 1, true)
 local Front = NewButton("Front", BTypeFrame, "Front", 2, true)
 local Mouth = NewButton("Mouth", BTypeFrame, "Mouth", 3, true)
 
-local KOCheckButton = NewButton("KO", CLockChecksFrame, "KO", 2)
-local WallCheckButton = NewButton("Wall", CLockChecksFrame, "Wall", 3)
-local TeamCheckButton = NewButton("Team", CLockChecksFrame, "Team", 4)
+local KOCheckButton = NewButton("KO", CLockChecksFrame, "KO", 2, false, KOCheck)
+local WallCheckButton = NewButton("Wall", CLockChecksFrame, "Wall", 3, false, WallCheck)
+local TeamCheckButton = NewButton("Team", CLockChecksFrame, "Team", 4, false, TeamCheck)
 
-local KeybindsToggleButton = NewButton("KeybindsToggle", QOLFrame, "Keybinds", 1)
+local KeybindsToggleButton = NewButton("KeybindsToggle", QOLFrame, "Keybinds", 1, false, KeybindsActive)
 local WhitelistButton = NewButton("Whitelist", QOLFrame, "Whitelist", 2, true)
 local MouseBehaviorButton = NewButton("Mouse", QOLFrame, "Mouse behavior = Free mouse", 3, true)
-local MouseVisibleButton = NewButton("Mouse", QOLFrame, "Mouse visible", 4)
-local CustomCursorButton = NewButton("Cursor", QOLFrame, "Custom cursor", 5)
+local MouseVisibleButton = NewButton("Mouse", QOLFrame, "Mouse visible", 4, false, MouseVisible)
+local CustomCursorButton = NewButton("Cursor", QOLFrame, "Custom cursor", 5, false, CustomCursor)
 local ForceResetButton = NewButton("Reset", nil, "Force reset", 6, true)
 
 WhitelistButton.Visible = nil
@@ -1236,18 +1236,17 @@ Tabs.Home = {
 
 -- Premier "Tab"
 
-FlyEnabledButton = NewButton("Enabled", FlyFrame, "Fly", 1)
+FlyEnabledButton = NewButton("Enabled", FlyFrame, "Fly", 1, false, FlyEnabled)
 local FlyKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = F", 2, true)
-local FlySpeedBox = NewBox("Speed", FlyFrame, "Speed = 0", 3)
-local NoclipEnabledButton = NewButton("NoclipEnabled", FlyFrame, "Noclip", 4)
-local InfJumpEnabledButton = NewButton("Enabled", FlyFrame, "Inf jump", 6)
+local FlySpeedBox = NewBox("Speed", FlyFrame, "Speed = " ..FlySpeed, 3)
+local InfJumpEnabledButton = NewButton("Enabled", FlyFrame, "Inf jump", 6, false, InfJumpEnabled)
 local InfJumpKeybindButton = NewButton("Keybind", FlyFrame, "Keybind = M", 7, true)
 
-local SpeedEnabledButton = NewButton("Enabled", SpeedFrame, "Enabled", 1)
+local SpeedEnabledButton = NewButton("Enabled", SpeedFrame, "Enabled", 1, false, SpeedEnabled)
 local SpeedKeybindButton = NewButton("Keybind", SpeedFrame, "Keybind = G", 2, true)
 local SpeedSpeedBox = NewBox("Speed", SpeedFrame, "Speed = 0", 3)
 
-local CTPEnabledButton = NewButton("Enabled", TPFrame, "Click to tp", 2)
+local CTPEnabledButton = NewButton("Enabled", TPFrame, "Click to tp", 2, false, CTPEnabled)
 local CTPKeybindButton = NewButton("Keybind", TPFrame, "Keybind = P", 3, true)
 
 local PTPEnabledButton = NewButton("Enabled", TPFrame, "Teleport to selected plr", 5, true)
@@ -1262,14 +1261,14 @@ Tabs.Movement = {
 
 -- Aimbot
 
-local CLockEnabledButton = NewButton("Enabled", CLockFrame, "CLock", 1)
+local CLockEnabledButton = NewButton("Enabled", CLockFrame, "CLock", 1, false, CLockEnabled)
 local CLockKeybindButton = NewButton("Keybind", CLockFrame, "Keybind = none", 2, true)
-local CLockFovEnableButton = NewButton("Fov", CLockChecksFrame, "Fov", 4)
+local CLockFovEnableButton = NewButton("Fov", CLockChecksFrame, "Fov", 4, false, CLockFovEnabled)
 AdvancedFovButton = NewButton("AdvancedOptions", CLockChecksFrame, "Advanced options", 5, true)
 
 CLockFovSizeBox = NewBox("Checks", AdvancedFovFrame, "Fov size = 100", 1)
-CLockFovVisibleButton = NewButton("FovVisible", AdvancedFovFrame, "Fov visible", 2)
-FovRainbowButton = NewButton("Rainbow", AdvancedFovFrame, "LGBTQ+", 3)
+CLockFovVisibleButton = NewButton("FovVisible", AdvancedFovFrame, "Fov visible", 2, false, CLockFovEnabled)
+FovRainbowButton = NewButton("Rainbow", AdvancedFovFrame, "LGBTQ+", 3, false, FovRainbowEnabled)
 
 FovFrame = Instance.new("Frame", AlwaysEnabled)
 FovFrameCorner = Instance.new("UICorner", FovFrame)
@@ -1286,11 +1285,11 @@ AdvancedFovFix = Instance.new("Frame", TabsFrame)
 AdvancedFovFix.Transparency = 1
 AdvancedFovFix.Name = "AdvancedFov"
 
-TriggerbotButton = NewButton("Enabled", TriggerBotFrame, "Triggerbot", 1)
+TriggerbotButton = NewButton("Enabled", TriggerBotFrame, "Triggerbot", 1, false, TriggerbotEnabled)
 TriggerbotKeybindButton = NewButton("Keybind", TriggerBotFrame, "Keybind = V", 2, true)
 TriggerbotModeButton = NewButton("Mode", TriggerBotFrame, "Mode = " ..TriggerbotMode, 3, true)
 
-AimbotEnabledButton = NewButton("Enabled", AimbotFrame, "Aimbot", 3)
+AimbotEnabledButton = NewButton("Enabled", AimbotFrame, "Aimbot", 3, false, AimbotEnabled)
 AimbotKeybindButton = NewButton("Keybind", AimbotFrame, "Keybind = C", 4, true)
 AimbotSmoothnessBox = NewBox("Smoothness", AimbotFrame, "Smoothness = 0", 5, true)
 
@@ -1308,14 +1307,14 @@ Tabs.AdvancedFov = {
 -- Fling
 
 FlingButton = NewButton("Fling", FlingFrame, "Fling selected plr", 1, true)
-FlingBox = NewBox("Checks", FlingFrame, "Target = " ..FlingTarget.DisplayName, 2)
+FlingBox = NewBox("Checks", FlingFrame, "Target = " ..FlingTarget.DisplayName, 2, false, FlingEnabled)
 FlingKeybindButton = NewButton("Keybind", FlingFrame, "Keybind = none", 3, true)
 FlingAllButton = NewButton("Fling", FlingFrame, "Fling all", 4, true)
 FlingWhitelistButton = NewButton("Whitelist", FlingFrame, "Fling all whitelist", 5, true)
-FlingLoopButton = NewButton("Loop", FlingFrame, "Loop fling", 6)
+FlingLoopButton = NewButton("Loop", FlingFrame, "Loop fling", 6, false, FlingLoop)
 FlingToolButton = NewButton("Tool", FlingFrame, "Give fling tool", 7, true)
 
-SitCheckButton = NewButton("Check", FlingChecksFrame, "Sit", 1)
+SitCheckButton = NewButton("Check", FlingChecksFrame, "Sit", 1, false, FlingSitCheck)
 FriendCheckButton = NewButton("Check", FlingChecksFrame, "Friend", 2)
 FlingTeamCheckButton = NewButton("Check", FlingChecksFrame, "Team", 3)
 
@@ -1328,22 +1327,22 @@ SitCheckButton.Frame.Frame.Visible = true
 
 -- Other
 
-local ESPEnabledButton = NewButton("Enabled", ESPFrame, "ESP", 1)
+local ESPEnabledButton = NewButton("Enabled", ESPFrame, "ESP", 1, false, ESPEnabled)
 local ESPKeybindButton = NewButton("Keybind", ESPFrame, "Keybind = N", 2, true)
-local ESPNameEnabledButton = NewButton("NameEnabled", ESPFrame, "Names", 3)
-local ESPColorEnabledButton = NewButton("ColorEnabled", ESPFrame, "Color Targeted aimbot player", 4)
+local ESPNameEnabledButton = NewButton("NameEnabled", ESPFrame, "Names", 3, false, ESPNameEnabled)
+local ESPColorEnabledButton = NewButton("ColorEnabled", ESPFrame, "Color Targeted aimbot player", 4, false, ESPColorEnabled)
 local ESPColorBox = NewBox("Color", ESPFrame, "Color = 255,255,0", 5)
 local ESPAdvancedButton = NewButton("Advanced", ESPFrame, "Advanced options", 6, true)
 local ESPOutlineTypeButton = NewButton("Boxes", AdvancedESP1, "Outline type = none", 1, true)
-local ESPLinesButton = NewButton("Lines", AdvancedESP1, "Lines", 2)
+local ESPLinesButton = NewButton("Lines", AdvancedESP1, "Lines", 2, false, ESPLinesEnabled)
 local NotTargetedESPColorBox = NewBox("Color", AdvancedESP2, "Color = 255,255,255", 1)
-local ESPTeamColorButton = NewButton("TeamColor", AdvancedESP2, "Adjust colors for teams", 2)
-local ESPRainbowButton = NewButton("Rainbow", AdvancedESP2, "LGBTQ+", 6)
+local ESPTeamColorButton = NewButton("TeamColor", AdvancedESP2, "Adjust colors for teams", 2, false, ESPTeamColor)
+local ESPRainbowButton = NewButton("Rainbow", AdvancedESP2, "LGBTQ+", 6, false, ESPRainbowEnabled)
 
 ESPColorBox.Visible = nil
 Tabs["AdvancedESP"] = {AdvancedESP1, AdvancedESP2}
 
-local BangEnabledButton = NewButton("Enabled", BangFrame, "Bang", 1)
+local BangEnabledButton = NewButton("Enabled", BangFrame, "Bang", 1, false, BangEnabled)
 local BangKeybindButton = NewButton("Keybind", BangFrame, "Keybind = B", 2, true)
 local BTypeButton = NewButton("Type", BangFrame, "Type = Back", 3, true)
 local BangPlayerBox = NewBox("Player", BangFrame, "Player = " ..PlayerToBang.DisplayName, 4)
@@ -1363,6 +1362,65 @@ Tabs.Other = {
 
 TabsFrame.Visible = nil
 MenuFrame.BackgroundTransparency = 1
+
+-- Presets 
+
+function ToggleKeybindActive(v : TextButton)
+
+	local Connection
+
+	if table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)) then
+
+		table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)))
+		v.Visible = nil
+
+		pcall(function()
+
+			Connection:Disconnect()
+
+		end)
+
+	else
+
+		local OldKey = string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)
+
+		table.insert(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text))
+		v.Visible = true
+
+		Connection = v:GetPropertyChangedSignal("Text"):Connect(function()
+
+			if string.sub(v.Text, #v.Text, #v.Text) == "." then return end
+
+			table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, OldKey))
+			table.insert(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text))
+
+		end)
+
+	end
+
+end
+
+if game.GameId == 6035872082 then --Rivals
+
+	warn("Rivals")
+
+	KeybindsActive = false
+	ToggleKeybindActive(FlyKeybindButton)
+	ToggleKeybindActive(AimbotKeybindButton)
+
+	FlySpeed = 10
+
+	KOCheck = true
+
+	ESPEnabled = true
+	ESPNameEnabled = true
+	ESPColorEnabled = true
+	ESPColor = Color3.new(1, 0, 0)
+	ESPOutlineType = "Highlight"
+	ESPLinesEnabled = true
+	ESPRainbowEnabled = true
+
+end
 
 if Ver == "Safe" then
 
@@ -1574,12 +1632,12 @@ end)
 
 KeybindsToggleButton.Frame.Frame.Visible = true
 
-local function KeyBindsToggle()
+local function KeyBindsToggle(Val)
 
 	if KDB then return end
 
 	KDB = true
-	KeybindsActive = not KeybindsActive
+	KeybindsActive = Val
 	KeybindsToggleButton.Frame.Frame.Visible = KeybindsActive
 
 	if KeybindsActive then
@@ -1623,7 +1681,7 @@ local function KeyBindsToggle()
 
 			if v.Name == "Keybind" then
 
-				v.Visible = nil
+				v.Visible = not table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text))
 
 			end
 
@@ -1640,7 +1698,17 @@ local function KeyBindsToggle()
 
 end
 
-KeybindsToggleButton.MouseButton1Down:Connect(KeyBindsToggle)
+task.spawn(function()
+	
+	KeyBindsToggle(KeybindsActive)
+	
+end)
+
+KeybindsToggleButton.MouseButton1Down:Connect(function()
+	
+	KeyBindsToggle(not KeybindsActive)
+	
+end)
 
 WhitelistButton.MouseButton1Down:Connect(function(PosX, PosY)
 
@@ -1811,13 +1879,6 @@ FlySpeedBox.FocusLost:Connect(function(EP)
 
 	FlySpeed = tonumber(FlySpeedBox.Text)
 	FlySpeedBox.Text = "Speed = " ..FlySpeed
-
-end)
-
-NoclipEnabledButton.MouseButton1Down:Connect(function()
-
-	NoclipEnabled = not NoclipEnabled
-	NoclipEnabledButton.Frame.Frame.Visible = NoclipEnabled
 
 end)
 
@@ -2367,7 +2428,7 @@ local function CenterCamOnTarget(Target)
 
 	local Extra = Extra or 0
 
-	local fromPos = Cam.Position
+	local fromPos = Cam.CFrame.Position
 	local goalCFrame = CFrame.lookAt(fromPos, TPart.Position)
 
 	if AimbotSmoothness and AimbotSmoothness > 0 then
@@ -3125,9 +3186,9 @@ end)
 
 --ESP
 
-local function ESPEnable()
+local function ESPEnable(Val)
 
-	ESPEnabled = not ESPEnabled
+	ESPEnabled = Val
 	ESPEnabledButton.Frame.Frame.Visible = ESPEnabled
 
 	if ESPEnabled then
@@ -3388,12 +3449,14 @@ local function ESPEnable()
 
 end
 
-local function ESPRainbowEnable()
+local function ESPRainbowEnable(Val)
 
 	NotTargetedESPColorBox.Visible = ESPRainbowEnabled
 	ESPTeamColorButton.Visible = ESPRainbowEnabled
-	ESPRainbowEnabled = not ESPRainbowEnabled
+	ESPRainbowEnabled = Val
 	ESPRainbowButton.Frame.Frame.Visible = ESPRainbowEnabled
+
+	print(Val)
 
 	if ESPRainbowEnabled then
 
@@ -3449,6 +3512,17 @@ local function ESPRainbowEnable()
 
 end
 
+task.spawn(function()
+	
+	task.spawn(function()
+		
+		ESPEnable(ESPEnabled)
+		
+	end)
+	ESPRainbowEnable(ESPRainbowEnabled)
+	
+end)
+
 ESPKeybindButton.MouseButton1Down:Connect(function()
 
 	if BindingKey then return end
@@ -3477,8 +3551,18 @@ ESPKeybindButton.MouseButton1Down:Connect(function()
 
 end)
 
-ESPEnabledButton.MouseButton1Down:Connect(ESPEnable)
-ESPRainbowButton.MouseButton1Down:Connect(ESPRainbowEnable)
+ESPEnabledButton.MouseButton1Down:Connect(function()
+	
+	ESPEnable(not ESPEnabled)
+	
+end)
+
+ESPRainbowButton.MouseButton1Down:Connect(function()
+	
+	ESPRainbowEnable(not ESPRainbowEnabled)
+	
+end)
+
 ESPTeamColorButton.MouseButton1Down:Connect(function()
 
 	ESPRainbowButton.Visible = ESPTeamColor
@@ -4041,7 +4125,7 @@ UIS.InputBegan:Connect(function(Inp, GPE)
 
 	elseif Inp.KeyCode == ESPKey and ESPKeybindButton.Visible then
 
-		ESPEnable()
+		ESPEnable(not ESPEnabled)
 
 	elseif Inp.KeyCode == CTPKey and CTPKeybindButton.Visible then
 
