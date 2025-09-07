@@ -209,6 +209,8 @@ MenuFrameCorner = Instance.new("UICorner", MenuFrame)
 MenuFrameRatio = Instance.new("UIAspectRatioConstraint")
 MenuFrameGradient = Instance.new("UIGradient", MenuFrame)
 
+RightSizeFrame = Instance.new("Frame", MenuFrame)
+
 MenuFrame.Size = UDim2.new(0.5,0,0.5,0)
 MenuFrame.Position = UDim2.new(0.5,0,0.5,0)
 MenuFrame.AnchorPoint  = Vector2.new(0.5,0.5)
@@ -225,6 +227,8 @@ MenuFrameDrag.BoundingUI = NameLabel
 MenuFrameCorner.CornerRadius = UDim.new(0.05,0)
 MenuFrameRatio.AspectRatio = 2.03
 MenuFrameRatio.Parent = MenuFrame
+
+RightSizeFrame.Transparency = 1
 
 VerUI = Instance.new("ScreenGui")
 VerFrame = MenuFrame:Clone()
@@ -1437,6 +1441,8 @@ function ToggleKeybindActive(v : TextButton)
 
 		local OldKey = string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)
 
+		print(OldKey)
+
 		table.insert(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text))
 		v.Visible = true
 
@@ -1450,6 +1456,12 @@ function ToggleKeybindActive(v : TextButton)
 		end)
 
 	end
+
+	task.spawn(function()
+		
+		WhitelistFrame:WaitForChild(v.Parent.Name).Frame.Frame.Visible = v.Visible
+		
+	end)
 
 end
 
@@ -1537,36 +1549,7 @@ for i,v in MenuUI:GetDescendants() do
 
 		Button.MouseButton1Down:Connect(function()
 
-			if table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)) then
-
-				table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)))
-				v.Visible = nil
-
-				pcall(function()
-
-					Connection:Disconnect()
-
-				end)
-
-			else
-
-				local OldKey = string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text)
-
-				table.insert(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text))
-				v.Visible = true
-
-				Connection = v:GetPropertyChangedSignal("Text"):Connect(function()
-
-					if string.sub(v.Text, #v.Text, #v.Text) == "." then return end
-
-					table.remove(KeybindsWhitelist, table.find(KeybindsWhitelist, OldKey))
-					table.insert(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text))
-
-				end)
-
-			end
-
-			Button.Frame.Frame.Visible = v.Visible
+			ToggleKeybindActive(v)
 
 		end)
 
@@ -1731,6 +1714,9 @@ local function KeyBindsToggle(Val)
 		for i,v in MenuUI:GetDescendants() do
 
 			task.wait()
+
+			print(v, not table.find(KeybindsWhitelist, string.sub(v.TextLabel.Text, #v.TextLabel.Text, #v.TextLabel.Text))
+			)
 
 			if v.Name == "Keybind" then
 
