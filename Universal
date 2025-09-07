@@ -283,6 +283,7 @@ NameLabelShadow.Position = UDim2.new(0, 0,0.045, 0)
 TabsFrame = Instance.new("Frame", MenuFrame)
 TabsFrameStroke = NameLabelStroke:Clone()
 TabsUiLayout = Instance.new("UIListLayout", TabsFrame)
+TabLabel = Instance.new("TextLabel", AlwaysEnabled)
 
 ExitButton.Name = "ExitButton"
 ExitButton.Size = UDim2.new(0.08, 0,0.08, 0)
@@ -348,14 +349,22 @@ TabsFrame.AnchorPoint = Vector2.new(1,1)
 TabsFrame.Position = UDim2.new(1,0,1,0)
 TabsFrame.Size = UDim2.new(0.1, 0, 0.78,1)
 TabsFrame.BackgroundColor3 = NameLabel.BackgroundColor3
+
 TabsFrameStroke.Parent = TabsFrame
 TabsFrameStroke.Enabled = true
-
 TabsUiLayout.Padding = UDim.new(0.05)
 TabsUiLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
 TabsUiLayout.VerticalAlignment = Enum.VerticalAlignment.Top
 TabsUiLayout.SortOrder = Enum.SortOrder.LayoutOrder
 TabsUiLayout.FillDirection = Enum.FillDirection.Vertical
+TabLabel.TextXAlignment = Enum.TextXAlignment.Left
+TabLabel.TextTransparency = 1
+TabLabel.BackgroundTransparency = 1
+TabLabel.TextColor3 = Color3.new(1, 1, 1)
+TabLabel.Font = Enum.Font.FredokaOne
+TabLabel.Text = "Tab"
+TabLabel.Size = UDim2.fromScale(0.025, 0.025)
+TabLabel.TextScaled = true
 
 MenuFrameCorner:Clone().Parent = TabsFrame
 
@@ -435,6 +444,9 @@ end
 AlwaysEnabled.Parent = MenuUI.Parent
 ESPGui.Parent = MenuUI.Parent
 
+TWTL = TW:Create(TabLabel, TweenInfo.new(0.25, Enum.EasingStyle.Linear), {TextTransparency = 0})
+TWTLR = TW:Create(TabLabel, TweenInfo.new(0.25, Enum.EasingStyle.Linear), {TextTransparency = 1})
+
 function NewTab(Tab, LayoutOrder, Img)
 
 	local Button = Instance.new("ImageButton", TabsFrame)
@@ -456,6 +468,34 @@ function NewTab(Tab, LayoutOrder, Img)
 	Button.LayoutOrder = LayoutOrder
 
 	if Tab == CurrentTab then Button.BackgroundColor3 = Color3.new(1,0,0) end
+
+	Button.MouseEnter:Connect(function()
+		
+		TabLabel.Size = UDim2.fromOffset(Button.AbsoluteSize.X * 5, Button.AbsoluteSize.Y)
+		TabLabel.Text = Tab
+		TabLabel.Position = UDim2.new(MenuFrame.Position.X.Scale + MenuFrame.Size.X.Scale / 2, 0, 0 ,Button.AbsolutePosition.Y)
+		
+		print(TabLabel.Position)
+		
+		if TabLabel.TextTransparency == 1 then
+			
+			TWTL:Play()
+		
+		else
+			
+			TWTLR:Cancel()
+			TabLabel.TextTransparency = 0
+			
+		end
+		
+	end)
+	
+	Button.MouseLeave:Connect(function()
+		
+		TWTL:Cancel()
+		TWTLR:Play()
+		
+	end)
 
 	Button.MouseButton1Down:Connect(function()
 
