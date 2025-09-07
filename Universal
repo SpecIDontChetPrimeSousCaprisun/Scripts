@@ -207,17 +207,22 @@ MenuFrame = Instance.new("Frame", MenuUI)
 MenuFrameDrag = Instance.new("UIDragDetector", MenuFrame)
 MenuFrameCorner = Instance.new("UICorner", MenuFrame)
 MenuFrameRatio = Instance.new("UIAspectRatioConstraint")
+MenuFrameGradient = Instance.new("UIGradient", MenuFrame)
 
 MenuFrame.Size = UDim2.new(0.5,0,0.5,0)
 MenuFrame.Position = UDim2.new(0.5,0,0.5,0)
 MenuFrame.AnchorPoint  = Vector2.new(0.5,0.5)
-MenuFrame.BackgroundColor3 = Color3.fromRGB(45,45,45)
-MenuFrame.BackgroundTransparency = 0.25
+MenuFrame.BackgroundTransparency = 0
 MenuFrame.ClipsDescendants = true
 
+MenuFrameGradient.Rotation = 45
+MenuFrameGradient.Color = ColorSequence.new({
+	ColorSequenceKeypoint.new(0, Color3.fromRGB(0,0,0)),
+	ColorSequenceKeypoint.new(1, Color3.fromRGB(1,13,42))
+})
 MenuFrameDrag.ResponseStyle = Enum.UIDragDetectorResponseStyle.Scale
 MenuFrameDrag.BoundingUI = NameLabel
-MenuFrameCorner.CornerRadius = UDim.new(0.1,0)
+MenuFrameCorner.CornerRadius = UDim.new(0.05,0)
 MenuFrameRatio.AspectRatio = 2.03
 MenuFrameRatio.Parent = MenuFrame
 
@@ -230,11 +235,9 @@ NameLabel = Instance.new("TextLabel", MenuFrame)
 ExitButton = Instance.new("TextButton", MenuFrame)
 Options = Instance.new("Frame", MenuFrame)
 
-TabsFrame = Instance.new("Frame", MenuFrame)
-TabsUiLayout = Instance.new("UIListLayout", TabsFrame)
-
 NameLabelCorner = Instance.new("UICorner", NameLabel)
 NameLabelShadow = Instance.new("Frame", MenuFrame)
+NameLabelStroke = Instance.new("UIStroke", NameLabelShadow)
 
 ExitButtonCorner = Instance.new("UICorner", ExitButton)
 ExitButtonRatio = Instance.new("UIAspectRatioConstraint")
@@ -259,7 +262,7 @@ AlwaysEnabled.Name = "GoatHub Always Enabled"
 NameLabel.Name = "NameLabel"
 NameLabel.Size = UDim2.new(1,0,0.1,0)
 NameLabel.Position = UDim2.new(0,0,0,0)
-NameLabel.BackgroundColor3 = Color3.fromRGB(45,45,45)
+NameLabel.BackgroundColor3 = Color3.fromRGB(2, 2, 2)
 NameLabel.Text = "GH"
 NameLabel.TextColor3 = Color3.new(1,1,1)
 NameLabel.Font = Enum.Font.Michroma
@@ -267,11 +270,19 @@ NameLabel.TextXAlignment = Enum.TextXAlignment.Left
 NameLabel.ZIndex = 5
 NameLabel.TextScaled = true
 
+NameLabelStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+NameLabelStroke.Color = Color3.new(0.75, 0.75, 0.75)
+NameLabelStroke.Thickness = 2
+NameLabelStroke.Enabled = nil
 NameLabelCorner.CornerRadius = UDim.new(1,0)
 NameLabelShadow.Name = "NameBackGround"
-NameLabelShadow.BackgroundColor3 = Color3.fromRGB(45,45,45)
+NameLabelShadow.BackgroundColor3 = NameLabel.BackgroundColor3
 NameLabelShadow.Size = UDim2.new(1, 0,0.055, 0)
 NameLabelShadow.Position = UDim2.new(0, 0,0.045, 0)
+
+TabsFrame = Instance.new("Frame", MenuFrame)
+TabsFrameStroke = NameLabelStroke:Clone()
+TabsUiLayout = Instance.new("UIListLayout", TabsFrame)
 
 ExitButton.Name = "ExitButton"
 ExitButton.Size = UDim2.new(0.08, 0,0.08, 0)
@@ -336,7 +347,9 @@ OptionsLayout.SortOrder = Enum.SortOrder.LayoutOrder
 TabsFrame.AnchorPoint = Vector2.new(1,1)
 TabsFrame.Position = UDim2.new(1,0,1,0)
 TabsFrame.Size = UDim2.new(0.1, 0, 0.78,1)
-TabsFrame.BackgroundColor3 = Color3.fromRGB(45,45,45)
+TabsFrame.BackgroundColor3 = NameLabel.BackgroundColor3
+TabsFrameStroke.Parent = TabsFrame
+TabsFrameStroke.Enabled = true
 
 TabsUiLayout.Padding = UDim.new(0.05)
 TabsUiLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
@@ -422,7 +435,7 @@ end
 AlwaysEnabled.Parent = MenuUI.Parent
 ESPGui.Parent = MenuUI.Parent
 
-local function NewTab(Tab, LayoutOrder, Img)
+function NewTab(Tab, LayoutOrder, Img)
 
 	local Button = Instance.new("ImageButton", TabsFrame)
 	local ButtonCorner = Instance.new("UICorner", Button)
@@ -473,7 +486,7 @@ end
 
 NewTab("Home", 1, 109306454828475)
 
-local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck, Checked)
+function NewButton(Name, Parent, Text, LayoutOrder, NoCheck, Checked)
 
 	local Button = Instance.new("TextButton", Parent)
 	local CheckFrame = Instance.new("CanvasGroup", Button)
@@ -484,12 +497,12 @@ local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck, Checked)
 
 	Button.Name = Name
 	Button.Size = UDim2.new(0.9, 0,0.075, 0)
-	Button.BackgroundColor3 = Color3.fromRGB(45,45,45)
+	Button.BackgroundColor3 = Color3.fromRGB(15,15,15)
 	Button.BackgroundTransparency = 0
 	Button.BorderSizePixel = 0
 	Button.LayoutOrder = LayoutOrder
 	Button.Text = ""
-
+	
 	if NoCheck then
 
 		CheckFrame:Destroy()
@@ -526,7 +539,7 @@ local function NewButton(Name, Parent, Text, LayoutOrder, NoCheck, Checked)
 
 end
 
-local function NewBox(Name, Parent, Text, LayoutOrder)
+function NewBox(Name, Parent, Text, LayoutOrder)
 
 	local Button = Instance.new("TextBox", Parent)
 
@@ -546,7 +559,7 @@ local function NewBox(Name, Parent, Text, LayoutOrder)
 end
 
 FlyFrame.Name = "Fly"
-FlyFrame.BackgroundColor3 = Color3.fromRGB(45,45,45)
+FlyFrame.BackgroundColor3 = Color3.fromRGB(5,5,5)
 FlyFrame.LayoutOrder = 1
 FlyFrame.Visible = nil
 
@@ -3734,6 +3747,7 @@ local function BangEnable()
 
 			if not Char then continue end
 			if not Char:FindFirstChild("HumanoidRootPart") then continue end
+			if not PlayerToBang.Character then continue end
 
 			if not PlayerToBang.Character:FindFirstChild("HumanoidRootPart") then
 
@@ -4184,11 +4198,12 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
 })
 
 local TWLF = TW:Create(LoadingBar, TweenInfo.new(0.5), {BackgroundTransparency = 1})
-local TWMF = TW:Create(MenuFrame, TweenInfo.new(0.5), {BackgroundTransparency = 0.25})
+local TWMF = TW:Create(MenuFrame, TweenInfo.new(0.5), {BackgroundTransparency = 0})
 
 LoadingFrame.BackgroundTransparency = 1
 TWLF:Play()
 TWLF.Completed:Wait()
+NameLabelStroke.Enabled = true
 LoadingFrame:Destroy()
 NameLabel.Text = "GH Universal"
 TWMF:Play()
