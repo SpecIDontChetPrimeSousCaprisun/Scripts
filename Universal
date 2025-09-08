@@ -206,10 +206,11 @@ AlwaysEnabled = Instance.new("ScreenGui")
 MenuFrame = Instance.new("Frame", MenuUI)
 MenuFrameDrag = Instance.new("UIDragDetector", MenuFrame)
 MenuFrameCorner = Instance.new("UICorner", MenuFrame)
-MenuFrameRatio = Instance.new("UIAspectRatioConstraint")
+--MenuFrameRatio = Instance.new("UIAspectRatioConstraint")
 MenuFrameGradient = Instance.new("UIGradient", MenuFrame)
 
 RightSizeFrame = Instance.new("Frame", MenuFrame)
+RightSizeFrameDrag = Instance.new("UIDragDetector", RightSizeFrame)
 
 MenuFrame.Size = UDim2.new(0.5,0,0.5,0)
 MenuFrame.Position = UDim2.new(0.5,0,0.5,0)
@@ -225,10 +226,23 @@ MenuFrameGradient.Color = ColorSequence.new({
 MenuFrameDrag.ResponseStyle = Enum.UIDragDetectorResponseStyle.Scale
 MenuFrameDrag.BoundingUI = NameLabel
 MenuFrameCorner.CornerRadius = UDim.new(0.05,0)
-MenuFrameRatio.AspectRatio = 2.03
-MenuFrameRatio.Parent = MenuFrame
+--MenuFrameRatio.AspectRatio = 2.03
+--MenuFrameRatio.Parent = MenuFrame
 
 RightSizeFrame.Transparency = 1
+RightSizeFrame.AnchorPoint = Vector2.new(1, 0.5)
+RightSizeFrame.Position = UDim2.fromScale(1, 0.5)
+RightSizeFrame.Size = UDim2.fromScale(0.1, 1)
+RightSizeFrameDrag.DragStyle = Enum.UIDragDetectorDragStyle.TranslateLine
+RightSizeFrameDrag.DragAxis = Vector2.new(1, 0)
+RightSizeFrameDrag.ResponseStyle = Enum.UIDragDetectorResponseStyle.Scale
+RightSizeFrameDrag.SelectionModeDragSpeed = UDim2.fromScale(0.001, 0.001)
+
+LeftSizeFrame = RightSizeFrame:Clone()
+LeftSizeFrameDrag = LeftSizeFrame.UIDragDetector
+LeftSizeFrame.Parent = MenuFrame
+LeftSizeFrame.AnchorPoint = Vector2.new(0, 0.5)
+LeftSizeFrame.Position = UDim2.fromScale(0, 0.5)
 
 VerUI = Instance.new("ScreenGui")
 VerFrame = MenuFrame:Clone()
@@ -287,7 +301,7 @@ NameLabelShadow.Position = UDim2.new(0, 0,0.045, 0)
 TabsFrame = Instance.new("Frame", MenuFrame)
 TabsFrameStroke = NameLabelStroke:Clone()
 TabsUiLayout = Instance.new("UIListLayout", TabsFrame)
-TabLabel = Instance.new("TextLabel", AlwaysEnabled)
+TabLabel = Instance.new("TextLabel", MenuUI)
 
 ExitButton.Name = "ExitButton"
 ExitButton.Size = UDim2.new(0.08, 0,0.08, 0)
@@ -312,7 +326,7 @@ ChatArtFrame.Parent = MenuUI
 ChatArtFrame.UIDragDetector:Destroy()
 ChatArtFrame.Visible  = nil
 ChatArtFrame.NameLabel.Text = "Chat art editor"
-ChatArtRatio = ChatArtFrame.UIAspectRatioConstraint
+--ChatArtRatio = ChatArtFrame.UIAspectRatioConstraint
 
 ChatArtEditFrame = ChatArtFrame.Options
 ChatArtEditFrame.Name = "EditFrame"
@@ -4070,26 +4084,26 @@ ChatArtButton.MouseButton1Down:Connect(function()
 	ChatArtFrame.ExitButton.Visible = nil
 	ChatArtFrame.Visible = true
 	MenuFrame.Visible = nil
-	ChatArtRatio:Remove()
+	--ChatArtRatio:Remove()
 
 	local TWCAF = TW:Create(ChatArtFrame, TweenInfo.new(0.5), {Size = UDim2.new(0.5,0,0.5,0)})
 	TWCAF:Play()
 	TWCAF.Completed:Wait()
 
-	ChatArtRatio.Parent = ChatArtFrame
+	--ChatArtRatio.Parent = ChatArtFrame
 	ChatArtFrame.ExitButton.Visible = true
 
 end)
 
 ChatArtFrame.ExitButton.MouseButton1Down:Connect(function()
 
-	ChatArtRatio:Remove()
+	--ChatArtRatio:Remove()
 
 	local TWCAF = TW:Create(ChatArtFrame, TweenInfo.new(0.5), {Size = UDim2.new(0.5,0,0,0)})
 	TWCAF:Play()
 	TWCAF.Completed:Wait()
 
-	ChatArtRatio.Parent = ChatArtFrame
+	--ChatArtRatio.Parent = ChatArtFrame
 	ChatArtFrame.Visible = nil
 	MenuFrame.Visible = true
 
@@ -4244,10 +4258,18 @@ for i,v in Tabs[CurrentTab] do
 
 end
 
-
 while task.wait() do
 
 	FlingToolParams.FilterDescendantsInstances = FlingToolParamsWhitelist
+
+	local NewSize = UDim2.fromScale(MenuFrame.Size.X.Scale * -(LeftSizeFrame.Position.X.Scale - RightSizeFrame.Position.X.Scale), MenuFrame.Size.Y.Scale)
+	local SizeDifference = NewSize.X.Scale - MenuFrame.Size.X.Scale
+	local NewPos = UDim2.fromScale(MenuFrame.Position.X.Scale + SizeDifference, MenuFrame.Position.Y.Scale)
+
+	MenuFrame.Position = NewPos
+	MenuFrame.Size = NewSize
+	RightSizeFrame.Position = UDim2.fromScale(1, 0.5)
+	LeftSizeFrame.Position = UDim2.fromScale(0, 0.5)
 
 	if Ver == "Safe" then
 
