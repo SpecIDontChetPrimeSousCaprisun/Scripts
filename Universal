@@ -255,12 +255,12 @@ DownSizeFrameDrag.DragAxis = Vector2.new(0, 1)
 DownSizeFrame.Parent = MenuUI
 DownSizeFrame.AnchorPoint = Vector2.new(0.5, 0)
 DownSizeFrame.Position = UDim2.fromScale(0.5, MenuFrame.Position.Y.Scale + (MenuFrame.Size.Y.Scale / 2))
-DownSizeFrame.Size = UDim2.fromScale(1, 0.01)
+DownSizeFrame.Size = UDim2.fromScale(1, 0.025)
 
 UpSizeFrame = DownSizeFrame:Clone()
 UpSizeFrame.UIDragDetector:Destroy()
 UpSizeFrame.AnchorPoint = Vector2.new(0.5, 1)
-UpSizeFrame.Position = UDim2.fromScale(0.5, MenuFrame.Position.Y.Scale * (MenuFrame.Size.Y.Scale / 2))
+UpSizeFrame.Position = UDim2.fromScale(0.5, MenuFrame.Position.Y.Scale - (MenuFrame.Size.Y.Scale / 2))
 UpSizeFrame.Parent = MenuUI
 
 VerUI = Instance.new("ScreenGui")
@@ -1301,6 +1301,7 @@ SizeFrame.NameLabel.Text = "Choose size"
 SizeFrame.LayoutOrder = 1
 SizeFrame.Parent = MenuUI
 SizeFrame.Size = UDim2.new(0.1, 0,0.25, 0)
+InterfaceSizeButton.Visible = nil
 
 local SmallButton = NewButton("Small", SizeFrame, "Small", 1, true)
 local MediumButton = NewButton("Medium", SizeFrame, "Medium", 2, true)
