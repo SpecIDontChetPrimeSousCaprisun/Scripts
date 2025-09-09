@@ -198,6 +198,11 @@ ChatArtColorsToTextFrThisTime = {
 	["0.75, 0, 0.5"] = "🟣"
 }
 
+function OffsetToScale(Offset)
+	local ViewPortSize = workspace.Camera.ViewportSize
+	return ({Offset[1] / ViewPortSize.X, Offset[2] / ViewPortSize.Y})
+end
+
 -- Creation du hub
 
 MenuUI = Instance.new("ScreenGui")
@@ -208,8 +213,9 @@ MenuFrameDrag = Instance.new("UIDragDetector", MenuFrame)
 MenuFrameCorner = Instance.new("UICorner", MenuFrame)
 --MenuFrameRatio = Instance.new("UIAspectRatioConstraint")
 MenuFrameGradient = Instance.new("UIGradient", MenuFrame)
+MenuDragged = nil
 
-RightSizeFrame = Instance.new("Frame", MenuFrame)
+RightSizeFrame = Instance.new("Frame", MenuUI)
 RightSizeFrameDrag = Instance.new("UIDragDetector", RightSizeFrame)
 
 MenuFrame.Size = UDim2.new(0.5,0,0.5,0)
@@ -231,18 +237,17 @@ MenuFrameCorner.CornerRadius = UDim.new(0.05,0)
 
 RightSizeFrame.Transparency = 1
 RightSizeFrame.AnchorPoint = Vector2.new(1, 0.5)
-RightSizeFrame.Position = UDim2.fromScale(1, 0.5)
-RightSizeFrame.Size = UDim2.fromScale(0.1, 1)
+RightSizeFrame.Position = UDim2.fromScale(MenuFrame.Position.X.Scale + (MenuFrame.Size.X.Scale / 2), 0.5)
+RightSizeFrame.Size = UDim2.fromScale(0.01, 1)
 RightSizeFrameDrag.DragStyle = Enum.UIDragDetectorDragStyle.TranslateLine
 RightSizeFrameDrag.DragAxis = Vector2.new(1, 0)
 RightSizeFrameDrag.ResponseStyle = Enum.UIDragDetectorResponseStyle.Scale
-RightSizeFrameDrag.SelectionModeDragSpeed = UDim2.fromScale(0.001, 0.001)
 
 LeftSizeFrame = RightSizeFrame:Clone()
 LeftSizeFrameDrag = LeftSizeFrame.UIDragDetector
-LeftSizeFrame.Parent = MenuFrame
+LeftSizeFrame.Parent = MenuUI
 LeftSizeFrame.AnchorPoint = Vector2.new(0, 0.5)
-LeftSizeFrame.Position = UDim2.fromScale(0, 0.5)
+LeftSizeFrame.Position = UDim2.fromScale(MenuFrame.Position.X.Scale - (MenuFrame.Size.X.Scale / 2), 0.5)
 
 VerUI = Instance.new("ScreenGui")
 VerFrame = MenuFrame:Clone()
@@ -458,6 +463,18 @@ else
 	MenuUI.Parent = game:GetService("CoreGui")
 
 end
+
+MenuFrameDrag.DragStart:Connect(function()
+	
+	MenuDragged = true
+	
+end)
+
+MenuFrameDrag.DragEnd:Connect(function()
+
+	MenuDragged = nil
+
+end)
 
 AlwaysEnabled.Parent = MenuUI.Parent
 ESPGui.Parent = MenuUI.Parent
@@ -4262,14 +4279,25 @@ while task.wait() do
 
 	FlingToolParams.FilterDescendantsInstances = FlingToolParamsWhitelist
 
-	local NewSize = UDim2.fromScale(MenuFrame.Size.X.Scale * -(LeftSizeFrame.Position.X.Scale - RightSizeFrame.Position.X.Scale), MenuFrame.Size.Y.Scale)
-	local SizeDifference = NewSize.X.Scale - MenuFrame.Size.X.Scale
-	local NewPos = UDim2.fromScale(MenuFrame.Position.X.Scale + SizeDifference, MenuFrame.Position.Y.Scale)
+	if MenuDragged then
+		
+		RightSizeFrame.Position = UDim2.fromScale(MenuFrame.Position.X.Scale + (MenuFrame.Size.X.Scale / 2), 0.5)
+		LeftSizeFrame.Position = UDim2.fromScale(MenuFrame.Position.X.Scale - (MenuFrame.Size.X.Scale / 2), 0.5)
+		
+	else
+		
+		local NewSize = UDim2.fromScale(LeftSizeFrame.Position.X.Scale - RightSizeFrame.Position.X.Scale, MenuFrame.Size.Y.Scale)
+		local SizeDifference = NewSize.X.Scale - MenuFrame.Size.X.Scale
+		local NewPos = LeftSizeFrame.Position:Lerp(RightSizeFrame.Position, 0.5)
 
-	MenuFrame.Position = NewPos
-	MenuFrame.Size = NewSize
-	RightSizeFrame.Position = UDim2.fromScale(1, 0.5)
-	LeftSizeFrame.Position = UDim2.fromScale(0, 0.5)
+		NewPos = UDim2.fromScale(NewPos.X.Scale, MenuFrame.Position.Y.Scale)
+
+		MenuFrame.Position = NewPos
+		MenuFrame.Size = NewSize
+		
+	end
+
+	
 
 	if Ver == "Safe" then
 
