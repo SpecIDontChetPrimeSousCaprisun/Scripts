@@ -249,6 +249,20 @@ LeftSizeFrame.Parent = MenuUI
 LeftSizeFrame.AnchorPoint = Vector2.new(0, 0.5)
 LeftSizeFrame.Position = UDim2.fromScale(MenuFrame.Position.X.Scale - (MenuFrame.Size.X.Scale / 2), 0.5)
 
+DownSizeFrame = RightSizeFrame:Clone()
+DownSizeFrameDrag = DownSizeFrame.UIDragDetector
+DownSizeFrameDrag.DragAxis = Vector2.new(0, 1)
+DownSizeFrame.Parent = MenuUI
+DownSizeFrame.AnchorPoint = Vector2.new(0.5, 0)
+DownSizeFrame.Position = UDim2.fromScale(0.5, MenuFrame.Position.Y.Scale + (MenuFrame.Size.Y.Scale / 2))
+DownSizeFrame.Size = UDim2.fromScale(1, 0.01)
+
+UpSizeFrame = DownSizeFrame:Clone()
+UpSizeFrame.UIDragDetector:Destroy()
+UpSizeFrame.AnchorPoint = Vector2.new(0.5, 1)
+UpSizeFrame.Position = UDim2.fromScale(0.5, MenuFrame.Position.Y.Scale * (MenuFrame.Size.Y.Scale / 2))
+UpSizeFrame.Parent = MenuUI
+
 VerUI = Instance.new("ScreenGui")
 VerFrame = MenuFrame:Clone()
 VerFrame.Parent = VerUI
@@ -4283,22 +4297,21 @@ while task.wait() do
 		
 		RightSizeFrame.Position = UDim2.fromScale(MenuFrame.Position.X.Scale + (MenuFrame.Size.X.Scale / 2), 0.5)
 		LeftSizeFrame.Position = UDim2.fromScale(MenuFrame.Position.X.Scale - (MenuFrame.Size.X.Scale / 2), 0.5)
+		UpSizeFrame.Position = UDim2.fromScale(0.5, MenuFrame.Position.Y.Scale - (MenuFrame.Size.Y.Scale / 2))
+		DownSizeFrame.Position = UDim2.fromScale(0.5, MenuFrame.Position.Y.Scale + (MenuFrame.Size.Y.Scale / 2))
 		
 	else
 		
-		local NewSize = UDim2.fromScale(LeftSizeFrame.Position.X.Scale - RightSizeFrame.Position.X.Scale, MenuFrame.Size.Y.Scale)
-		local SizeDifference = NewSize.X.Scale - MenuFrame.Size.X.Scale
-		local NewPos = LeftSizeFrame.Position:Lerp(RightSizeFrame.Position, 0.5)
-
-		NewPos = UDim2.fromScale(NewPos.X.Scale, MenuFrame.Position.Y.Scale)
+		local NewSize = UDim2.fromScale(LeftSizeFrame.Position.X.Scale - RightSizeFrame.Position.X.Scale, DownSizeFrame.Position.Y.Scale - UpSizeFrame.Position.Y.Scale)
+		local NewPosX = LeftSizeFrame.Position:Lerp(RightSizeFrame.Position, 0.5)
+		local NewPosY = DownSizeFrame.Position:Lerp(UpSizeFrame.Position, 0.5)
+		local NewPos = UDim2.fromScale(NewPosX.X.Scale, NewPosY.Y.Scale)
 
 		MenuFrame.Position = NewPos
 		MenuFrame.Size = NewSize
 		
 	end
-
 	
-
 	if Ver == "Safe" then
 
 		AlwaysEnabled.Parent = game:GetService("CoreGui").CaptureOverlay
