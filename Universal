@@ -3446,9 +3446,13 @@ local function ESPEnable(Val)
 							Box.Position = UDim2.fromOffset(WorldToScreen(v.Character.HumanoidRootPart.Position).X, WorldToScreen(v.Character.HumanoidRootPart.Position).Y)							
 
 						end
-
-						Highlight.Parent = v.Character
-
+						
+						pcall(function()
+							
+							Highlight.Parent = v.Character
+							
+						end)
+						
 					else
 
 						Box.Visible = nil
@@ -4303,7 +4307,7 @@ while task.wait() do
 		
 	else
 		
-		local NewSize = UDim2.fromScale(LeftSizeFrame.Position.X.Scale - RightSizeFrame.Position.X.Scale, DownSizeFrame.Position.Y.Scale - UpSizeFrame.Position.Y.Scale)
+		local NewSize = UDim2.fromScale(RightSizeFrame.Position.X.Scale - LeftSizeFrame.Position.X.Scale, DownSizeFrame.Position.Y.Scale - UpSizeFrame.Position.Y.Scale)
 		local NewPosX = LeftSizeFrame.Position:Lerp(RightSizeFrame.Position, 0.5)
 		local NewPosY = DownSizeFrame.Position:Lerp(UpSizeFrame.Position, 0.5)
 		local NewPos = UDim2.fromScale(NewPosX.X.Scale, NewPosY.Y.Scale)
