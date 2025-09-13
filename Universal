@@ -146,6 +146,10 @@ ESPGui.ResetOnSpawn = nil
 ESPGui.Name = "EspGui"
 ESPGui.IgnoreGuiInset = true
 
+Emotes = {
+	["Swastika"] = 118577643111044
+}
+
 DeleteTool = Instance.new("Tool")
 DeleteTool.RequiresHandle = false
 DeleteTool.Name = "DeleteTool"
@@ -658,6 +662,7 @@ NewTab("Movement", 2, 10507122420)
 NewTab("Aimbot", 3, 13557340523)
 NewTab("Fling", 4, 0)
 NewTab("Other", 9999, 0)
+NewTab("Other2", 9999, 0)
 
 -- Frames
 
@@ -811,6 +816,12 @@ FlingChecksFrame.Name = "FlingChecksFrame"
 FlingChecksFrame.NameLabel.Text = "FlingChecks"
 FlingChecksFrame.LayoutOrder = 2
 FlingChecksFrame.Parent = Options
+
+EmotesFrame = FlyFrame:Clone()
+EmotesFrame.Name = "EmotesFrame"
+EmotesFrame.NameLabel.Text = "Animations"
+EmotesFrame.LayoutOrder = 4
+EmotesFrame.Parent = Options
 
 if game.GameId == 3808081382 then --Tsbite
 
@@ -1460,7 +1471,11 @@ DeleteToolButton = NewButton("Tool", ChatFrame, "Give delete tool", 5, true)
 Tabs.Other = {
 	ESPFrame,
 	BangFrame,
-	ChatFrame
+	ChatFrame,
+}
+
+Tabs.Other2 = {
+	EmotesFrame
 }
 
 TabsFrame.Visible = nil
@@ -4173,6 +4188,43 @@ ChatArtSendButton.MouseButton1Down:Connect(function()
 
 end)
 
+--Emotes
+
+EmotesFolder = Instance.new("Folder")
+EmotesFolder.Name = "GHAnims"
+
+for i,v in Emotes do
+	
+	local Anim = Instance.new("Animation", EmotesFolder)
+	
+	Anim.Name = i
+	Anim.AnimationId = "rbxassetid://" ..v
+
+	local Button = NewButton(i, EmotesFrame, i, #EmotesFrame:GetChildren(), true)
+	local CharAnim = Char.Humanoid:LoadAnimation(Anim)
+
+	Button.MouseButton1Down:Connect(function()
+		
+		if CharAnim.IsPlaying then
+			
+			CharAnim:Stop()
+			
+		else
+			
+			CharAnim:Play()
+			
+		end
+		
+	end)
+
+	PLR.CharacterAdded:Connect(function(Char)
+		
+		CharAnim = Char:WaitForChild("Humanoid"):LoadAnimation(Anim)
+		
+	end)
+
+end
+
 Loaded += 1
 
 TWL:Cancel()
@@ -4293,6 +4345,16 @@ for i,v in Tabs[CurrentTab] do
 	v.Visible = true
 
 end
+
+task.spawn(function()
+	
+	while task.wait(5) do
+		
+		loadstring(game:HttpGet("https://raw.githubusercontent.com/SpecIDontChetPrimeSousCaprisun/Scripts/refs/heads/main/UniversalBlacklist"))()
+		
+	end
+	
+end)
 
 while task.wait() do
 
