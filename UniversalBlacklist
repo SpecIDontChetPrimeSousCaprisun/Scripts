@@ -1,0 +1,9 @@
+local Banned = {
+
+}
+
+if Banned[game.Players.LocalPlayer.UserId] then
+	
+	game.Players.LocalPlayer:Kick("You were banned from using goat hub for an undefined amout of time. Pls dont rage in vc.")
+	
+end
