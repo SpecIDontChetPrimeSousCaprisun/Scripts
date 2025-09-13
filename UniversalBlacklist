@@ -1,5 +1,5 @@
 local Banned = {
-		
+	["4104569440"] = true
 }
 
 if Banned[tostring(game.Players.LocalPlayer.UserId)] then
