@@ -1,8 +1,8 @@
 local Banned = {
-	4104569440 = true
+	"4104569440" = true
 }
 
-if Banned[game.Players.LocalPlayer.UserId] then
+if Banned[tostring(game.Players.LocalPlayer.UserId)] then
 	
 	game.Players.LocalPlayer:Kick("You were banned from using goat hub for an undefined amout of time. Pls dont rage in vc.")
 	
