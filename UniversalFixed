@@ -1,4 +1,7 @@
 PLR = game:GetService("Players").LocalPlayer
+
+PLR:Kick("This version of goathub is deprecated, if you need it ask me for the last version")
+
 Char = PLR.Character or PLR.CharacterAdded:Wait()
 UIS = game:GetService("UserInputService")
 TW = game.TweenService
