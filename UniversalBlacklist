@@ -2,7 +2,8 @@ local Banned = {
 	["4104569440"] = nil, --Omerde
 	["1986192973"] = nil, --Meliograsse
 	["9429997940"] = nil, --MelioGrasseRouivales
-	["3167520760"] = nil --Anyazo
+	["3167520760"] = nil, --Anyazo
+	["4346481800"] = true --liam
 }
 
 if Banned[tostring(game.Players.LocalPlayer.UserId)] then
