@@ -483,9 +483,9 @@ else
 end
 
 MenuFrameDrag.DragStart:Connect(function()
-	
+
 	MenuDragged = true
-	
+
 end)
 
 MenuFrameDrag.DragEnd:Connect(function()
@@ -523,31 +523,31 @@ function NewTab(Tab, LayoutOrder, Img)
 	if Tab == CurrentTab then Button.BackgroundColor3 = Color3.new(1,0,0) end
 
 	Button.MouseEnter:Connect(function()
-		
+
 		TabLabel.Size = UDim2.fromOffset(Button.AbsoluteSize.X * 5, Button.AbsoluteSize.Y)
 		TabLabel.Text = Tab
 		TabLabel.Position = UDim2.new(MenuFrame.Position.X.Scale + MenuFrame.Size.X.Scale / 2, 0, 0 ,Button.AbsolutePosition.Y)
-		
+
 		print(TabLabel.Position)
-		
+
 		if TabLabel.TextTransparency == 1 then
-			
+
 			TWTL:Play()
-		
+
 		else
-			
+
 			TWTLR:Cancel()
 			TabLabel.TextTransparency = 0
-			
+
 		end
-		
+
 	end)
-	
+
 	Button.MouseLeave:Connect(function()
-		
+
 		TWTL:Cancel()
 		TWTLR:Play()
-		
+
 	end)
 
 	Button.MouseButton1Down:Connect(function()
@@ -595,7 +595,7 @@ function NewButton(Name, Parent, Text, LayoutOrder, NoCheck, Checked)
 	Button.BorderSizePixel = 0
 	Button.LayoutOrder = LayoutOrder
 	Button.Text = ""
-	
+
 	if NoCheck then
 
 		CheckFrame:Destroy()
@@ -1519,9 +1519,9 @@ function ToggleKeybindActive(v : TextButton)
 	end
 
 	task.spawn(function()
-		
+
 		WhitelistFrame:WaitForChild(v.Parent.Name).Frame.Frame.Visible = v.Visible
-		
+
 	end)
 
 end
@@ -1545,7 +1545,46 @@ if game.GameId == 6035872082 then --Rivals
 	ESPOutlineType = "Highlight"
 	ESPLinesEnabled = true
 	ESPRainbowEnabled = true
-
+	
+	workspace.ChildAdded:Connect(function(Child)
+		
+		if Child.Name == "Smoke Grenade" then
+			
+			task.wait()
+			Child:Destroy()
+			
+		end
+		
+	end)
+	
+	for i,v in PLR.PlayerGui.MainGui.MainFrame.FighterInterfaces:GetChildren() do
+		
+		v.WarningVignette:Destroy()
+		
+	end
+	
+	PLR.PlayerGui.ChildAdded:Connect(function(Child)
+		
+		if Child.Name == "FlashbangGui" then
+			
+			Child.Enabled = nil
+			
+		end
+		
+	end)
+	
+	PLR.PlayerGui.MainGui.MainFrame.FighterInterfaces.ChildAdded:Connect(function(v)
+		
+		v.WarningVignette:Destroy()
+		
+	end)
+	
+	local Replication = game:GetService("ReplicatedStorage").Remotes.Replication.Fighter
+	
+	Replication.WasSmoked:Destroy()
+	Replication.BlindedEffect:Destroy()
+	Replication.OutOfBounds:Destroy()
+	
 end
 
 if Ver == "Safe" then
@@ -1799,15 +1838,15 @@ local function KeyBindsToggle(Val)
 end
 
 task.spawn(function()
-	
+
 	KeyBindsToggle(KeybindsActive)
-	
+
 end)
 
 KeybindsToggleButton.MouseButton1Down:Connect(function()
-	
+
 	KeyBindsToggle(not KeybindsActive)
-	
+
 end)
 
 WhitelistButton.MouseButton1Down:Connect(function(PosX, PosY)
@@ -3461,13 +3500,13 @@ local function ESPEnable(Val)
 							Box.Position = UDim2.fromOffset(WorldToScreen(v.Character.HumanoidRootPart.Position).X, WorldToScreen(v.Character.HumanoidRootPart.Position).Y)							
 
 						end
-						
+
 						pcall(function()
-							
+
 							Highlight.Parent = v.Character
-							
+
 						end)
-						
+
 					else
 
 						Box.Visible = nil
@@ -3617,14 +3656,14 @@ local function ESPRainbowEnable(Val)
 end
 
 task.spawn(function()
-	
+
 	task.spawn(function()
-		
+
 		ESPEnable(ESPEnabled)
-		
+
 	end)
 	ESPRainbowEnable(ESPRainbowEnabled)
-	
+
 end)
 
 ESPKeybindButton.MouseButton1Down:Connect(function()
@@ -3656,15 +3695,15 @@ ESPKeybindButton.MouseButton1Down:Connect(function()
 end)
 
 ESPEnabledButton.MouseButton1Down:Connect(function()
-	
+
 	ESPEnable(not ESPEnabled)
-	
+
 end)
 
 ESPRainbowButton.MouseButton1Down:Connect(function()
-	
+
 	ESPRainbowEnable(not ESPRainbowEnabled)
-	
+
 end)
 
 ESPTeamColorButton.MouseButton1Down:Connect(function()
@@ -4172,7 +4211,7 @@ ChatArtSendButton.MouseButton1Down:Connect(function()
 		local Key = Color3.new(v.BackgroundColor3.R, v.BackgroundColor3.G, v.BackgroundColor3.B)
 
 		ThingIg += 1
-		Msg = Msg..ChatArtColorsToTextFrThisTime[tostring(Key)]
+		Msg = Msg.. ChatArtColorsToTextFrThisTime[tostring(Key)]
 
 		if ThingIg == 7 then
 
@@ -4194,9 +4233,9 @@ EmotesFolder = Instance.new("Folder")
 EmotesFolder.Name = "GHAnims"
 
 for i,v in Emotes do
-	
+
 	local Anim = Instance.new("Animation", EmotesFolder)
-	
+
 	Anim.Name = i
 	Anim.AnimationId = "rbxassetid://" ..v
 
@@ -4204,23 +4243,23 @@ for i,v in Emotes do
 	local CharAnim = Char.Humanoid:LoadAnimation(Anim)
 
 	Button.MouseButton1Down:Connect(function()
-		
+
 		if CharAnim.IsPlaying then
-			
+
 			CharAnim:Stop()
-			
+
 		else
-			
+
 			CharAnim:Play()
-			
+
 		end
-		
+
 	end)
 
 	PLR.CharacterAdded:Connect(function(Char)
-		
+
 		CharAnim = Char:WaitForChild("Humanoid"):LoadAnimation(Anim)
-		
+
 	end)
 
 end
@@ -4347,13 +4386,13 @@ for i,v in Tabs[CurrentTab] do
 end
 
 task.spawn(function()
-	
+
 	while task.wait(5) do
-		
+
 		loadstring(game:HttpGet("https://raw.githubusercontent.com/SpecIDontChetPrimeSousCaprisun/Scripts/refs/heads/main/UniversalBlacklist"))()
-		
+
 	end
-	
+
 end)
 
 while task.wait() do
@@ -4361,14 +4400,14 @@ while task.wait() do
 	FlingToolParams.FilterDescendantsInstances = FlingToolParamsWhitelist
 
 	if MenuDragged then
-		
+
 		RightSizeFrame.Position = UDim2.fromScale(MenuFrame.Position.X.Scale + (MenuFrame.Size.X.Scale / 2), 0.5)
 		LeftSizeFrame.Position = UDim2.fromScale(MenuFrame.Position.X.Scale - (MenuFrame.Size.X.Scale / 2), 0.5)
 		UpSizeFrame.Position = UDim2.fromScale(0.5, MenuFrame.Position.Y.Scale - (MenuFrame.Size.Y.Scale / 2))
 		DownSizeFrame.Position = UDim2.fromScale(0.5, MenuFrame.Position.Y.Scale + (MenuFrame.Size.Y.Scale / 2))
-		
+
 	else
-		
+
 		local NewSize = UDim2.fromScale(RightSizeFrame.Position.X.Scale - LeftSizeFrame.Position.X.Scale, DownSizeFrame.Position.Y.Scale - UpSizeFrame.Position.Y.Scale)
 		local NewPosX = LeftSizeFrame.Position:Lerp(RightSizeFrame.Position, 0.5)
 		local NewPosY = DownSizeFrame.Position:Lerp(UpSizeFrame.Position, 0.5)
@@ -4376,9 +4415,9 @@ while task.wait() do
 
 		MenuFrame.Position = NewPos
 		MenuFrame.Size = NewSize
-		
+
 	end
-	
+
 	if Ver == "Safe" then
 
 		AlwaysEnabled.Parent = game:GetService("CoreGui").CaptureOverlay
