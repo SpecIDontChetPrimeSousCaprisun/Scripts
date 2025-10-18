@@ -3,12 +3,13 @@ local Banned = {
 	["1986192973"] = nil, --Meliograsse
 	["9429997940"] = nil, --MelioGrasseRouivales
 	["3167520760"] = nil, --Anyazo
-	["4346481800"] = true --liam
+	["4346481800"] = true --liam,
+	["9714914797"] = true --linegro
 }
 
 if Banned[tostring(game.Players.LocalPlayer.UserId)] then
 
-	game.Players.LocalPlayer:Kick("You were banned from using goat hub for an undefined amout of time. Pls dont rage in vc.")
+	game.Players.LocalPlayer:Kick("You were banned from using goat hub for an undefined amout of time. If you want to apeal this ban you should recieve a message from goatbot shortly")
 
 end
 		
