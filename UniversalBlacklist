@@ -9,7 +9,7 @@ local Banned = {
 
 if Banned[tostring(game.Players.LocalPlayer.UserId)] then
 
-	game.Players.LocalPlayer:Kick("You were banned from using goat hub for an undefined amout of time. If you want to apeal this ban you should recieve a message from goatbot shortly")
+	game.Players.LocalPlayer:Kick("You were banned from using goat hub for an undefined amout of time. If you want to apeal this ban you should recieve a message from goatbot on discord shortly")
 
 end
 		
