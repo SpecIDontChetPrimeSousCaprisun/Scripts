@@ -44,7 +44,7 @@ if PLR:HasTag("GoatUHubed") then
 	VineBoom:Play()
 
 	game:GetService("StarterGui"):SetCore("SendNotification", {
-		Title = "Goat Hub",
+		Title = "Goat hub",
 		Text = "You aldready have an instance of goat hub running if you want to change versions then rejoin the game before injecting it again"
 	})
 	error("You aldready have an instance of goat hub running if you want to change versions then rejoin the game before injecting it again")
@@ -135,6 +135,7 @@ ESPColorEnabled = false
 ESPRainbowEnabled = false
 ESPLinesEnabled = false
 ESPTeamColor = false
+ESPLifeEnabled = false
 ESPKey = Enum.KeyCode.N
 ESPGui = Instance.new("ScreenGui", game:GetService("CoreGui").CaptureOverlay)
 ESPColor = Color3.fromRGB(255,255,0)
@@ -147,8 +148,14 @@ ESPGui.Name = "EspGui"
 ESPGui.IgnoreGuiInset = true
 
 Emotes = {
-	["Swastika"] = 118577643111044
+	["Swastika"] = {
+		{
+			["Right Shoulder"] = CFrame.new(Vector3.zero),
+			["Time"] = 1
+		}
+	}
 }
+
 
 DeleteTool = Instance.new("Tool")
 DeleteTool.RequiresHandle = false
@@ -162,24 +169,21 @@ local BangKey = Enum.KeyCode.B
 local BangType = "Back"
 local PlayerToBang = game:GetService("Players"):GetPlayers()[1]
 
-local RTKey = Enum.KeyCode.K
+local RTKey = nil
 local RTMessages = {
-	"Are you a bus ? Cuz i want to fill you with kids",
-	"I love you dady",
-	"Are you didi ? Cuz i want ALL YOUR BABY OIL !",
-	"Am i a minecraft youtuber ? Yes cuz imma mollest you",
-	"Come here and kiss me on my hot mouth, am feeling romantical today"
+	"Put me in your monkey room pls",
+	"Put me on Little Saint James",
+	"I will grom you like basucky",
+	"C'est pas une déviance"
 }
 
-local TTKey = Enum.KeyCode.J
+local TTKey = nil
 local TTMessages = {
 	"EZZ",
 	"Ur not humbled lil bro",
-	"Get atomised by a vr user",
-	"Cronus on top",
-	"Its vr am flying irl",
-	"V4 and loose",
-	"Spec i dont chet"
+	"🧬🧬🧬🥀🥀🥀🥀🥀🥀",
+	"Why so 👩🏿👨🏿🧑🏿👧🏿👦🏿👶🏿👵🏿👴🏿🧓🏿🧓🏿👩🏿‍🦰👩🏿‍🦰👨🏿‍🦰👩🏿‍🦱👩🏿‍🦱👨🏿‍🦱",
+	"👳🏿‍♂️✈🏢🏢"
 }
 
 ChatArtColor = Color3.new(0,0,0)
@@ -1452,6 +1456,7 @@ local ESPLinesButton = NewButton("Lines", AdvancedESP1, "Lines", 2, false, ESPLi
 local NotTargetedESPColorBox = NewBox("Color", AdvancedESP2, "Color = 255,255,255", 1)
 local ESPTeamColorButton = NewButton("TeamColor", AdvancedESP2, "Adjust colors for teams", 2, false, ESPTeamColor)
 local ESPRainbowButton = NewButton("Rainbow", AdvancedESP2, "LGBTQ+", 6, false, ESPRainbowEnabled)
+local ESPLifeButton = NewButton("Rainbow", AdvancedESP2, "Show player life", 6, false, ESPLifeEnabled)
 
 ESPColorBox.Visible = nil
 Tabs["AdvancedESP"] = {AdvancedESP1, AdvancedESP2}
@@ -1462,9 +1467,9 @@ local BTypeButton = NewButton("Type", BangFrame, "Type = Back", 3, true)
 local BangPlayerBox = NewBox("Player", BangFrame, "Player = " ..PlayerToBang.DisplayName, 4)
 
 local RTEnabledButton = NewButton("Enabled", ChatFrame, "Rizz Talk", 1, true)
-local RTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = K", 2, true)
+local RTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = None", 2, true)
 local TTEnabledButton = NewButton("Enabled", ChatFrame, "Trash Talk", 3, true)
-local TTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = J", 4, true)
+local TTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = None", 4, true)
 ChatArtButton = NewButton("Art", ChatFrame, "Chat Art", 5, true)
 DeleteToolButton = NewButton("Tool", ChatFrame, "Give delete tool", 5, true)
 
@@ -1545,6 +1550,7 @@ if game.GameId == 6035872082 then --Rivals
 	ESPOutlineType = "Highlight"
 	ESPLinesEnabled = true
 	ESPRainbowEnabled = true
+	ESPLifeEnabled = true
 	
 	workspace.ChildAdded:Connect(function(Child)
 		
@@ -3348,7 +3354,24 @@ local function ESPEnable(Val)
 			local AttRight = Instance.new("Attachment", Box3d)
 			local AttUp = Instance.new("Attachment", Box3d)
 			local AttDown = Instance.new("Attachment", Box3d)
+			local HealthBillBoard = Instance.new("BillboardGui", MenuUI.Parent)
+			local HealthBar = Instance.new("CanvasGroup", HealthBillBoard)
+			local HealthStroke = Instance.new("UIStroke", HealthBar)
+			local HealthCorner = Instance.new("UICorner", HealthBar)
+			local HealthBarBar = Instance.new("Frame", HealthBar)
 
+			HealthBillBoard.Name = v.Name
+			HealthBillBoard.Size = UDim2.fromOffset(10, 100)
+			HealthBillBoard.StudsOffsetWorldSpace = Vector3.new(-2, 0, 0)
+			HealthBillBoard.AlwaysOnTop = true
+			HealthBar.Size = UDim2.fromScale(1, 1)
+			HealthBar.BackgroundColor3 = Color3.new(1, 0, 0)
+			HealthCorner.CornerRadius = UDim.new(1)
+			HealthStroke.Thickness = 3
+			HealthBarBar.BackgroundColor3 = Color3.new(0, 1, 0)
+			HealthBarBar.AnchorPoint = Vector2.new(0,1)
+			HealthBarBar.Position = UDim2.fromScale(0,1)
+			HealthBarBar.Size = UDim2.fromScale(1, 0.5)
 			Box3d.Anchored = true
 			Box3d.CanCollide = nil
 			Box3d.Transparency = 1
@@ -3416,7 +3439,15 @@ local function ESPEnable(Val)
 						local Pos, IsOnScreen = Cam:WorldToScreenPoint(v.Character:GetPivot().Position)
 						local Size
 						local Char3DSize = v.Character:GetExtentsSize()
-
+						
+						HealthBillBoard.Adornee = v.Character
+						
+						if v.Character:FindFirstChild("Humanoid") then
+							
+							HealthBarBar.Size = UDim2.fromScale(1, v.Character.Humanoid.Health / v.Character.Humanoid.MaxHealth)
+							
+						end
+						
 						Box3d.CFrame = v.Character:GetPivot()
 						Box3d.Size = Char3DSize
 
@@ -3454,11 +3485,13 @@ local function ESPEnable(Val)
 
 							LineOutline.Color = ESPColor
 							BoxOutline.Color = ESPColor
-
+							HealthStroke.Color = ESPColor
+							
 						elseif not ESPTeamColor or not v.Team then
 
 							LineOutline.Color = NotTargettedESPColor
 							BoxOutline.Color = NotTargettedESPColor
+							HealthStroke.Color = NotTargettedESPColor
 
 						end
 
@@ -3482,6 +3515,8 @@ local function ESPEnable(Val)
 							UI.TextColor3 = NotTargettedESPColor
 
 						end
+
+						HealthBillBoard.Enabled = ESPLifeEnabled
 
 						if ESPTeamColor and v.Team and v ~= Target then
 
@@ -3539,6 +3574,8 @@ local function ESPEnable(Val)
 					end
 
 				end
+
+				HealthBillBoard:Destroy()
 
 			end)
 
@@ -3664,6 +3701,12 @@ task.spawn(function()
 	end)
 	ESPRainbowEnable(ESPRainbowEnabled)
 
+end)
+
+ESPLifeButton.MouseButton1Down:Connect(function()
+	
+	ESPLifeEnabled = not ESPLifeEnabled
+	
 end)
 
 ESPKeybindButton.MouseButton1Down:Connect(function()
@@ -4232,37 +4275,44 @@ end)
 EmotesFolder = Instance.new("Folder")
 EmotesFolder.Name = "GHAnims"
 
-for i,v in Emotes do
+--for i,v in Emotes do
 
-	local Anim = Instance.new("Animation", EmotesFolder)
+--	local Button = NewButton(i, EmotesFrame, i, #EmotesFrame:GetChildren(), true)
+--	local EmoteTweens = {}
+	
+--	for ii,vv in v do
+		
+--		EmoteTweens[ii] = {}
+		
+--		for iii, vvv in vv do
 
-	Anim.Name = i
-	Anim.AnimationId = "rbxassetid://" ..v
+--			if iii == "Time" then continue end
 
-	local Button = NewButton(i, EmotesFrame, i, #EmotesFrame:GetChildren(), true)
-	local CharAnim = Char.Humanoid:LoadAnimation(Anim)
+--			local TW = TW:Create(PLR.Character.Torso[iii], TweenInfo.new(vv["Time"]), {["C1"] = vvv})
 
-	Button.MouseButton1Down:Connect(function()
+--			table.insert(EmoteTweens[ii], TW)
 
-		if CharAnim.IsPlaying then
+--		end
 
-			CharAnim:Stop()
+--	end
 
-		else
+--	Button.MouseButton1Down:Connect(function()
+	
+--		for ii,vv in EmoteTweens do
+			
+--			for iii, vvv in vv do
+				
+--				vvv:Play()
+				
+--				if iii == #vv then vvv.Completed:Wait() end
+				
+--			end
+			
+--		end
 
-			CharAnim:Play()
+--	end)
 
-		end
-
-	end)
-
-	PLR.CharacterAdded:Connect(function(Char)
-
-		CharAnim = Char:WaitForChild("Humanoid"):LoadAnimation(Anim)
-
-	end)
-
-end
+--end
 
 Loaded += 1
 
