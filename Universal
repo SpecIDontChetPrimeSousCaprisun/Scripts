@@ -44,19 +44,18 @@ if PLR:HasTag("GoatUHubed") then
 	VineBoom:Play()
 
 	game:GetService("StarterGui"):SetCore("SendNotification", {
-		Title = "Goat hub",
-		Text = "You aldready have an instance of goat hub running if you want to change versions then rejoin the game before injecting it again"
+		Title = "Spheral-X",
+		Text = "You aldready have an instance of Spheral-X running if you want to change versions then rejoin the game before injecting it again"
 	})
-	error("You aldready have an instance of goat hub running if you want to change versions then rejoin the game before injecting it again")
+	error("You aldready have an instance of Spheral-X running if you want to change versions then rejoin the game before injecting it again")
 
 end 
 
 game:GetService("StarterGui"):SetCore("SendNotification", {
-	Title = "Goat Hub",
-	Text = "SucessFully ran goat hub universal please wait..."
+	Title = "Spheral-X",
+	Text = "SucessFully ran Spheral-X universal please wait..."
 })
 
---if PLR:HasTag("GoatHubed") then error("You aldready have an instance of goat hub running if you want to change versions then rejoin the game beafore injecting it again") end
 PLR:AddTag("GoatUHubed")
 
 -- Varibles pour la chaise gaming
@@ -943,7 +942,7 @@ if game.GameId == 3808081382 then --Tsbite
 		if plr == VoidTarget then
 
 			game:GetService("StarterGui"):SetCore("SendNotification", {
-				Title = "Goat Hub",
+				Title = "Spheral-X",
 				Text = "The targeted player of your void (" ..VoidTarget.DisplayName.. ") has left changed target to you."
 			})
 
@@ -1136,7 +1135,7 @@ if game.GameId == 3808081382 then --Tsbite
 		if plr == TrashcanTarget then
 
 			game:GetService("StarterGui"):SetCore("SendNotification", {
-				Title = "Goat Hub",
+				Title = "Spheral-X",
 				Text = "The targeted player of your void (" ..TrashcanTarget.DisplayName.. ") has left changed target to you."
 			})
 
@@ -1787,7 +1786,7 @@ local function KeyBindsToggle(Val)
 		WhitelistButton.Visible = nil
 
 		game:GetService("StarterGui"):SetCore("SendNotification", {
-			Title = "Goat Hub",
+			Title = "Spheral-X",
 			Text = "Enableing keybinds this might take time..."
 		})
 
@@ -1804,7 +1803,7 @@ local function KeyBindsToggle(Val)
 		end
 
 		game:GetService("StarterGui"):SetCore("SendNotification", {
-			Title = "Goat Hub",
+			Title = "Spheral-X",
 			Text = "Successfully enabled keybinds"
 		})
 
@@ -1813,7 +1812,7 @@ local function KeyBindsToggle(Val)
 		WhitelistButton.Visible = true
 
 		game:GetService("StarterGui"):SetCore("SendNotification", {
-			Title = "Goat Hub",
+			Title = "Spheral-X",
 			Text = "Disableing keybinds this might take time..."
 		})
 
@@ -1833,7 +1832,7 @@ local function KeyBindsToggle(Val)
 		end
 
 		game:GetService("StarterGui"):SetCore("SendNotification", {
-			Title = "Goat Hub",
+			Title = "Spheral-X",
 			Text = "Successfully disabled keybinds"
 		})
 
@@ -2227,7 +2226,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 	if plr == PlayerToTP then
 
 		game:GetService("StarterGui"):SetCore("SendNotification", {
-			Title = "Goat Hub",
+			Title = "Spheral-X",
 			Text = "The targeted player of your tp (" ..PlayerToTP.DisplayName.. ") has left changed target to you."
 		})
 
@@ -3107,7 +3106,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 	if plr == FlingTarget then
 
 		game:GetService("StarterGui"):SetCore("SendNotification", {
-			Title = "Goat Hub",
+			Title = "Spheral-X",
 			Text = "The targeted player of your fling (" ..FlingTarget.DisplayName.. ") has left changed target to you."
 		})
 
@@ -3359,6 +3358,7 @@ local function ESPEnable(Val)
 			local HealthStroke = Instance.new("UIStroke", HealthBar)
 			local HealthCorner = Instance.new("UICorner", HealthBar)
 			local HealthBarBar = Instance.new("Frame", HealthBar)
+			local HealthText = Instance.new("TextLabel", HealthBar)
 
 			HealthBillBoard.Name = v.Name
 			HealthBillBoard.Size = UDim2.fromOffset(10, 100)
@@ -3366,12 +3366,18 @@ local function ESPEnable(Val)
 			HealthBillBoard.AlwaysOnTop = true
 			HealthBar.Size = UDim2.fromScale(1, 1)
 			HealthBar.BackgroundColor3 = Color3.new(1, 0, 0)
-			HealthCorner.CornerRadius = UDim.new(1)
+			HealthCorner.CornerRadius = UDim.new(1, 0)
 			HealthStroke.Thickness = 3
 			HealthBarBar.BackgroundColor3 = Color3.new(0, 1, 0)
 			HealthBarBar.AnchorPoint = Vector2.new(0,1)
 			HealthBarBar.Position = UDim2.fromScale(0,1)
 			HealthBarBar.Size = UDim2.fromScale(1, 0.5)
+			HealthText.Size = UDim2.fromScale(1, 1)
+			HealthText.BackgroundTransparency = 1
+			HealthText.ZIndex = 2
+			HealthText.Font = Enum.Font.FredokaOne
+			HealthText.TextScaled = true
+			HealthText.Text = "50/100"
 			Box3d.Anchored = true
 			Box3d.CanCollide = nil
 			Box3d.Transparency = 1
@@ -3445,6 +3451,7 @@ local function ESPEnable(Val)
 						if v.Character:FindFirstChild("Humanoid") then
 							
 							HealthBarBar.Size = UDim2.fromScale(1, v.Character.Humanoid.Health / v.Character.Humanoid.MaxHealth)
+							HealthText.Text = string.gsub(math.round(v.Character.Humanoid.Health).. "/" ..math.round(v.Character.Humanoid.MaxHealth), ".", "%1\n")
 							
 						end
 						
@@ -3969,7 +3976,7 @@ game:GetService("Players").PlayerRemoving:Connect(function(plr)
 	if plr == PlayerToBang then
 
 		game:GetService("StarterGui"):SetCore("SendNotification", {
-			Title = "Goat Hub",
+			Title = "Spheral-X",
 			Text = "The targeted player of your bang (" ..PlayerToBang.DisplayName.. ") has left changed target to you."
 		})
 
@@ -4410,7 +4417,7 @@ OldMouse = UIS.MouseBehavior
 UIS.MouseBehavior = Enum.MouseBehavior.Default
 
 game:GetService("StarterGui"):SetCore("SendNotification", {
-	Title = "Goat Hub",
+	Title = "Spheral-X",
 	Text = "Done"
 })
 
