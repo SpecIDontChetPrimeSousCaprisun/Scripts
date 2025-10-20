@@ -3343,7 +3343,7 @@ local function ESPEnable(Val)
 			local AttRight = Instance.new("Attachment", Box3d)
 			local AttUp = Instance.new("Attachment", Box3d)
 			local AttDown = Instance.new("Attachment", Box3d)
-			local HealthBillBoard = Instance.new("BillboardGui", MenuUI.Parent)
+			local HealthBillBoard = Instance.new("BillboardGui", ESPGui)
 			local HealthBar = Instance.new("CanvasGroup", HealthBillBoard)
 			local HealthStroke = Instance.new("UIStroke", HealthBar)
 			local HealthCorner = Instance.new("UICorner", HealthBar)
@@ -3702,6 +3702,7 @@ end)
 ESPLifeButton.MouseButton1Down:Connect(function()
 	
 	ESPLifeEnabled = not ESPLifeEnabled
+	ESPLifeButton.Frame.Frame.Visible = ESPLifeEnabled
 	
 end)
 
