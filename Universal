@@ -3572,8 +3572,6 @@ local function ESPEnable(Val)
 
 				end
 
-				HealthBillBoard:Destroy()
-
 			end)
 
 			local OnRespawn = v.CharacterAdded:Connect(function()
@@ -3596,6 +3594,7 @@ local function ESPEnable(Val)
 				Line:Destroy()
 				Box:Destroy()
 				Box3d:Destroy()
+				HealthBillBoard:Destroy()
 				OnRespawn:Disconnect()
 
 			end)
@@ -4427,7 +4426,7 @@ TWLF:Play()
 TWLF.Completed:Wait()
 NameLabelStroke.Enabled = true
 LoadingFrame:Destroy()
-NameLabel.Text = "Spheral-X"
+NameLabel.Text = "Spheral-X 1.1"
 TWMF:Play()
 TWMF.Completed:Wait()
 
