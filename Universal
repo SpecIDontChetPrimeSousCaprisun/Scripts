@@ -1554,7 +1554,7 @@ if game.GameId == 6035872082 then --Rivals
 	
 	for i,v in PLR.PlayerGui.MainGui.MainFrame.FighterInterfaces:GetChildren() do
 		
-		v.WarningVignette:Destroy()
+		v:WaitForChild("WarningVignette"):Destroy()
 		
 	end
 	
@@ -3566,7 +3566,7 @@ local function ESPEnable(Val)
 
 					else
 
-						UI:Remove()
+						UI.Parent = nil
 
 					end
 
