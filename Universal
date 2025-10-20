@@ -3554,6 +3554,7 @@ local function ESPEnable(Val)
 						local Vec2Pos = WorldToScreen(v.Character.Head.Position)
 
 						if not IsOnScreen then UI:Remove() continue end
+						if not ESPEnabled then continue end
 
 						UI.Parent = ESPGui
 						UI.AnchorPoint = Vector2.new(0.5,0)
@@ -3565,6 +3566,8 @@ local function ESPEnable(Val)
 						UI.Position = UDim2.fromOffset(Vec2Pos.X, Vec2Pos.Y)
 
 					else
+
+						if not ESPEnabled then continue end
 
 						UI.Parent = nil
 
