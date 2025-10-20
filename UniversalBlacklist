@@ -3,8 +3,8 @@ local Banned = {
 	["1986192973"] = nil, --Meliograsse
 	["9429997940"] = nil, --MelioGrasseRouivales
 	["3167520760"] = nil, --Anyazo
-	["4346481800"] = true --liam,
-	["9714914797"] = true --linegro,
+	["4346481800"] = true, --liam
+	["9714914797"] = true, --linegro
 	["5176429980"] = true --Delta
 }
 
