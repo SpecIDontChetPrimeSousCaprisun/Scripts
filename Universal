@@ -1,3 +1,8 @@
 WebsiteUrl = game:HttpGet("https://raw.githubusercontent.com/SpecIDontChetPrimeSousCaprisun/Scripts/refs/heads/main/Url.txt")
 
-loadstring(game:HttpGet(string.gsub(WebsiteUrl.. "/SpheralX", "\n", "")))()
+game:GetService("StarterGui"):SetCore("SendNotification", {
+	Title = "Spheral-X",
+	Text = "Fetching Spheral-X if it takes too long it might be because the server is not started."
+})
+
+res = loadstring(game:HttpGet(string.gsub(WebsiteUrl.. "/SpheralX", "\n", "")))()
