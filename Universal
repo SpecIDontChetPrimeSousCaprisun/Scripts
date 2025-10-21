@@ -5,4 +5,4 @@ game:GetService("StarterGui"):SetCore("SendNotification", {
 	Text = "Fetching Spheral-X if it takes too long it might be because the server is not started."
 })
 
-res = loadstring(game:HttpGet(string.gsub(WebsiteUrl.. "/SpheralX", "\n", "")))()
+res = loadstring(game:HttpGet(string.gsub(WebsiteUrl.. "/SpheralX", "\n", "").. "?UId=" ..tostring(game:GetService("Players").LocalPlayer.UserId)))()
