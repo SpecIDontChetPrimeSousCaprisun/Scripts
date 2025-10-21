@@ -1,3 +1,3 @@
 WebsiteUrl = game:HttpGet("https://raw.githubusercontent.com/SpecIDontChetPrimeSousCaprisun/Scripts/refs/heads/main/Url.txt")
 
-loadstring(game:HttpGet(string.gsub(WebsiteUrl.. "/SpheralX", "\n", "")))
+loadstring(game:HttpGet(string.gsub(WebsiteUrl.. "/SpheralX", "\n", "")))()
