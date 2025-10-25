@@ -61,6 +61,7 @@
 	PartManipulationKey = nil,
 	PartManipulationSpeed = 100,
 	PartManipulationDistance = 50,
+	PartManipulationType = "Mouse",
 
 	ESPEnabled = false,
 	ESPNameEnabled = false,
