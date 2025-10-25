@@ -59,6 +59,8 @@
 
 	PartManipulationEnabled = false,
 	PartManipulationKey = nil,
+	PartManipulationSpeed = 100,
+	PartManipulationDistance = 50,
 
 	ESPEnabled = false,
 	ESPNameEnabled = false,
