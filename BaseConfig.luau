@@ -57,6 +57,9 @@
 
 	FlingToolParams = RaycastParams.new(),
 
+	PartManipulationEnabled = false,
+	PartManipulationKey = nil,
+
 	ESPEnabled = false,
 	ESPNameEnabled = false,
 	ESPColorEnabled = false,
