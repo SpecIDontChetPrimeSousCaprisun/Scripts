@@ -62,6 +62,7 @@
 	PartManipulationSpeed = 100,
 	PartManipulationDistance = 50,
 	PartManipulationType = "Mouse",
+	PartManipulationPlayer = game:GetService("Players"):GetPlayers()[1],
 
 	ESPEnabled = false,
 	ESPNameEnabled = false,
