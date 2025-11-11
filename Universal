@@ -4,6 +4,78 @@
 
 WebsiteUrl = game:HttpGet("https://raw.githubusercontent.com/SpecIDontChetPrimeSousCaprisun/Scripts/refs/heads/main/Url.txt")
 
+--local Key
+--local Permission
+--local Console
+
+--makefolder("SpheralX")
+
+--if isfile("SpheralX/Key") then
+
+--	Key = readfile("SpheralX/Key")
+
+--end
+
+--local KeysFunctions = {}
+
+--function AskForKey()
+
+--	if Console then
+
+--		rconsoleprint("Wrong key please enter the real key\n")
+
+--	else
+
+--		rconsolesettitle("Key")
+--		rconsoleprint("Please enter your Spheral-X key\n")
+--		rconsolecreate()
+
+--	end
+
+--	local NewKey = rconsoleinput()
+
+--	Console = true
+
+--	Key = NewKey
+
+--	writefile("SpheralX/Key", NewKey)
+
+--	local Res = game:HttpGet(string.gsub(WebsiteUrl.. "/SpheralX/Key?Key=" ..Key, "\n", ""))
+
+--	if Res ~= "Authorised" then
+
+--		AskForKey()
+
+--	else
+
+--		Permission = true
+--		rconsoledestroy()
+
+--	end
+
+--end
+
+--if not Key then
+
+--	AskForKey()
+
+--end
+
+--local Res = game:HttpGet(string.gsub(WebsiteUrl.. "/SpheralX/Key?Key=" ..Key, "\n", ""))
+
+--print(Res)
+
+--if Res ~= "Authorised" then
+
+--	AskForKey()
+
+--else
+
+--	Permission = true
+--	rconsoledestroy()
+
+--end
+
 PLR = game:GetService("Players").LocalPlayer
 Char = PLR.Character or PLR.CharacterAdded:Wait()
 UIS = game:GetService("UserInputService")
@@ -781,7 +853,33 @@ PartManipulationTypeFrame.NameLabel.Text = "Part Manipulation Type"
 PartManipulationTypeFrame.LayoutOrder = 2
 PartManipulationTypeFrame.Parent = Options
 
-if game.GameId == 3808081382 then --Tsbite
+if game.GameId == 6035872082 then -- Rivals
+	
+	NewTab("Rivals", 9, 0)
+
+	Replication = game:GetService("ReplicatedStorage").Remotes.Replication.Fighter
+	DeviceFrame = FlyFrame:Clone()
+	DeviceFrame.Name = "Device"
+	DeviceFrame.NameLabel.Text = "Device"
+	DeviceFrame.LayoutOrder = 1
+	DeviceFrame.Parent = Options
+
+	DeviceChangerBox = NewBox("Device", DeviceFrame, "Device = VR", 1)
+
+	Tabs.Rivals = {
+		DeviceFrame
+	}
+
+	DeviceChangerBox.FocusLost:Connect(function(EP)
+		
+		if not EP then return end
+
+		Replication.SetControls:FireServer(DeviceChangerBox.Text)
+		DeviceChangerBox.Text = "Device = " ..DeviceChangerBox.Text
+		
+	end)
+
+elseif game.GameId == 3808081382 then --Tsbite
 
 	VoidDB = nil
 	VoidTarget = getgenv().CurrentSXConfig.PlayerToTP
@@ -1589,6 +1687,7 @@ if game.GameId == 6035872082 then --Rivals
 	Replication.WasSmoked:Destroy()
 	Replication.BlindedEffect:Destroy()
 	Replication.OutOfBounds:Destroy()
+	Replication.SetControls:FireServer("VR")
 	
 end
 
